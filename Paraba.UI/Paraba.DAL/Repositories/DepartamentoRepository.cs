@@ -1,3 +1,37 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:14311e8d066450b38096a93c0f4e76df3496c90e104d2a712df0b440cb923c8e
-size 1232
+using Microsoft.Data.SqlClient;
+using Paraba.DAL.Connections;
+using Paraba.ENTITY.Models;
+
+namespace Paraba.DAL.Repositories
+{
+    public class DepartamentoRepository
+    {
+        private readonly ConexionDAL conexion = new ConexionDAL();
+
+        public List<Departamento> Listar()
+        {
+            List<Departamento> lista = new List<Departamento>();
+
+            using SqlConnection cn = conexion.ObtenerConexion();
+            string query = "SELECT IdDepartamento, IdPais, Nombre, Estado, FechaRegistro FROM Departamentos ORDER BY IdDepartamento";
+            using SqlCommand cmd = new SqlCommand(query, cn);
+
+            cn.Open();
+            using SqlDataReader dr = cmd.ExecuteReader();
+
+            while (dr.Read())
+            {
+                lista.Add(new Departamento
+                {
+                    IdDepartamento = Convert.ToInt32(dr["IdDepartamento"]),
+                    IdPais = Convert.ToInt32(dr["IdPais"]),
+                    Nombre = dr["Nombre"].ToString() ?? string.Empty,
+                    Estado = Convert.ToBoolean(dr["Estado"]),
+                    FechaRegistro = Convert.ToDateTime(dr["FechaRegistro"])
+                });
+            }
+
+            return lista;
+        }
+    }
+}

@@ -1,3 +1,35 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8ebfbc89419662f16f6b5d6da791b820e088531a73d652ba9b6445138b784378
-size 1018
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace Paraba.UI.ViewModels
+{
+    public class SolicitudViajeViewModel
+    {
+        public int IdPasajero { get; set; }
+
+        public int IdConductor { get; set; }
+
+        public int IdVehiculo { get; set; }
+
+        public int IdTipoServicio { get; set; }
+
+        public string Origen { get; set; } = string.Empty;
+
+        public string Destino { get; set; } = string.Empty;
+
+        public decimal DistanciaKilometros { get; set; }
+
+        public int TiempoMinutos { get; set; }
+
+        public decimal TarifaSugerida { get; set; }
+
+        public decimal TarifaOfertada { get; set; }
+
+        public List<SelectListItem> Pasajeros { get; set; } = new List<SelectListItem>();
+
+        public List<SelectListItem> Conductores { get; set; } = new List<SelectListItem>();
+
+        public List<SelectListItem> Vehiculos { get; set; } = new List<SelectListItem>();
+
+        public List<SelectListItem> TiposServicio { get; set; } = new List<SelectListItem>();
+    }
+}

@@ -1,3 +1,25 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d4b2cf6d256eb7d50081f88081a1b822516a47c795c117de6b5401989c712ea2
-size 655
+namespace Paraba.ENTITY.Models
+{
+    public class AuditoriaViaje
+    {
+        public int IdAuditoriaViaje { get; set; }
+
+        public int IdViaje { get; set; }
+
+        public string Accion { get; set; } = string.Empty;
+
+        public string EstadoAnterior { get; set; } = string.Empty;
+
+        public string EstadoNuevo { get; set; } = string.Empty;
+
+        public decimal? TarifaAnterior { get; set; }
+
+        public decimal? TarifaNueva { get; set; }
+
+        public string UsuarioSistema { get; set; } = string.Empty;
+
+        public string Observacion { get; set; } = string.Empty;
+
+        public DateTime FechaRegistro { get; set; }
+    }
+}

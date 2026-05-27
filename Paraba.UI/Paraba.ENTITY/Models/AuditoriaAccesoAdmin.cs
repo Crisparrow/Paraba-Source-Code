@@ -1,3 +1,21 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6da72fe5030acf0aeb70c0427a5731153a79b816a68e171efd9a330fb829e5b2
-size 534
+namespace Paraba.ENTITY.Models
+{
+    public class AuditoriaAccesoAdmin
+    {
+        public int IdAuditoriaAccesoAdmin { get; set; }
+
+        public int? IdUsuarioAdmin { get; set; }
+
+        public string Correo { get; set; } = string.Empty;
+
+        public string Accion { get; set; } = string.Empty;
+
+        public bool Exitoso { get; set; }
+
+        public string IpOrigen { get; set; } = string.Empty;
+
+        public string Observacion { get; set; } = string.Empty;
+
+        public DateTime FechaRegistro { get; set; }
+    }
+}

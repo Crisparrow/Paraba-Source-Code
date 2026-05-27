@@ -1,3 +1,18 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ed1d69bf396764908b6f0ad54557cbee14b1c67254d3ee6639d13e373d040f63
-size 514
+using Microsoft.AspNetCore.Mvc;
+using Paraba.BLL.Services;
+
+namespace Paraba.UI.Controllers
+{
+    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin,Operaciones")]
+    public class TipoServicioController : Controller
+    {
+        private readonly TipoServicioService tipoServicioService = new TipoServicioService();
+
+        public IActionResult Index()
+        {
+            var tiposServicio = tipoServicioService.ListarTiposServicio();
+
+            return View(tiposServicio);
+        }
+    }
+}

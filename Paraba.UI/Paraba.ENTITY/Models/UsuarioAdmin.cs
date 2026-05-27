@@ -1,3 +1,27 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:b0d43410cedb99b61586ef38844ddd06f30cbb97e70c2cc7595bb0f9f51031df
-size 708
+namespace Paraba.ENTITY.Models
+{
+    public class UsuarioAdmin
+    {
+        public int IdUsuarioAdmin { get; set; }
+
+        public string NombreCompleto { get; set; } = string.Empty;
+
+        public string Correo { get; set; } = string.Empty;
+
+        public string PasswordHash { get; set; } = string.Empty;
+
+        public string PasswordSalt { get; set; } = string.Empty;
+
+        public int PasswordIterations { get; set; }
+
+        public bool Estado { get; set; }
+
+        public int IntentosFallidos { get; set; }
+
+        public DateTime? UltimoAcceso { get; set; }
+
+        public DateTime FechaRegistro { get; set; }
+
+        public List<string> Roles { get; set; } = new List<string>();
+    }
+}

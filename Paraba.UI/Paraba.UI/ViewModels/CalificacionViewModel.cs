@@ -1,3 +1,21 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:b815503bb0cf6ad1b741cbca9a91731d3ce32d6625acfe571bcf513fb01561d1
-size 502
+namespace Paraba.UI.ViewModels
+{
+    public class CalificacionViewModel
+    {
+        public int IdCalificacion { get; set; }
+
+        public int IdViaje { get; set; }
+
+        public string Pasajero { get; set; } = string.Empty;
+
+        public string Conductor { get; set; } = string.Empty;
+
+        public int Puntaje { get; set; }
+
+        public string Comentario { get; set; } = string.Empty;
+
+        public bool Estado { get; set; }
+
+        public DateTime FechaRegistro { get; set; }
+    }
+}

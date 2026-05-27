@@ -1,3 +1,53 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ecebdb3ed98587b4bb57436db8d3faa76e484162417b9d65e7e4db6b5fa5f11e
-size 1876
+@model List<Paraba.UI.ViewModels.PerfilConductorViewModel>
+
+@{
+    ViewData["Title"] = "Perfiles de conductor";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Perfiles de conductor</h1>
+        <p class="text-muted mb-0">Resumen de confianza, modalidad y vehiculo asignado.</p>
+    </div>
+</div>
+
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Conductor</th>
+            <th>Modalidad</th>
+            <th>Vehiculo</th>
+            <th>Verificacion</th>
+            <th>Disponible</th>
+            <th>Calificacion</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var perfil in Model)
+        {
+            <tr>
+                <td>@perfil.IdConductor</td>
+                <td>
+                    <strong>@perfil.NombreCompleto</strong>
+                    <div class="text-muted small">@perfil.Telefono</div>
+                    <div class="text-muted small">@perfil.Correo</div>
+                </td>
+                <td>@perfil.TipoServicio</td>
+                <td>
+                    <strong>@perfil.Vehiculo</strong>
+                    <div class="text-muted small">@perfil.Placa</div>
+                </td>
+                <td>
+                    <div>Conductor: @(perfil.ConductorVerificado ? "Verificado" : "Pendiente")</div>
+                    <div>Vehiculo: @(perfil.VehiculoVerificado ? "Verificado" : "Pendiente")</div>
+                </td>
+                <td>@(perfil.Disponible ? "Si" : "No")</td>
+                <td>
+                    <strong>@perfil.PromedioCalificacion.ToString("0.00") / 5</strong>
+                    <div class="text-muted small">@perfil.TotalCalificaciones calificacion(es)</div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,3 +1,39 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:9ec0fd503a15926f49a99a73d4d98d67733c3300a267d44e092d1de9055a5012
-size 941
+namespace Paraba.ENTITY.Models
+{
+    public class Viaje
+    {
+        public int IdViaje { get; set; }
+
+        public int IdPasajero { get; set; }
+
+        public int IdConductor { get; set; }
+
+        public int IdVehiculo { get; set; }
+
+        public int IdTipoServicio { get; set; }
+
+        public string Origen { get; set; } = string.Empty;
+
+        public string Destino { get; set; } = string.Empty;
+
+        public decimal TarifaEstimada { get; set; }
+
+        public decimal TarifaFinal { get; set; }
+
+        public decimal TarifaSugerida { get; set; }
+
+        public decimal TarifaOfertada { get; set; }
+
+        public decimal? TarifaContraoferta { get; set; }
+
+        public decimal? TarifaAceptada { get; set; }
+
+        public int IdEstadoViaje { get; set; }
+
+        public DateTime FechaSolicitud { get; set; }
+
+        public DateTime? FechaInicio { get; set; }
+
+        public DateTime? FechaFin { get; set; }
+    }
+}

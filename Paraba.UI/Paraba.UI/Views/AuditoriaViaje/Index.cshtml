@@ -1,3 +1,46 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:305e254a7f302857c4220d4213fcd40d97b2344de6c3ef8c9ef0f3a8ecaa5ba4
-size 1449
+@model List<Paraba.UI.ViewModels.AuditoriaViajeViewModel>
+
+@{
+    ViewData["Title"] = "Auditoria de viajes";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Auditoria de viajes</h1>
+        <p class="text-muted mb-0">Historial operativo de cambios importantes en los viajes.</p>
+    </div>
+</div>
+
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Viaje</th>
+            <th>Accion</th>
+            <th>Estado anterior</th>
+            <th>Estado nuevo</th>
+            <th>Tarifa anterior</th>
+            <th>Tarifa nueva</th>
+            <th>Usuario</th>
+            <th>Observacion</th>
+            <th>Fecha</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.IdAuditoriaViaje</td>
+                <td>@item.IdViaje</td>
+                <td>@item.Accion</td>
+                <td>@item.EstadoAnterior</td>
+                <td>@item.EstadoNuevo</td>
+                <td>@(item.TarifaAnterior?.ToString("0.00") ?? "-")</td>
+                <td>@(item.TarifaNueva?.ToString("0.00") ?? "-")</td>
+                <td>@item.UsuarioSistema</td>
+                <td>@item.Observacion</td>
+                <td>@item.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</td>
+            </tr>
+        }
+    </tbody>
+</table>

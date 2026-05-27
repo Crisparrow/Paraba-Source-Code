@@ -1,3 +1,19 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:3381da3b334ec902d636eb95655d5e101be2ea3666dbcb4997fc8279b33504e5
-size 502
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Paraba.DAL\Paraba.DAL.csproj" />
+    <ProjectReference Include="..\Paraba.ENTITY\Paraba.ENTITY.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Validations\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
+</Project>

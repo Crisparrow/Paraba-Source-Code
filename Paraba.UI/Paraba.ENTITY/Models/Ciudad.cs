@@ -1,3 +1,15 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:f9dfa2398222a1c9357dac648afe847b4c58cb10f1e95178c51f6cb9daf71724
-size 317
+namespace Paraba.ENTITY.Models
+{
+    public class Ciudad
+    {
+        public int IdCiudad { get; set; }
+
+        public int IdDepartamento { get; set; }
+
+        public string Nombre { get; set; } = string.Empty;
+
+        public bool Estado { get; set; }
+
+        public DateTime FechaRegistro { get; set; }
+    }
+}

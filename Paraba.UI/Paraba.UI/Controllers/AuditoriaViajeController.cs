@@ -1,3 +1,33 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:707d10adc5047c1be7782a0cce673ceab9137f130a5b181d2628f36d8868632f
-size 1192
+using Microsoft.AspNetCore.Mvc;
+using Paraba.BLL.Services;
+using Paraba.UI.ViewModels;
+
+namespace Paraba.UI.Controllers
+{
+    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin")]
+    public class AuditoriaViajeController : Controller
+    {
+        private readonly AuditoriaViajeService auditoriaViajeService = new AuditoriaViajeService();
+
+        public IActionResult Index()
+        {
+            var auditorias = auditoriaViajeService.ListarAuditoriaViajes()
+                .Select(item => new AuditoriaViajeViewModel
+                {
+                    IdAuditoriaViaje = item.IdAuditoriaViaje,
+                    IdViaje = item.IdViaje,
+                    Accion = item.Accion,
+                    EstadoAnterior = item.EstadoAnterior,
+                    EstadoNuevo = item.EstadoNuevo,
+                    TarifaAnterior = item.TarifaAnterior,
+                    TarifaNueva = item.TarifaNueva,
+                    UsuarioSistema = item.UsuarioSistema,
+                    Observacion = item.Observacion,
+                    FechaRegistro = item.FechaRegistro
+                })
+                .ToList();
+
+            return View(auditorias);
+        }
+    }
+}

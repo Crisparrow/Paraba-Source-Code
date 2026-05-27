@@ -1,3 +1,102 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:38d942a94c290d5cbff5910bfbe35d6c6765964008318904f91fb0a18b62f484
-size 3474
+using Microsoft.Data.SqlClient;
+using Paraba.DAL.Connections;
+using Paraba.ENTITY.Models;
+
+namespace Paraba.DAL.Repositories
+{
+    public class ConductorRepository
+    {
+        private readonly ConexionDAL conexion = new ConexionDAL();
+
+        public List<Conductor> Listar()
+        {
+            List<Conductor> lista = new List<Conductor>();
+
+            using SqlConnection cn = conexion.ObtenerConexion();
+
+            string query = @"
+                SELECT
+                    IdConductor,
+                    NombreCompleto,
+                    DocumentoIdentidad,
+                    Telefono,
+                    Correo,
+                    LicenciaConducir,
+                    FechaVencimientoLicencia,
+                    Disponible,
+                    Verificado,
+                    Estado,
+                    FechaRegistro
+                FROM Conductores
+                ORDER BY IdConductor";
+
+            using SqlCommand cmd = new SqlCommand(query, cn);
+
+            cn.Open();
+
+            using SqlDataReader dr = cmd.ExecuteReader();
+
+            while (dr.Read())
+            {
+                lista.Add(new Conductor
+                {
+                    IdConductor = Convert.ToInt32(dr["IdConductor"]),
+                    NombreCompleto = dr["NombreCompleto"].ToString() ?? string.Empty,
+                    DocumentoIdentidad = dr["DocumentoIdentidad"].ToString() ?? string.Empty,
+                    Telefono = dr["Telefono"].ToString() ?? string.Empty,
+                    Correo = dr["Correo"].ToString() ?? string.Empty,
+                    LicenciaConducir = dr["LicenciaConducir"].ToString() ?? string.Empty,
+                    FechaVencimientoLicencia = Convert.ToDateTime(dr["FechaVencimientoLicencia"]),
+                    Disponible = Convert.ToBoolean(dr["Disponible"]),
+                    Verificado = Convert.ToBoolean(dr["Verificado"]),
+                    Estado = Convert.ToBoolean(dr["Estado"]),
+                    FechaRegistro = Convert.ToDateTime(dr["FechaRegistro"])
+                });
+            }
+
+            return lista;
+        }
+
+        public bool ActualizarVerificado(int idConductor, bool verificado)
+        {
+            using SqlConnection cn = conexion.ObtenerConexion();
+
+            string query = @"
+                UPDATE Conductores
+                SET Verificado = @Verificado
+                WHERE IdConductor = @IdConductor";
+
+            using SqlCommand cmd = new SqlCommand(query, cn);
+            cmd.Parameters.AddWithValue("@IdConductor", idConductor);
+            cmd.Parameters.AddWithValue("@Verificado", verificado);
+
+            cn.Open();
+
+            int filasAfectadas = cmd.ExecuteNonQuery();
+
+            return filasAfectadas > 0;
+        }
+
+        public bool ActualizarEstado(int idConductor, bool estado)
+        {
+            using SqlConnection cn = conexion.ObtenerConexion();
+
+            string query = @"
+                UPDATE Conductores
+                SET
+                    Estado = @Estado,
+                    Disponible = CASE WHEN @Estado = 0 THEN 0 ELSE Disponible END
+                WHERE IdConductor = @IdConductor";
+
+            using SqlCommand cmd = new SqlCommand(query, cn);
+            cmd.Parameters.AddWithValue("@IdConductor", idConductor);
+            cmd.Parameters.AddWithValue("@Estado", estado);
+
+            cn.Open();
+
+            int filasAfectadas = cmd.ExecuteNonQuery();
+
+            return filasAfectadas > 0;
+        }
+    }
+}

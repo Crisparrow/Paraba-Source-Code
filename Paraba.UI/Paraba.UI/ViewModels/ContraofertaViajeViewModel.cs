@@ -1,3 +1,21 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:f0b451573294bf3cf9b14bfd178d1a011510547f0e5b318fb29e09ddec21084d
-size 541
+namespace Paraba.UI.ViewModels
+{
+    public class ContraofertaViajeViewModel
+    {
+        public int IdViaje { get; set; }
+
+        public string Pasajero { get; set; } = string.Empty;
+
+        public string Conductor { get; set; } = string.Empty;
+
+        public string Ruta { get; set; } = string.Empty;
+
+        public decimal TarifaSugerida { get; set; }
+
+        public decimal TarifaOfertada { get; set; }
+
+        public decimal? TarifaContraofertaActual { get; set; }
+
+        public decimal NuevaContraoferta { get; set; }
+    }
+}

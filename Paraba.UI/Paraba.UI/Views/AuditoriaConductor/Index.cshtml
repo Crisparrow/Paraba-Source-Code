@@ -1,3 +1,45 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:cb3c68e07b5c4ab9c058b964d0b600473f02253efb4bf05e1c68602e0a5a38fb
-size 1393
+@model List<Paraba.UI.ViewModels.AuditoriaConductorViewModel>
+
+@{
+    ViewData["Title"] = "Auditoria conductores";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Auditoria de conductores</h1>
+        <p class="text-muted mb-0">Historial de verificacion, rechazo, suspension y reactivacion.</p>
+    </div>
+</div>
+
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Conductor</th>
+            <th>Accion</th>
+            <th>Estado anterior</th>
+            <th>Estado nuevo</th>
+            <th>Usuario</th>
+            <th>Observacion</th>
+            <th>Fecha</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.IdAuditoriaConductor</td>
+                <td>
+                    <strong>@item.Conductor</strong>
+                    <div class="text-muted small">ID @item.IdConductor</div>
+                </td>
+                <td>@item.Accion</td>
+                <td>@item.EstadoAnterior</td>
+                <td>@item.EstadoNuevo</td>
+                <td>@item.UsuarioSistema</td>
+                <td>@item.Observacion</td>
+                <td>@item.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</td>
+            </tr>
+        }
+    </tbody>
+</table>

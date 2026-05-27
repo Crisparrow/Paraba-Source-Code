@@ -1,3 +1,15 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:9bf19e1ebfd24a4ca9639e69cd9315789d7ade5729f341d7e9e13627c3db1e53
-size 337
+namespace Paraba.ENTITY.Models
+{
+    public class RolAdmin
+    {
+        public int IdRolAdmin { get; set; }
+
+        public string Nombre { get; set; } = string.Empty;
+
+        public string Descripcion { get; set; } = string.Empty;
+
+        public bool Estado { get; set; }
+
+        public DateTime FechaRegistro { get; set; }
+    }
+}

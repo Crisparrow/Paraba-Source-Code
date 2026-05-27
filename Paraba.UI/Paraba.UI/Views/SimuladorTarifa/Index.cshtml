@@ -1,3 +1,100 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5bcde0b6959137294dd94300dd26959599ac0bd6df206c925a6c5140469dbe33
-size 3416
+@model Paraba.UI.ViewModels.SimuladorTarifaViewModel
+
+@{
+    ViewData["Title"] = "Simulador de tarifa sugerida";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Simulador de tarifa sugerida</h1>
+        <p class="text-muted mb-0">Referencia para que pasajero y conductor negocien el precio del viaje.</p>
+    </div>
+</div>
+
+<form asp-controller="SimuladorTarifa" asp-action="Index" method="post" class="row g-3 mb-4">
+    @Html.AntiForgeryToken()
+
+    <div class="col-md-4">
+        <label class="form-label">Tipo de servicio</label>
+        <select asp-for="IdTipoServicio" asp-items="Model.TiposServicio" class="form-select"></select>
+    </div>
+
+    <div class="col-md-4">
+        <label class="form-label">Zona</label>
+        <select asp-for="IdZona" asp-items="Model.Zonas" class="form-select"></select>
+    </div>
+
+    <div class="col-md-4">
+        <label class="form-label">Tipo de via</label>
+        <select asp-for="IdTipoVia" asp-items="Model.TiposVia" class="form-select"></select>
+    </div>
+
+    <div class="col-md-4">
+        <label class="form-label">Distancia kilometros</label>
+        <input asp-for="DistanciaKilometros" class="form-control" type="number" step="0.1" min="0" />
+    </div>
+
+    <div class="col-md-4">
+        <label class="form-label">Tiempo minutos</label>
+        <input asp-for="TiempoMinutos" class="form-control" type="number" min="0" />
+    </div>
+
+    <div class="col-md-4 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Calcular sugerencia</button>
+    </div>
+
+    <div class="col-md-4">
+        <div class="form-check">
+            <input asp-for="AplicaLluvia" class="form-check-input" />
+            <label asp-for="AplicaLluvia" class="form-check-label">Lluvia</label>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="form-check">
+            <input asp-for="AplicaAltaDemanda" class="form-check-input" />
+            <label asp-for="AplicaAltaDemanda" class="form-check-label">Alta demanda</label>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="form-check">
+            <input asp-for="AplicaHorarioNocturno" class="form-check-input" />
+            <label asp-for="AplicaHorarioNocturno" class="form-check-label">Horario nocturno</label>
+        </div>
+    </div>
+</form>
+
+@if (Model.TieneResultado)
+{
+    <table class="table table-bordered align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Concepto</th>
+                <th>Monto</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Costo por distancia</td>
+                <td>@Model.CostoDistancia.ToString("0.00")</td>
+            </tr>
+            <tr>
+                <td>Costo por tiempo</td>
+                <td>@Model.CostoTiempo.ToString("0.00")</td>
+            </tr>
+            <tr>
+                <td>Incremento por reglas</td>
+                <td>@Model.IncrementoReglas.ToString("0.00")</td>
+            </tr>
+            <tr>
+                <td>Incremento por tipo de via</td>
+                <td>@Model.IncrementoTipoVia.ToString("0.00")</td>
+            </tr>
+            <tr>
+                <td><strong>Tarifa sugerida</strong></td>
+                <td><strong>@Model.TarifaEstimada.ToString("0.00")</strong></td>
+            </tr>
+        </tbody>
+    </table>
+}

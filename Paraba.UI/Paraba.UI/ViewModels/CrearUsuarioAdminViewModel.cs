@@ -1,3 +1,17 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:0e178186a0d21b21bbbe214ceece911714087dc8392513a1ec8b8895838c2753
-size 455
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace Paraba.UI.ViewModels
+{
+    public class CrearUsuarioAdminViewModel
+    {
+        public string NombreCompleto { get; set; } = string.Empty;
+
+        public string Correo { get; set; } = string.Empty;
+
+        public string Password { get; set; } = string.Empty;
+
+        public int IdRolAdmin { get; set; }
+
+        public List<SelectListItem> Roles { get; set; } = new List<SelectListItem>();
+    }
+}

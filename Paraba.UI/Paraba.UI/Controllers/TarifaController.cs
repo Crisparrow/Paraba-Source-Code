@@ -1,3 +1,39 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e05437661e4150a3baa3324ffa85014ebeb6332b543c8b9223cddde2110b6616
-size 1275
+using Microsoft.AspNetCore.Mvc;
+using Paraba.BLL.Services;
+using Paraba.UI.ViewModels;
+
+namespace Paraba.UI.Controllers
+{
+    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin,Operaciones,Finanzas")]
+    public class TarifaController : Controller
+    {
+        private readonly TarifaService tarifaService = new TarifaService();
+
+        public IActionResult Index()
+        {
+            var tarifas = tarifaService.ListarTarifas();
+            var tarifasViewModel = tarifas.Select(tarifa => new TarifaViewModel
+            {
+                IdTarifa = tarifa.IdTarifa,
+                TipoServicio = ObtenerTipoServicio(tarifa.IdTipoServicio),
+                TarifaBase = tarifa.TarifaBase,
+                CostoPorKilometro = tarifa.CostoPorKilometro,
+                CostoPorMinuto = tarifa.CostoPorMinuto,
+                TarifaMinima = tarifa.TarifaMinima,
+                Estado = tarifa.Estado
+            }).ToList();
+
+            return View(tarifasViewModel);
+        }
+
+        private static string ObtenerTipoServicio(int idTipoServicio)
+        {
+            return idTipoServicio switch
+            {
+                1 => "Taxi",
+                2 => "Moto taxi",
+                _ => "Tipo no identificado"
+            };
+        }
+    }
+}

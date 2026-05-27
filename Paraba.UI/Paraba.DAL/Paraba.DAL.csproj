@@ -1,3 +1,21 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:3a333397da0bb6f1ec0ecd2d9c65f1734abd22a2407de445c6f7bc42b96d6a4f
-size 509
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Paraba.ENTITY\Paraba.ENTITY.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Repositories\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.1" />
+  </ItemGroup>
+
+</Project>

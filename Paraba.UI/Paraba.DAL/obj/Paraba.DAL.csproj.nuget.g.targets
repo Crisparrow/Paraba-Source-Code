@@ -1,3 +1,7 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:bb867fd5a31a1cba6873101c3da7224fd6ab2805e3c761967f5a6ad8a21ccaa3
-size 861
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)microsoft.extensions.logging.abstractions\10.0.0\buildTransitive\net8.0\Microsoft.Extensions.Logging.Abstractions.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.extensions.logging.abstractions\10.0.0\buildTransitive\net8.0\Microsoft.Extensions.Logging.Abstractions.targets')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.extensions.options\9.0.13\buildTransitive\net8.0\Microsoft.Extensions.Options.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.extensions.options\9.0.13\buildTransitive\net8.0\Microsoft.Extensions.Options.targets')" />
+  </ImportGroup>
+</Project>

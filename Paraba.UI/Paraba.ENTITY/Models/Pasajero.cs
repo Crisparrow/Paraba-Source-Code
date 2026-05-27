@@ -1,3 +1,21 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:fdb60092d5453411bcd69490728d12f0b88b522c7d716b7aeda1ecb918e80279
-size 520
+namespace Paraba.ENTITY.Models
+{
+    public class Pasajero
+    {
+        public int IdPasajero { get; set; }
+
+        public string NombreCompleto { get; set; } = string.Empty;
+
+        public string DocumentoIdentidad { get; set; } = string.Empty;
+
+        public string Telefono { get; set; } = string.Empty;
+
+        public string Correo { get; set; } = string.Empty;
+
+        public bool Verificado { get; set; }
+
+        public bool Estado { get; set; }
+
+        public DateTime FechaRegistro { get; set; }
+    }
+}

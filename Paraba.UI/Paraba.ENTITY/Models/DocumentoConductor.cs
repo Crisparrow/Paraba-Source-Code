@@ -1,3 +1,23 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:b5fef83399076da56480e741a2f008cf7225a54f20c61670e92ffd2278a761a4
-size 630
+namespace Paraba.ENTITY.Models
+{
+    public class DocumentoConductor
+    {
+        public int IdDocumentoConductor { get; set; }
+
+        public int IdConductor { get; set; }
+
+        public string TipoDocumento { get; set; } = string.Empty;
+
+        public string NumeroDocumento { get; set; } = string.Empty;
+
+        public string UrlArchivo { get; set; } = string.Empty;
+
+        public DateTime? FechaVencimiento { get; set; }
+
+        public string EstadoVerificacion { get; set; } = string.Empty;
+
+        public string Observacion { get; set; } = string.Empty;
+
+        public DateTime FechaRegistro { get; set; }
+    }
+}

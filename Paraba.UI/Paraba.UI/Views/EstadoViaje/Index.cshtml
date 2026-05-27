@@ -1,3 +1,32 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7fb44f264dd0687a0e99fbaafc45e757d7a79e4604cb23ab5bece055e6f7fe1f
-size 871
+@model List<Paraba.ENTITY.Models.EstadoViaje>
+
+@{
+    ViewData["Title"] = "Estados de viaje";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Estados de viaje</h1>
+        <p class="text-muted mb-0">Catalogo para controlar el ciclo de vida de cada viaje.</p>
+    </div>
+</div>
+
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var estadoViaje in Model)
+        {
+            <tr>
+                <td>@estadoViaje.IdEstadoViaje</td>
+                <td><strong>@estadoViaje.Nombre</strong></td>
+                <td>@(estadoViaje.Estado ? "Activo" : "Inactivo")</td>
+            </tr>
+        }
+    </tbody>
+</table>

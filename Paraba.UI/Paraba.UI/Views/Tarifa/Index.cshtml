@@ -1,3 +1,40 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:42f5858bf5f62d5f502cccd4b0b72ac25e03322de4776f09bfcc1df018c80aa1
-size 1226
+@model List<Paraba.UI.ViewModels.TarifaViewModel>
+
+@{
+    ViewData["Title"] = "Tarifas";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Tarifas</h1>
+        <p class="text-muted mb-0">Precios base por modalidad de servicio.</p>
+    </div>
+</div>
+
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Tipo servicio</th>
+            <th>Tarifa base</th>
+            <th>Costo por km</th>
+            <th>Costo por minuto</th>
+            <th>Tarifa minima</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var tarifa in Model)
+        {
+            <tr>
+                <td>@tarifa.IdTarifa</td>
+                <td><strong>@tarifa.TipoServicio</strong></td>
+                <td>@tarifa.TarifaBase.ToString("0.00")</td>
+                <td>@tarifa.CostoPorKilometro.ToString("0.00")</td>
+                <td>@tarifa.CostoPorMinuto.ToString("0.00")</td>
+                <td>@tarifa.TarifaMinima.ToString("0.00")</td>
+                <td>@(tarifa.Estado ? "Activo" : "Inactivo")</td>
+            </tr>
+        }
+    </tbody>
+</table>

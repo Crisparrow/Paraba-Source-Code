@@ -1,3 +1,44 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:21a9b378a43cde7c6a5e2b0a1c84b69a83543bbf65be835bf7a0a83cca349018
-size 1185
+using Microsoft.Data.SqlClient;
+using Paraba.DAL.Connections;
+using Paraba.ENTITY.Models;
+
+namespace Paraba.DAL.Repositories
+{
+    public class TipoServicioRepository
+    {
+        private readonly ConexionDAL conexion = new ConexionDAL();
+
+        public List<TipoServicio> Listar()
+        {
+            List<TipoServicio> lista = new List<TipoServicio>();
+
+            using SqlConnection cn = conexion.ObtenerConexion();
+
+            string query = @"
+                SELECT
+                    IdTipoServicio,
+                    Nombre,
+                    Estado
+                FROM TiposServicio
+                ORDER BY IdTipoServicio";
+
+            using SqlCommand cmd = new SqlCommand(query, cn);
+
+            cn.Open();
+
+            using SqlDataReader dr = cmd.ExecuteReader();
+
+            while (dr.Read())
+            {
+                lista.Add(new TipoServicio
+                {
+                    IdTipoServicio = Convert.ToInt32(dr["IdTipoServicio"]),
+                    Nombre = dr["Nombre"].ToString() ?? string.Empty,
+                    Estado = Convert.ToBoolean(dr["Estado"])
+                });
+            }
+
+            return lista;
+        }
+    }
+}

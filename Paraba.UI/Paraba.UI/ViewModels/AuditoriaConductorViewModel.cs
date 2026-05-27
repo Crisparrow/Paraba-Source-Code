@@ -1,3 +1,23 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:3c13c573db77d9956d35f6c8f1b88ac1bd06635228f5b723e3bcc2c069e5ba90
-size 634
+namespace Paraba.UI.ViewModels
+{
+    public class AuditoriaConductorViewModel
+    {
+        public int IdAuditoriaConductor { get; set; }
+
+        public int IdConductor { get; set; }
+
+        public string Conductor { get; set; } = string.Empty;
+
+        public string Accion { get; set; } = string.Empty;
+
+        public string EstadoAnterior { get; set; } = string.Empty;
+
+        public string EstadoNuevo { get; set; } = string.Empty;
+
+        public string UsuarioSistema { get; set; } = string.Empty;
+
+        public string Observacion { get; set; } = string.Empty;
+
+        public DateTime FechaRegistro { get; set; }
+    }
+}

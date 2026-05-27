@@ -1,3 +1,33 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:77ddedf987648f0a4f638b5bf6d14e4b49887f14fb32694f780643cb85a74643
-size 1034
+using Microsoft.AspNetCore.Mvc;
+using Paraba.BLL.Services;
+using Paraba.UI.ViewModels;
+
+namespace Paraba.UI.Controllers
+{
+    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin,Operaciones")]
+    public class ZonaController : Controller
+    {
+        private readonly ZonaService zonaService = new ZonaService();
+
+        public IActionResult Index()
+        {
+            var zonas = zonaService.ListarZonas();
+            var zonasViewModel = zonas.Select(zona => new ZonaViewModel
+            {
+                IdZona = zona.IdZona,
+                Ciudad = ObtenerCiudad(zona.IdCiudad),
+                Nombre = zona.Nombre,
+                Descripcion = zona.Descripcion,
+                Estado = zona.Estado,
+                FechaRegistro = zona.FechaRegistro
+            }).ToList();
+
+            return View(zonasViewModel);
+        }
+
+        private static string ObtenerCiudad(int idCiudad)
+        {
+            return idCiudad == 1 ? "Santa Cruz de la Sierra" : "Ciudad no identificada";
+        }
+    }
+}

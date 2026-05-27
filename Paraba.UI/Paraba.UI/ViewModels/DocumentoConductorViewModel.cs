@@ -1,3 +1,23 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:9f8a28fed44372dcd05338676672ff7840559d6f898f70a6c0c8cd8aa13dd276
-size 656
+namespace Paraba.UI.ViewModels
+{
+    public class DocumentoConductorViewModel
+    {
+        public int IdDocumentoConductor { get; set; }
+
+        public string Conductor { get; set; } = string.Empty;
+
+        public string TipoDocumento { get; set; } = string.Empty;
+
+        public string NumeroDocumento { get; set; } = string.Empty;
+
+        public string UrlArchivo { get; set; } = string.Empty;
+
+        public DateTime? FechaVencimiento { get; set; }
+
+        public string EstadoVerificacion { get; set; } = string.Empty;
+
+        public string Observacion { get; set; } = string.Empty;
+
+        public DateTime FechaRegistro { get; set; }
+    }
+}

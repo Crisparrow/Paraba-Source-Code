@@ -1,3 +1,34 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ed1013adbeeb48ac97d71f5157cefdda47b7be63ed0e7a99a62a49c874bd3d72
-size 860
+@model List<Paraba.ENTITY.Models.Pais>
+
+@{
+    ViewData["Title"] = "Paises";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Paises</h1>
+        <p class="text-muted mb-0">Paises donde PARABA puede operar.</p>
+    </div>
+</div>
+
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Codigo ISO</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var pais in Model)
+        {
+            <tr>
+                <td>@pais.IdPais</td>
+                <td><strong>@pais.Nombre</strong></td>
+                <td>@pais.CodigoIso</td>
+                <td>@(pais.Estado ? "Activo" : "Inactivo")</td>
+            </tr>
+        }
+    </tbody>
+</table>

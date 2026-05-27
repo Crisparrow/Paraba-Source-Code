@@ -1,3 +1,25 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7682b22ac4c99062e06fc616791038a1d35f5ab4a80c879a834c64f4175be98f
-size 639
+namespace Paraba.UI.ViewModels
+{
+    public class ReglaTarifaViewModel
+    {
+        public int IdReglaTarifa { get; set; }
+
+        public string Nombre { get; set; } = string.Empty;
+
+        public string TipoRegla { get; set; } = string.Empty;
+
+        public string TipoServicio { get; set; } = string.Empty;
+
+        public string Zona { get; set; } = string.Empty;
+
+        public decimal PorcentajeIncremento { get; set; }
+
+        public decimal MontoIncremento { get; set; }
+
+        public string Horario { get; set; } = string.Empty;
+
+        public int Prioridad { get; set; }
+
+        public bool Estado { get; set; }
+    }
+}

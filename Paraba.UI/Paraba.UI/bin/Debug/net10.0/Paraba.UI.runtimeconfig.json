@@ -1,3 +1,19 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:4699b89914821b4aaa757dc3c03b351529227815650e58c5ed23be88e28d3ae1
-size 419
+{
+  "runtimeOptions": {
+    "tfm": "net10.0",
+    "frameworks": [
+      {
+        "name": "Microsoft.NETCore.App",
+        "version": "10.0.0"
+      },
+      {
+        "name": "Microsoft.AspNetCore.App",
+        "version": "10.0.0"
+      }
+    ],
+    "configProperties": {
+      "System.GC.Server": true,
+      "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false
+    }
+  }
+}

@@ -1,3 +1,15 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:33e24ce29df9ff0b695c13501409bdd62f7408b5ea7bc8ced547d14e4098e89f
-size 375
+using Paraba.DAL.Repositories;
+using Paraba.ENTITY.Models;
+
+namespace Paraba.BLL.Services
+{
+    public class DepartamentoService
+    {
+        private readonly DepartamentoRepository departamentoRepository = new DepartamentoRepository();
+
+        public List<Departamento> ListarDepartamentos()
+        {
+            return departamentoRepository.Listar();
+        }
+    }
+}

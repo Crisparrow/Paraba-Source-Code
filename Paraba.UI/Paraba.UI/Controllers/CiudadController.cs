@@ -1,3 +1,31 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6200654fcb8bd6a797be524f58489c0bb145064433cd427d9322363e6ad8b520
-size 1004
+using Microsoft.AspNetCore.Mvc;
+using Paraba.BLL.Services;
+using Paraba.UI.ViewModels;
+
+namespace Paraba.UI.Controllers
+{
+    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin,Operaciones")]
+    public class CiudadController : Controller
+    {
+        private readonly CiudadService ciudadService = new CiudadService();
+
+        public IActionResult Index()
+        {
+            var ciudades = ciudadService.ListarCiudades();
+            var ciudadesViewModel = ciudades.Select(ciudad => new CiudadViewModel
+            {
+                IdCiudad = ciudad.IdCiudad,
+                Departamento = ObtenerDepartamento(ciudad.IdDepartamento),
+                Nombre = ciudad.Nombre,
+                Estado = ciudad.Estado
+            }).ToList();
+
+            return View(ciudadesViewModel);
+        }
+
+        private static string ObtenerDepartamento(int idDepartamento)
+        {
+            return idDepartamento == 1 ? "Santa Cruz" : "Departamento no identificado";
+        }
+    }
+}

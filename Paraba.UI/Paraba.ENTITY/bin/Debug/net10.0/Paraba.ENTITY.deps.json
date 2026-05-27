@@ -1,3 +1,23 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:535685e25af51ddda8bb344ee62054b8d5c2614b06f53655c177abe0773f575d
-size 433
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "Paraba.ENTITY/1.0.0": {
+        "runtime": {
+          "Paraba.ENTITY.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Paraba.ENTITY/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

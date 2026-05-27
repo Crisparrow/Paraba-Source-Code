@@ -1,3 +1,35 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:f1d9dd2bbd72027d86ea50789e03bc5f6d34d65c086edeaecdc9007c5d44466a
-size 1444
+using Microsoft.AspNetCore.Mvc;
+using Paraba.BLL.Services;
+using Paraba.UI.ViewModels;
+
+namespace Paraba.UI.Controllers
+{
+    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin")]
+    public class AuditoriaConductorController : Controller
+    {
+        private readonly AuditoriaConductorService auditoriaConductorService = new AuditoriaConductorService();
+        private readonly ConductorService conductorService = new ConductorService();
+
+        public IActionResult Index()
+        {
+            var conductores = conductorService.ListarConductores();
+
+            var auditorias = auditoriaConductorService.ListarAuditoriaConductores()
+                .Select(item => new AuditoriaConductorViewModel
+                {
+                    IdAuditoriaConductor = item.IdAuditoriaConductor,
+                    IdConductor = item.IdConductor,
+                    Conductor = conductores.FirstOrDefault(conductor => conductor.IdConductor == item.IdConductor)?.NombreCompleto ?? "Conductor no identificado",
+                    Accion = item.Accion,
+                    EstadoAnterior = item.EstadoAnterior,
+                    EstadoNuevo = item.EstadoNuevo,
+                    UsuarioSistema = item.UsuarioSistema,
+                    Observacion = item.Observacion,
+                    FechaRegistro = item.FechaRegistro
+                })
+                .ToList();
+
+            return View(auditorias);
+        }
+    }
+}

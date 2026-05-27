@@ -1,3 +1,43 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:59e004cebb9278ff192ba80cb13c29d9cc26c79de29f480c42dbe0c43e9d2abf
-size 1167
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace Paraba.UI.ViewModels
+{
+    public class SimuladorTarifaViewModel
+    {
+        public int IdTipoServicio { get; set; }
+
+        public int IdZona { get; set; }
+
+        public int IdTipoVia { get; set; }
+
+        public decimal DistanciaKilometros { get; set; }
+
+        public int TiempoMinutos { get; set; }
+
+        public bool AplicaLluvia { get; set; }
+
+        public bool AplicaAltaDemanda { get; set; }
+
+        public bool AplicaHorarioNocturno { get; set; }
+
+        public decimal TarifaBase { get; set; }
+
+        public decimal CostoDistancia { get; set; }
+
+        public decimal CostoTiempo { get; set; }
+
+        public decimal IncrementoReglas { get; set; }
+
+        public decimal IncrementoTipoVia { get; set; }
+
+        public decimal TarifaEstimada { get; set; }
+
+        public bool TieneResultado { get; set; }
+
+        public List<SelectListItem> TiposServicio { get; set; } = new List<SelectListItem>();
+
+        public List<SelectListItem> Zonas { get; set; } = new List<SelectListItem>();
+
+        public List<SelectListItem> TiposVia { get; set; } = new List<SelectListItem>();
+    }
+}

@@ -1,3 +1,32 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:fe98de7451252fa37f49fabfb73fd04e177fdda0a0370eefd645f09b058e18f0
-size 858
+@model List<Paraba.ENTITY.Models.TipoServicio>
+
+@{
+    ViewData["Title"] = "Tipos de servicio";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Tipos de servicio</h1>
+        <p class="text-muted mb-0">Modalidades disponibles en PARABA.</p>
+    </div>
+</div>
+
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var tipoServicio in Model)
+        {
+            <tr>
+                <td>@tipoServicio.IdTipoServicio</td>
+                <td><strong>@tipoServicio.Nombre</strong></td>
+                <td>@(tipoServicio.Estado ? "Activo" : "Inactivo")</td>
+            </tr>
+        }
+    </tbody>
+</table>

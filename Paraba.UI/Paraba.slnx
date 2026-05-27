@@ -1,3 +1,6 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:402bc3b6af2d762929cf2e6fea436e06ee4cd5ace437b94813081b93e282f609
-size 317
+<Solution>
+  <Project Path="Paraba.BLL/Paraba.BLL.csproj" Id="46939ca6-f8ce-49aa-b857-e857979cfb74" />
+  <Project Path="Paraba.DAL/Paraba.DAL.csproj" Id="45822fe0-3e86-43de-9d27-9279b9614410" />
+  <Project Path="Paraba.ENTITY/Paraba.ENTITY.csproj" />
+  <Project Path="Paraba.UI/Paraba.UI.csproj" />
+</Solution>

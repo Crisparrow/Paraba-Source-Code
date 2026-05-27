@@ -1,3 +1,18 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:86dffd50698a7c16c7bd0869784b9212d20d0657c58be66781914146d9ef79dd
-size 506
+using Microsoft.AspNetCore.Mvc;
+using Paraba.BLL.Services;
+
+namespace Paraba.UI.Controllers
+{
+    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin,Operaciones")]
+    public class EstadoViajeController : Controller
+    {
+        private readonly EstadoViajeService estadoViajeService = new EstadoViajeService();
+
+        public IActionResult Index()
+        {
+            var estadosViaje = estadoViajeService.ListarEstadosViaje();
+
+            return View(estadosViaje);
+        }
+    }
+}

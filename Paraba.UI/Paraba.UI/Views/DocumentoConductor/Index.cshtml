@@ -1,3 +1,65 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:65c3f255f48788943292d3505f3902d1d390a14509905441f57bbe6d0d5a19c4
-size 2565
+@model List<Paraba.UI.ViewModels.DocumentoConductorViewModel>
+
+@{
+    ViewData["Title"] = "Documentos";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Documentos del conductor</h1>
+        <p class="text-muted mb-0">Control de documentos para validar identidad y habilitacion.</p>
+    </div>
+</div>
+
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Conductor</th>
+            <th>Documento</th>
+            <th>Numero</th>
+            <th>Archivo</th>
+            <th>Vencimiento</th>
+            <th>Estado</th>
+            <th>Observacion</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var documento in Model)
+        {
+            <tr>
+                <td>@documento.IdDocumentoConductor</td>
+                <td>@documento.Conductor</td>
+                <td>@documento.TipoDocumento</td>
+                <td>@documento.NumeroDocumento</td>
+                <td>@documento.UrlArchivo</td>
+                <td>@(documento.FechaVencimiento?.ToString("dd/MM/yyyy") ?? "No aplica")</td>
+                <td><strong>@documento.EstadoVerificacion</strong></td>
+                <td>@documento.Observacion</td>
+                <td>
+                    @if (documento.EstadoVerificacion == "Pendiente")
+                    {
+                        <div class="d-flex gap-2">
+                            <form asp-controller="DocumentoConductor" asp-action="Aprobar" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@documento.IdDocumentoConductor" />
+                                <button type="submit" class="btn btn-sm btn-success">Aprobar</button>
+                            </form>
+
+                            <form asp-controller="DocumentoConductor" asp-action="Rechazar" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@documento.IdDocumentoConductor" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Rechazar</button>
+                            </form>
+                        </div>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Revision cerrada</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,3 +1,15 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:449138c4f56b2719002b093731b1430aa05d7e0ffb77f9dec233d3c02fa3a847
-size 375
+using Paraba.DAL.Repositories;
+using Paraba.ENTITY.Models;
+
+namespace Paraba.BLL.Services
+{
+    public class TipoServicioService
+    {
+        private readonly TipoServicioRepository tipoServicioRepository = new TipoServicioRepository();
+
+        public List<TipoServicio> ListarTiposServicio()
+        {
+            return tipoServicioRepository.Listar();
+        }
+    }
+}

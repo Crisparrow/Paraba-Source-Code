@@ -1,3 +1,50 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:878b7651312149fee1cbdfa7dce400b247a202952918e6068d00d9696cc0ad14
-size 1717
+@model Paraba.UI.ViewModels.RechazarDocumentoConductorViewModel
+
+@{
+    ViewData["Title"] = "Rechazar documento";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Rechazar documento</h1>
+        <p class="text-muted mb-0">Indica el motivo para que el conductor pueda corregirlo desde su app.</p>
+    </div>
+    <a asp-controller="DocumentoConductor" asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+<table class="table table-bordered align-middle mb-3">
+    <tbody>
+        <tr>
+            <th>Conductor</th>
+            <td>@Model.Conductor</td>
+        </tr>
+        <tr>
+            <th>Documento</th>
+            <td>@Model.TipoDocumento</td>
+        </tr>
+        <tr>
+            <th>Numero</th>
+            <td>@Model.NumeroDocumento</td>
+        </tr>
+    </tbody>
+</table>
+
+<form asp-controller="DocumentoConductor" asp-action="ConfirmarRechazo" method="post" class="row g-3">
+    @Html.AntiForgeryToken()
+    <input asp-for="IdDocumentoConductor" type="hidden" />
+    <input asp-for="Conductor" type="hidden" />
+    <input asp-for="TipoDocumento" type="hidden" />
+    <input asp-for="NumeroDocumento" type="hidden" />
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="col-12">
+        <label class="form-label">Motivo de rechazo</label>
+        <textarea asp-for="MotivoRechazo" class="form-control" rows="4"></textarea>
+    </div>
+
+    <div class="col-12 d-flex gap-2">
+        <button type="submit" class="btn btn-danger">Confirmar rechazo</button>
+        <a asp-controller="DocumentoConductor" asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+    </div>
+</form>

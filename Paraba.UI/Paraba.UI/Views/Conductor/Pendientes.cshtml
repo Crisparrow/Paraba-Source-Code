@@ -1,3 +1,55 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ab37e2a730daddf90f6c84b151815af1b057af27f48d91d5914f93c72fe9cb32
-size 1766
+@model List<Paraba.UI.ViewModels.ConductorPendienteViewModel>
+
+@{
+    ViewData["Title"] = "Conductores pendientes";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Conductores pendientes</h1>
+        <p class="text-muted mb-0">Conductores registrados que aun no estan verificados.</p>
+    </div>
+    <a asp-controller="DocumentoConductor" asp-action="Index" class="btn btn-primary">Revisar documentos</a>
+</div>
+
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Conductor</th>
+            <th>Telefono</th>
+            <th>Documentos</th>
+            <th>Pendientes</th>
+            <th>Aprobados</th>
+            <th>Rechazados</th>
+            <th>Disponible</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var conductor in Model)
+        {
+            <tr>
+                <td>@conductor.IdConductor</td>
+                <td>
+                    <strong>@conductor.NombreCompleto</strong>
+                    <div class="text-muted small">@conductor.Correo</div>
+                </td>
+                <td>@conductor.Telefono</td>
+                <td>@conductor.TotalDocumentos</td>
+                <td>@conductor.DocumentosPendientes</td>
+                <td>@conductor.DocumentosAprobados</td>
+                <td>@conductor.DocumentosRechazados</td>
+                <td>@(conductor.Disponible ? "Si" : "No")</td>
+                <td>@(conductor.Estado ? "Activo" : "Inactivo")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-success">
+        No hay conductores pendientes de verificacion.
+    </div>
+}

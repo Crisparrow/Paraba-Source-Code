@@ -1,3 +1,19 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ecdaa8707479677f8984841909a3049f3c61b6cd34583a965b6eb86f77b0a8d6
-size 439
+namespace Paraba.UI.ViewModels
+{
+    public class TarifaViewModel
+    {
+        public int IdTarifa { get; set; }
+
+        public string TipoServicio { get; set; } = string.Empty;
+
+        public decimal TarifaBase { get; set; }
+
+        public decimal CostoPorKilometro { get; set; }
+
+        public decimal CostoPorMinuto { get; set; }
+
+        public decimal TarifaMinima { get; set; }
+
+        public bool Estado { get; set; }
+    }
+}

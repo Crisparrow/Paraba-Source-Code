@@ -1,3 +1,43 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:9321dd794cebf974b3012a83d251344eb46797b7b7414e76a586a57563d038eb
-size 1311
+@model List<Paraba.ENTITY.Models.Pasajero>
+
+@{
+    ViewData["Title"] = "Pasajeros";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Pasajeros</h1>
+        <p class="text-muted mb-0">Usuarios registrados para solicitar viajes en PARABA.</p>
+    </div>
+</div>
+
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Documento</th>
+            <th>Telefono</th>
+            <th>Verificado</th>
+            <th>Estado</th>
+            <th>Registro</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var pasajero in Model)
+        {
+            <tr>
+                <td>@pasajero.IdPasajero</td>
+                <td>
+                    <strong>@pasajero.NombreCompleto</strong>
+                    <div class="text-muted small">@pasajero.Correo</div>
+                </td>
+                <td>@pasajero.DocumentoIdentidad</td>
+                <td>@pasajero.Telefono</td>
+                <td>@(pasajero.Verificado ? "Si" : "No")</td>
+                <td>@(pasajero.Estado ? "Activo" : "Inactivo")</td>
+                <td>@pasajero.FechaRegistro.ToString("dd/MM/yyyy")</td>
+            </tr>
+        }
+    </tbody>
+</table>

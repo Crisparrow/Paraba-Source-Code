@@ -1,3 +1,63 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:aeae92d0ac1df6a46b5900a89e14823ec9b55c659df0d242dd355bbbd1dbc036
-size 2107
+using Paraba.DAL.Repositories;
+using Paraba.ENTITY.Models;
+
+namespace Paraba.BLL.Services
+{
+    public class ConductorService
+    {
+        private readonly ConductorRepository conductorRepository = new ConductorRepository();
+        private readonly AuditoriaConductorService auditoriaConductorService = new AuditoriaConductorService();
+
+        public List<Conductor> ListarConductores()
+        {
+            return conductorRepository.Listar();
+        }
+
+        public bool SuspenderConductor(int idConductor)
+        {
+            if (idConductor <= 0)
+            {
+                throw new ArgumentException("Debe seleccionar un conductor valido.");
+            }
+
+            bool actualizado = conductorRepository.ActualizarEstado(idConductor, false);
+
+            if (actualizado)
+            {
+                RegistrarAuditoria(idConductor, "Conductor suspendido", "Activo", "Suspendido", "Conductor suspendido desde el panel administrativo.");
+            }
+
+            return actualizado;
+        }
+
+        public bool ReactivarConductor(int idConductor)
+        {
+            if (idConductor <= 0)
+            {
+                throw new ArgumentException("Debe seleccionar un conductor valido.");
+            }
+
+            bool actualizado = conductorRepository.ActualizarEstado(idConductor, true);
+
+            if (actualizado)
+            {
+                RegistrarAuditoria(idConductor, "Conductor reactivado", "Suspendido", "Activo", "Conductor reactivado desde el panel administrativo.");
+            }
+
+            return actualizado;
+        }
+
+        private void RegistrarAuditoria(int idConductor, string accion, string estadoAnterior, string estadoNuevo, string observacion)
+        {
+            auditoriaConductorService.RegistrarAuditoria(new AuditoriaConductor
+            {
+                IdConductor = idConductor,
+                Accion = accion,
+                EstadoAnterior = estadoAnterior,
+                EstadoNuevo = estadoNuevo,
+                UsuarioSistema = "Admin PARABA",
+                Observacion = observacion
+            });
+        }
+    }
+}

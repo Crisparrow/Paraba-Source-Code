@@ -1,3 +1,36 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:eba9ae24e70fec7bbd390938211cd263b73fe418287c1ab6a1346c76457b8884
-size 1050
+@model List<Paraba.ENTITY.Models.TipoVia>
+
+@{
+    ViewData["Title"] = "Tipos de via";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Tipos de via</h1>
+        <p class="text-muted mb-0">Condiciones de ruta que pueden afectar la tarifa estimada.</p>
+    </div>
+</div>
+
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>% incremento</th>
+            <th>Estado</th>
+            <th>Registro</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var tipoVia in Model)
+        {
+            <tr>
+                <td>@tipoVia.IdTipoVia</td>
+                <td><strong>@tipoVia.Nombre</strong></td>
+                <td>@tipoVia.PorcentajeIncremento.ToString("0.00")%</td>
+                <td>@(tipoVia.Estado ? "Activo" : "Inactivo")</td>
+                <td>@tipoVia.FechaRegistro.ToString("dd/MM/yyyy")</td>
+            </tr>
+        }
+    </tbody>
+</table>

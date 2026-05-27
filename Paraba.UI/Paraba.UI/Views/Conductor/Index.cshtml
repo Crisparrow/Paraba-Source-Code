@@ -1,3 +1,62 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:c09760da632857823ddf8eab86fb593b370a35fa7263bfe9a42e0b3c13d93c90
-size 2294
+@model List<Paraba.ENTITY.Models.Conductor>
+
+@{
+    ViewData["Title"] = "Conductores";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Conductores</h1>
+        <p class="text-muted mb-0">Registro inicial de conductores de PARABA.</p>
+    </div>
+</div>
+
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Telefono</th>
+            <th>Licencia</th>
+            <th>Disponible</th>
+            <th>Verificado</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var conductor in Model)
+        {
+            <tr>
+                <td>@conductor.IdConductor</td>
+                <td>
+                    <strong>@conductor.NombreCompleto</strong>
+                    <div class="text-muted small">@conductor.Correo</div>
+                </td>
+                <td>@conductor.Telefono</td>
+                <td>@conductor.LicenciaConducir</td>
+                <td>@(conductor.Disponible ? "Si" : "No")</td>
+                <td>@(conductor.Verificado ? "Si" : "No")</td>
+                <td>@(conductor.Estado ? "Activo" : "Inactivo")</td>
+                <td>
+                    @if (conductor.Estado)
+                    {
+                        <form asp-controller="Conductor" asp-action="Suspender" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@conductor.IdConductor" />
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Suspender</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-controller="Conductor" asp-action="Reactivar" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@conductor.IdConductor" />
+                            <button type="submit" class="btn btn-sm btn-outline-success">Reactivar</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

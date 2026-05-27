@@ -1,3 +1,24 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8951003015fbf20464b051c532ff2de9b02956bf8e6bca64123b96d9e458fe35
-size 670
+USE ParabaDB;
+GO
+
+DELETE FROM Calificaciones;
+DELETE FROM DocumentosConductor;
+DELETE FROM Viajes;
+DELETE FROM Tarifas;
+DELETE FROM Vehiculos;
+DELETE FROM Pasajeros;
+DELETE FROM Conductores;
+DELETE FROM EstadosViaje;
+DELETE FROM TiposServicio;
+GO
+
+DBCC CHECKIDENT ('Calificaciones', RESEED, 0);
+DBCC CHECKIDENT ('DocumentosConductor', RESEED, 0);
+DBCC CHECKIDENT ('Viajes', RESEED, 0);
+DBCC CHECKIDENT ('Tarifas', RESEED, 0);
+DBCC CHECKIDENT ('Vehiculos', RESEED, 0);
+DBCC CHECKIDENT ('Pasajeros', RESEED, 0);
+DBCC CHECKIDENT ('Conductores', RESEED, 0);
+DBCC CHECKIDENT ('EstadosViaje', RESEED, 0);
+DBCC CHECKIDENT ('TiposServicio', RESEED, 0);
+GO

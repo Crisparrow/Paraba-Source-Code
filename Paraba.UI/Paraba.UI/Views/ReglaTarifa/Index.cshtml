@@ -1,3 +1,46 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:f3c21b09e22c29cc10c78cc2ad01dd1b04626d9aa70b9f92f62e4d8635d17ff2
-size 1393
+@model List<Paraba.UI.ViewModels.ReglaTarifaViewModel>
+
+@{
+    ViewData["Title"] = "Reglas de tarifa";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Reglas de tarifa</h1>
+        <p class="text-muted mb-0">Incrementos por clima, demanda, horario y zona.</p>
+    </div>
+</div>
+
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Tipo</th>
+            <th>Servicio</th>
+            <th>Zona</th>
+            <th>% incremento</th>
+            <th>Monto</th>
+            <th>Horario</th>
+            <th>Prioridad</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var regla in Model)
+        {
+            <tr>
+                <td>@regla.IdReglaTarifa</td>
+                <td><strong>@regla.Nombre</strong></td>
+                <td>@regla.TipoRegla</td>
+                <td>@regla.TipoServicio</td>
+                <td>@regla.Zona</td>
+                <td>@regla.PorcentajeIncremento.ToString("0.00")%</td>
+                <td>@regla.MontoIncremento.ToString("0.00")</td>
+                <td>@regla.Horario</td>
+                <td>@regla.Prioridad</td>
+                <td>@(regla.Estado ? "Activo" : "Inactivo")</td>
+            </tr>
+        }
+    </tbody>
+</table>

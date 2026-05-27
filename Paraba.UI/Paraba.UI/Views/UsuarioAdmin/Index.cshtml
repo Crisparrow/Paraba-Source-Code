@@ -1,3 +1,63 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:05d63651add84b048faaede298ce8999ec9663eeafcb51947d2d19732ff0eb4c
-size 2462
+@model List<Paraba.UI.ViewModels.UsuarioAdminViewModel>
+
+@{
+    ViewData["Title"] = "Usuarios admin";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Usuarios admin</h1>
+        <p class="text-muted mb-0">Gestion de accesos administrativos del panel PARABA.</p>
+    </div>
+    <a asp-controller="UsuarioAdmin" asp-action="Crear" class="btn btn-primary">Nuevo usuario</a>
+</div>
+
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Roles</th>
+            <th>Estado</th>
+            <th>Intentos fallidos</th>
+            <th>Ultimo acceso</th>
+            <th>Registro</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var usuario in Model)
+        {
+            <tr>
+                <td>@usuario.IdUsuarioAdmin</td>
+                <td>
+                    <strong>@usuario.NombreCompleto</strong>
+                    <div class="text-muted small">@usuario.Correo</div>
+                </td>
+                <td>@usuario.Roles</td>
+                <td>@(usuario.Estado ? "Activo" : "Suspendido")</td>
+                <td>@usuario.IntentosFallidos</td>
+                <td>@(usuario.UltimoAcceso?.ToString("dd/MM/yyyy HH:mm") ?? "Sin acceso")</td>
+                <td>@usuario.FechaRegistro.ToString("dd/MM/yyyy")</td>
+                <td>
+                    @if (usuario.Estado)
+                    {
+                        <form asp-controller="UsuarioAdmin" asp-action="Suspender" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@usuario.IdUsuarioAdmin" />
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Suspender</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-controller="UsuarioAdmin" asp-action="Reactivar" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@usuario.IdUsuarioAdmin" />
+                            <button type="submit" class="btn btn-sm btn-outline-success">Reactivar</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

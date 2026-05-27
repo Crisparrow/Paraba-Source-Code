@@ -1,3 +1,27 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a601d957a074cbd154221b37e557d5445a54fd60e043c900f17e5bf63b9fbb73
-size 675
+namespace Paraba.UI.ViewModels
+{
+    public class ConductorPendienteViewModel
+    {
+        public int IdConductor { get; set; }
+
+        public string NombreCompleto { get; set; } = string.Empty;
+
+        public string Telefono { get; set; } = string.Empty;
+
+        public string Correo { get; set; } = string.Empty;
+
+        public bool Disponible { get; set; }
+
+        public bool Verificado { get; set; }
+
+        public bool Estado { get; set; }
+
+        public int DocumentosPendientes { get; set; }
+
+        public int DocumentosAprobados { get; set; }
+
+        public int DocumentosRechazados { get; set; }
+
+        public int TotalDocumentos { get; set; }
+    }
+}

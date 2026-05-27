@@ -1,3 +1,46 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:52eaef58926818c403dd7599778cad6331663d9982432aff649f300d577b0d53
-size 1385
+@model List<Paraba.ENTITY.Models.Vehiculo>
+
+@{
+    ViewData["Title"] = "Vehiculos";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Vehiculos</h1>
+        <p class="text-muted mb-0">Vehiculos registrados para operar en PARABA.</p>
+    </div>
+</div>
+
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Conductor</th>
+            <th>Tipo servicio</th>
+            <th>Placa</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Color</th>
+            <th>Anio</th>
+            <th>Verificado</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var vehiculo in Model)
+        {
+            <tr>
+                <td>@vehiculo.IdVehiculo</td>
+                <td>@vehiculo.IdConductor</td>
+                <td>@(vehiculo.IdTipoServicio == 1 ? "Taxi" : "Moto taxi")</td>
+                <td><strong>@vehiculo.Placa</strong></td>
+                <td>@vehiculo.Marca</td>
+                <td>@vehiculo.Modelo</td>
+                <td>@vehiculo.Color</td>
+                <td>@vehiculo.Anio</td>
+                <td>@(vehiculo.Verificado ? "Si" : "No")</td>
+                <td>@(vehiculo.Estado ? "Activo" : "Inactivo")</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,3 +1,95 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:79559407b9b3b0b4ff25c8689fe96079060e0df17ea1cf63998ef0c8b7d476a8
-size 4122
+@model List<Paraba.UI.ViewModels.ViajeViewModel>
+
+@{
+    ViewData["Title"] = "Viajes";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Viajes</h1>
+        <p class="text-muted mb-0">Solicitudes y viajes registrados en PARABA.</p>
+    </div>
+    <a asp-controller="Viaje" asp-action="CrearSolicitud" class="btn btn-primary">Nueva solicitud</a>
+</div>
+
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Pasajero</th>
+            <th>Conductor</th>
+            <th>Tipo servicio</th>
+            <th>Vehiculo</th>
+            <th>Ruta</th>
+            <th>Sugerida</th>
+            <th>Oferta pasajero</th>
+            <th>Contraoferta</th>
+            <th>Aceptada</th>
+            <th>Estado</th>
+            <th>Solicitud</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var viaje in Model)
+        {
+            <tr>
+                <td>@viaje.IdViaje</td>
+                <td>@viaje.Pasajero</td>
+                <td>@viaje.Conductor</td>
+                <td>@viaje.TipoServicio</td>
+                <td>@viaje.Vehiculo</td>
+                <td>
+                    <strong>@viaje.Origen</strong>
+                    <div class="text-muted small">@viaje.Destino</div>
+                </td>
+                <td>@viaje.TarifaSugerida.ToString("0.00")</td>
+                <td>@viaje.TarifaOfertada.ToString("0.00")</td>
+                <td>@(viaje.TarifaContraoferta?.ToString("0.00") ?? "Sin contraoferta")</td>
+                <td>@(viaje.TarifaAceptada?.ToString("0.00") ?? "Pendiente")</td>
+                <td>@viaje.EstadoViaje</td>
+                <td>@viaje.FechaSolicitud.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>
+                    <div class="d-flex flex-column gap-1">
+                        @if (viaje.EstadoViaje == "Solicitado")
+                        {
+                            <a asp-controller="Viaje" asp-action="Contraoferta" asp-route-id="@viaje.IdViaje" class="btn btn-sm btn-outline-primary">
+                                Contraoferta
+                            </a>
+                            <a asp-controller="Viaje" asp-action="ResponderContraoferta" asp-route-id="@viaje.IdViaje" class="btn btn-sm btn-outline-success">
+                                Responder
+                            </a>
+                        }
+
+                        @if (viaje.EstadoViaje == "Aceptado")
+                        {
+                            <form asp-controller="Viaje" asp-action="Iniciar" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="idViaje" value="@viaje.IdViaje" />
+                                <button type="submit" class="btn btn-sm btn-warning w-100">Iniciar</button>
+                            </form>
+                        }
+
+                        @if (viaje.EstadoViaje == "En curso")
+                        {
+                            <form asp-controller="Viaje" asp-action="Finalizar" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="idViaje" value="@viaje.IdViaje" />
+                                <button type="submit" class="btn btn-sm btn-dark w-100">Finalizar</button>
+                            </form>
+                        }
+
+                        @if (viaje.EstadoViaje != "Finalizado" && viaje.EstadoViaje != "Cancelado")
+                        {
+                            <form asp-controller="Viaje" asp-action="Cancelar" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="idViaje" value="@viaje.IdViaje" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger w-100">Cancelar</button>
+                            </form>
+                        }
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

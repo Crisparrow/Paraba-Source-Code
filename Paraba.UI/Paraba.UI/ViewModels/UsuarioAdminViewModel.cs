@@ -1,3 +1,21 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:4b1ca16798c1019ebd159e94848f10202de2b1c1354715952f6f6a5077373fb7
-size 520
+namespace Paraba.UI.ViewModels
+{
+    public class UsuarioAdminViewModel
+    {
+        public int IdUsuarioAdmin { get; set; }
+
+        public string NombreCompleto { get; set; } = string.Empty;
+
+        public string Correo { get; set; } = string.Empty;
+
+        public string Roles { get; set; } = string.Empty;
+
+        public bool Estado { get; set; }
+
+        public int IntentosFallidos { get; set; }
+
+        public DateTime? UltimoAcceso { get; set; }
+
+        public DateTime FechaRegistro { get; set; }
+    }
+}

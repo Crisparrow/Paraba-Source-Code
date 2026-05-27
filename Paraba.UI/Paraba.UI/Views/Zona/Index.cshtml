@@ -1,3 +1,38 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:f444e024630e77afa057d26d4bfe7a9276128ce09048b3d2bdb6e6162ae78f6d
-size 1058
+@model List<Paraba.UI.ViewModels.ZonaViewModel>
+
+@{
+    ViewData["Title"] = "Zonas";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Zonas</h1>
+        <p class="text-muted mb-0">Zonas operativas para viajes, demanda y reglas de tarifa.</p>
+    </div>
+</div>
+
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Ciudad</th>
+            <th>Nombre</th>
+            <th>Descripcion</th>
+            <th>Estado</th>
+            <th>Registro</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var zona in Model)
+        {
+            <tr>
+                <td>@zona.IdZona</td>
+                <td>@zona.Ciudad</td>
+                <td><strong>@zona.Nombre</strong></td>
+                <td>@zona.Descripcion</td>
+                <td>@(zona.Estado ? "Activo" : "Inactivo")</td>
+                <td>@zona.FechaRegistro.ToString("dd/MM/yyyy")</td>
+            </tr>
+        }
+    </tbody>
+</table>
