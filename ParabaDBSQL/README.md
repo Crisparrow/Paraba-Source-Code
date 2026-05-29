@@ -1,11 +1,18 @@
 # Scripts de base de datos PARABA
 
-Ejecutar en SQL Server Management Studio en este orden:
+Para instalar la base completa desde cero, ejecutar solo:
 
-1. `01_Create_Core_Tables.sql`
-2. `02_Insert_Initial_Data.sql`
-3. `03_Reset_Core_Data.sql` solo si se quiere limpiar datos de prueba
-4. `04_Verify_Core_Data.sql` para revisar datos principales
+1. `00_Create_ParabaDB_Complete.sql`
 
-Base esperada: `ParabaDB`.
+Ese script crea la base `ParabaDB`, crea todas las tablas actuales del panel administrativo y carga datos iniciales.
 
+Usuario inicial del panel:
+
+- Correo: `admin@paraba.com`
+- Password: `ParabaAdmin2026!`
+
+Importante:
+
+- Si ya existe una base llamada `ParabaDB`, el script la elimina y la vuelve a crear.
+- Ejecutarlo en SQL Server Management Studio con una conexion local a SQL Server.
+- Los scripts dentro de `Legacy` son antiguos y quedan solo como referencia; no son necesarios para levantar el proyecto actual.
