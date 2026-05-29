@@ -1,0 +1,128 @@
+@model Paraba.UI.ViewModels.ReporteConductoresViewModel
+
+@{
+    ViewData["Title"] = "Reporte de conductores";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Reporte de conductores</h1>
+        <p class="text-muted mb-0">Rendimiento, verificacion y estado operativo de conductores.</p>
+    </div>
+    <a asp-controller="ReporteConductores"
+       asp-action="ExportarCsv"
+       asp-route-Verificado="@Model.Verificado"
+       asp-route-Disponible="@Model.Disponible"
+       asp-route-Estado="@Model.Estado"
+       class="btn btn-outline-success">Exportar CSV</a>
+</div>
+
+<form asp-controller="ReporteConductores" asp-action="Index" method="get" class="row g-3 mb-4">
+    <div class="col-md-3">
+        <label class="form-label">Verificacion</label>
+        <select asp-for="Verificado" class="form-select">
+            <option value="">Todos</option>
+            <option value="true">Verificados</option>
+            <option value="false">No verificados</option>
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">Disponibilidad</label>
+        <select asp-for="Disponible" class="form-select">
+            <option value="">Todos</option>
+            <option value="true">Disponibles</option>
+            <option value="false">No disponibles</option>
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">Estado cuenta</label>
+        <select asp-for="Estado" class="form-select">
+            <option value="">Todos</option>
+            <option value="true">Activos</option>
+            <option value="false">Suspendidos</option>
+        </select>
+    </div>
+
+    <div class="col-md-3 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+    </div>
+</form>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-2">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Conductores</div>
+            <div class="h4 mb-0">@Model.TotalConductores</div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Verificados</div>
+            <div class="h4 mb-0">@Model.TotalVerificados</div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Disponibles</div>
+            <div class="h4 mb-0">@Model.TotalDisponibles</div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Suspendidos</div>
+            <div class="h4 mb-0">@Model.TotalSuspendidos</div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Ingresos</div>
+            <div class="h4 mb-0">@Model.IngresosFinalizados.ToString("0.00")</div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Calificacion</div>
+            <div class="h4 mb-0">@Model.PromedioGeneralCalificacion.ToString("0.00")</div>
+        </div>
+    </div>
+</div>
+
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Conductor</th>
+            <th>Verificado</th>
+            <th>Disponible</th>
+            <th>Estado</th>
+            <th>Viajes</th>
+            <th>Finalizados</th>
+            <th>Cancelados</th>
+            <th>Ingresos</th>
+            <th>Calificacion</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var conductor in Model.Conductores)
+        {
+            <tr>
+                <td>@conductor.IdConductor</td>
+                <td>
+                    <strong>@conductor.NombreCompleto</strong>
+                    <div class="text-muted small">@conductor.Telefono</div>
+                    <div class="text-muted small">@conductor.Correo</div>
+                </td>
+                <td>@(conductor.Verificado ? "Si" : "No")</td>
+                <td>@(conductor.Disponible ? "Si" : "No")</td>
+                <td>@(conductor.Estado ? "Activo" : "Suspendido")</td>
+                <td>@conductor.TotalViajes</td>
+                <td>@conductor.ViajesFinalizados</td>
+                <td>@conductor.ViajesCancelados</td>
+                <td>@conductor.IngresosFinalizados.ToString("0.00")</td>
+                <td>@conductor.PromedioCalificacion.ToString("0.00")</td>
+            </tr>
+        }
+    </tbody>
+</table>

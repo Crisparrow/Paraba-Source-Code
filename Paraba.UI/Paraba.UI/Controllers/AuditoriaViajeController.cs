@@ -9,9 +9,31 @@ namespace Paraba.UI.Controllers
     {
         private readonly AuditoriaViajeService auditoriaViajeService = new AuditoriaViajeService();
 
-        public IActionResult Index()
+        public IActionResult Index(AuditoriaViajeFiltroViewModel filtros)
         {
-            var auditorias = auditoriaViajeService.ListarAuditoriaViajes()
+            var auditorias = auditoriaViajeService.ListarAuditoriaViajes().AsEnumerable();
+
+            if (filtros.FechaDesde != null)
+            {
+                auditorias = auditorias.Where(item => item.FechaRegistro.Date >= filtros.FechaDesde.Value.Date);
+            }
+
+            if (filtros.FechaHasta != null)
+            {
+                auditorias = auditorias.Where(item => item.FechaRegistro.Date <= filtros.FechaHasta.Value.Date);
+            }
+
+            if (filtros.IdViaje != null)
+            {
+                auditorias = auditorias.Where(item => item.IdViaje == filtros.IdViaje.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(filtros.Accion))
+            {
+                auditorias = auditorias.Where(item => item.Accion.Contains(filtros.Accion.Trim(), StringComparison.OrdinalIgnoreCase));
+            }
+
+            filtros.Auditorias = auditorias
                 .Select(item => new AuditoriaViajeViewModel
                 {
                     IdAuditoriaViaje = item.IdAuditoriaViaje,
@@ -27,7 +49,7 @@ namespace Paraba.UI.Controllers
                 })
                 .ToList();
 
-            return View(auditorias);
+            return View(filtros);
         }
     }
 }

@@ -37,11 +37,19 @@
                 </td>
                 <td>@conductor.Telefono</td>
                 <td>@conductor.TotalDocumentos</td>
-                <td>@conductor.DocumentosPendientes</td>
-                <td>@conductor.DocumentosAprobados</td>
-                <td>@conductor.DocumentosRechazados</td>
-                <td>@(conductor.Disponible ? "Si" : "No")</td>
-                <td>@(conductor.Estado ? "Activo" : "Inactivo")</td>
+                <td><span class="status-badge status-warning">@conductor.DocumentosPendientes</span></td>
+                <td><span class="status-badge status-success">@conductor.DocumentosAprobados</span></td>
+                <td><span class="status-badge status-danger">@conductor.DocumentosRechazados</span></td>
+                <td>
+                    <span class="status-badge @(conductor.Disponible ? "status-success" : "status-muted")">
+                        @(conductor.Disponible ? "Disponible" : "No disponible")
+                    </span>
+                </td>
+                <td>
+                    <span class="status-badge @(conductor.Estado ? "status-success" : "status-danger")">
+                        @(conductor.Estado ? "Activo" : "Suspendido")
+                    </span>
+                </td>
             </tr>
         }
     </tbody>

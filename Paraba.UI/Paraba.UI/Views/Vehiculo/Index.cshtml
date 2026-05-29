@@ -1,4 +1,4 @@
-@model List<Paraba.ENTITY.Models.Vehiculo>
+@model List<Paraba.UI.ViewModels.VehiculoViewModel>
 
 @{
     ViewData["Title"] = "Vehiculos";
@@ -31,8 +31,8 @@
         {
             <tr>
                 <td>@vehiculo.IdVehiculo</td>
-                <td>@vehiculo.IdConductor</td>
-                <td>@(vehiculo.IdTipoServicio == 1 ? "Taxi" : "Moto taxi")</td>
+                <td>@vehiculo.Conductor</td>
+                <td>@vehiculo.TipoServicio</td>
                 <td><strong>@vehiculo.Placa</strong></td>
                 <td>@vehiculo.Marca</td>
                 <td>@vehiculo.Modelo</td>

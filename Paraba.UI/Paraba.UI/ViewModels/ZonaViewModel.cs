@@ -12,6 +12,14 @@ namespace Paraba.UI.ViewModels
 
         public bool Estado { get; set; }
 
+        public bool CoberturaActiva { get; set; }
+
+        public bool EsZonaRiesgo { get; set; }
+
+        public bool AltaDemanda { get; set; }
+
+        public string ObservacionOperativa { get; set; } = string.Empty;
+
         public DateTime FechaRegistro { get; set; }
     }
 }

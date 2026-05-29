@@ -1,0 +1,46 @@
+@model Paraba.UI.ViewModels.IntervencionLiquidacionViewModel
+
+@{
+    ViewData["Title"] = $"{Model.Accion} liquidacion";
+    string accionPost = Model.Accion == "Marcar pagada" ? "ConfirmarPago" : "ConfirmarAnulacion";
+    string textoBoton = Model.Accion == "Marcar pagada" ? "Confirmar pago" : "Confirmar anulacion";
+    string claseBoton = Model.Accion == "Marcar pagada" ? "btn btn-success" : "btn btn-danger";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">@Model.Accion liquidacion</h1>
+        <p class="text-muted mb-0">Confirmacion financiera con observacion obligatoria.</p>
+    </div>
+    <a asp-controller="Liquidaciones" asp-action="Historial" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+<div class="border rounded p-3 mb-3">
+    <div><strong>Liquidacion:</strong> @Model.IdLiquidacionConductor</div>
+    <div><strong>Conductor:</strong> @Model.Conductor</div>
+    <div><strong>Estado actual:</strong> @Model.Estado</div>
+    <div><strong>Neto conductor:</strong> @Model.TotalNetoConductor.ToString("0.00")</div>
+</div>
+
+<form asp-controller="Liquidaciones" asp-action="@accionPost" method="post" class="row g-3">
+    @Html.AntiForgeryToken()
+    <input asp-for="IdLiquidacionConductor" type="hidden" />
+    <input asp-for="Accion" type="hidden" />
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="col-12">
+        <label asp-for="Observacion" class="form-label">Observacion administrativa</label>
+        <textarea asp-for="Observacion" class="form-control" rows="4" maxlength="300"></textarea>
+        <span asp-validation-for="Observacion" class="text-danger"></span>
+    </div>
+
+    <div class="col-12 d-flex gap-2">
+        <button type="submit" class="@claseBoton">@textoBoton</button>
+        <a asp-controller="Liquidaciones" asp-action="Historial" class="btn btn-outline-secondary">Cancelar</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

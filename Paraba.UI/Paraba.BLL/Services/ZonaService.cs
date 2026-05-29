@@ -11,5 +11,16 @@ namespace Paraba.BLL.Services
         {
             return zonaRepository.Listar();
         }
+
+        public void ActualizarOperacion(Zona zona)
+        {
+            if (zona.IdZona <= 0)
+            {
+                throw new ArgumentException("Debe seleccionar una zona valida.");
+            }
+
+            zona.ObservacionOperativa = zona.ObservacionOperativa?.Trim() ?? string.Empty;
+            zonaRepository.ActualizarOperacion(zona);
+        }
     }
 }

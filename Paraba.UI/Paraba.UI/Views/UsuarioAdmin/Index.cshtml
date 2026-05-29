@@ -35,26 +35,29 @@
                     <div class="text-muted small">@usuario.Correo</div>
                 </td>
                 <td>@usuario.Roles</td>
-                <td>@(usuario.Estado ? "Activo" : "Suspendido")</td>
+                <td>
+                    <span class="status-badge @(usuario.Estado ? "status-success" : "status-danger")">
+                        @(usuario.Estado ? "Activo" : "Suspendido")
+                    </span>
+                </td>
                 <td>@usuario.IntentosFallidos</td>
                 <td>@(usuario.UltimoAcceso?.ToString("dd/MM/yyyy HH:mm") ?? "Sin acceso")</td>
                 <td>@usuario.FechaRegistro.ToString("dd/MM/yyyy")</td>
                 <td>
+                    <div class="table-actions mb-1">
+                        <a asp-controller="UsuarioAdmin" asp-action="Detalle" asp-route-id="@usuario.IdUsuarioAdmin" class="btn btn-sm btn-outline-secondary">Detalle</a>
+                    </div>
                     @if (usuario.Estado)
                     {
-                        <form asp-controller="UsuarioAdmin" asp-action="Suspender" method="post">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="id" value="@usuario.IdUsuarioAdmin" />
-                            <button type="submit" class="btn btn-sm btn-outline-danger">Suspender</button>
-                        </form>
+                        <div class="table-actions">
+                            <a asp-controller="UsuarioAdmin" asp-action="Suspender" asp-route-id="@usuario.IdUsuarioAdmin" class="btn btn-sm btn-outline-danger">Suspender</a>
+                        </div>
                     }
                     else
                     {
-                        <form asp-controller="UsuarioAdmin" asp-action="Reactivar" method="post">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="id" value="@usuario.IdUsuarioAdmin" />
-                            <button type="submit" class="btn btn-sm btn-outline-success">Reactivar</button>
-                        </form>
+                        <div class="table-actions">
+                            <a asp-controller="UsuarioAdmin" asp-action="Reactivar" asp-route-id="@usuario.IdUsuarioAdmin" class="btn btn-sm btn-outline-success">Reactivar</a>
+                        </div>
                     }
                 </td>
             </tr>

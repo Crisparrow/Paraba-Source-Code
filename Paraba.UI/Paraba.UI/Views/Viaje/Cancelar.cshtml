@@ -1,0 +1,43 @@
+@model Paraba.UI.ViewModels.IntervencionViajeViewModel
+
+@{
+    ViewData["Title"] = "Cancelar viaje";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Cancelar viaje</h1>
+        <p class="text-muted mb-0">Intervencion administrativa con motivo obligatorio.</p>
+    </div>
+    <a asp-controller="Viaje" asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+<div class="border rounded p-3 mb-3">
+    <div><strong>Viaje:</strong> @Model.IdViaje</div>
+    <div><strong>Pasajero:</strong> @Model.Pasajero</div>
+    <div><strong>Conductor:</strong> @Model.Conductor</div>
+    <div><strong>Ruta:</strong> @Model.Ruta</div>
+    <div><strong>Estado actual:</strong> @Model.EstadoViaje</div>
+</div>
+
+<form asp-controller="Viaje" asp-action="ConfirmarCancelacion" method="post" class="row g-3">
+    @Html.AntiForgeryToken()
+    <input asp-for="IdViaje" type="hidden" />
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="col-12">
+        <label asp-for="Motivo" class="form-label">Motivo administrativo</label>
+        <textarea asp-for="Motivo" class="form-control" rows="4" maxlength="300"></textarea>
+        <span asp-validation-for="Motivo" class="text-danger"></span>
+    </div>
+
+    <div class="col-12 d-flex gap-2">
+        <button type="submit" class="btn btn-danger">Confirmar cancelacion</button>
+        <a asp-controller="Viaje" asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,54 @@
+@model List<Paraba.UI.ViewModels.ComisionServicioViewModel>
+
+@{
+    ViewData["Title"] = "Comisiones";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Comisiones por servicio</h1>
+        <p class="text-muted mb-0">Configuracion financiera usada para liquidaciones.</p>
+    </div>
+</div>
+
+@if (TempData["MensajeComision"] != null)
+{
+    <div class="alert alert-warning">
+        @TempData["MensajeComision"]
+    </div>
+}
+
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Servicio</th>
+            <th>Comision %</th>
+            <th>Inicio vigencia</th>
+            <th>Fin vigencia</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.IdComisionServicio</td>
+                <td>@item.TipoServicio</td>
+                <td>@item.PorcentajeComision.ToString("0.##")</td>
+                <td>@item.FechaInicioVigencia.ToString("dd/MM/yyyy")</td>
+                <td>@(item.FechaFinVigencia?.ToString("dd/MM/yyyy") ?? "Vigente")</td>
+                <td>@(item.Estado ? "Activo" : "Inactivo")</td>
+                <td>
+                    <form asp-controller="ComisionServicio" asp-action="Actualizar" method="post" class="d-flex gap-2">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="idComisionServicio" value="@item.IdComisionServicio" />
+                        <input name="porcentajeComision" class="form-control form-control-sm" type="number" step="0.1" min="0.1" value="@item.PorcentajeComision" style="max-width: 120px;" />
+                        <button type="submit" class="btn btn-sm btn-primary">Actualizar</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

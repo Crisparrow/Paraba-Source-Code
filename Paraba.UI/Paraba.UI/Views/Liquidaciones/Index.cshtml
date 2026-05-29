@@ -1,0 +1,117 @@
+@model Paraba.UI.ViewModels.LiquidacionesViewModel
+
+@{
+    ViewData["Title"] = "Liquidaciones";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Liquidaciones</h1>
+        <p class="text-muted mb-0">Calculo financiero de comision PARABA y neto para conductores.</p>
+    </div>
+    <a asp-controller="Liquidaciones" asp-action="Historial" class="btn btn-outline-secondary">Historial</a>
+</div>
+
+@if (TempData["MensajeLiquidacion"] != null)
+{
+    <div class="alert alert-info">
+        @TempData["MensajeLiquidacion"]
+    </div>
+}
+
+<form asp-controller="Liquidaciones" asp-action="Index" method="get" class="row g-3 mb-4">
+    <div class="col-md-3">
+        <label class="form-label">Desde</label>
+        <input asp-for="FechaDesde" class="form-control" type="date" />
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">Hasta</label>
+        <input asp-for="FechaHasta" class="form-control" type="date" />
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">Conductor</label>
+        <select asp-for="IdConductor" asp-items="Model.Conductores" class="form-select"></select>
+    </div>
+
+    <div class="col-md-3 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+    </div>
+</form>
+
+<form asp-controller="Liquidaciones" asp-action="ConfirmarCierre" method="get" class="mb-4">
+    <input asp-for="FechaDesde" type="hidden" />
+    <input asp-for="FechaHasta" type="hidden" />
+    <input asp-for="IdConductor" type="hidden" />
+    <button type="submit" class="btn btn-success">Revisar cierre de liquidacion</button>
+    <span class="text-muted ms-2">El cierre se confirma en una pantalla separada antes de guardar.</span>
+</form>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Viajes liquidados</div>
+            <div class="h4 mb-0">@Model.TotalViajesFinalizados</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Total bruto</div>
+            <div class="h4 mb-0">@Model.TotalBruto.ToString("0.00")</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Comision PARABA</div>
+            <div class="h4 mb-0">@Model.TotalComisionParaba.ToString("0.00")</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Neto conductores</div>
+            <div class="h4 mb-0">@Model.TotalNetoConductores.ToString("0.00")</div>
+        </div>
+    </div>
+</div>
+
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>Viaje</th>
+            <th>Conductor</th>
+            <th>Pasajero</th>
+            <th>Servicio</th>
+            <th>Ruta</th>
+            <th>Tarifa final</th>
+            <th>Comision %</th>
+            <th>Comision PARABA</th>
+            <th>Neto conductor</th>
+            <th>Fecha fin</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Liquidaciones)
+        {
+            <tr>
+                <td>@item.IdViaje</td>
+                <td>@item.Conductor</td>
+                <td>@item.Pasajero</td>
+                <td>@item.TipoServicio</td>
+                <td>@item.Ruta</td>
+                <td>@item.TarifaFinal.ToString("0.00")</td>
+                <td>@item.PorcentajeComision.ToString("0.##")</td>
+                <td>@item.ComisionParaba.ToString("0.00")</td>
+                <td>@item.NetoConductor.ToString("0.00")</td>
+                <td>@item.FechaFin.ToString("dd/MM/yyyy HH:mm")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (!Model.Liquidaciones.Any())
+{
+    <div class="alert alert-info">
+        No hay viajes finalizados para liquidar con los filtros seleccionados.
+    </div>
+}

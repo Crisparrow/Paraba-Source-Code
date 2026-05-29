@@ -35,25 +35,42 @@
                 </td>
                 <td>@conductor.Telefono</td>
                 <td>@conductor.LicenciaConducir</td>
-                <td>@(conductor.Disponible ? "Si" : "No")</td>
-                <td>@(conductor.Verificado ? "Si" : "No")</td>
-                <td>@(conductor.Estado ? "Activo" : "Inactivo")</td>
                 <td>
+                    <span class="status-badge @(conductor.Disponible ? "status-success" : "status-muted")">
+                        @(conductor.Disponible ? "Disponible" : "No disponible")
+                    </span>
+                </td>
+                <td>
+                    <span class="status-badge @(conductor.Verificado ? "status-success" : "status-warning")">
+                        @(conductor.Verificado ? "Verificado" : "Pendiente")
+                    </span>
+                </td>
+                <td>
+                    <span class="status-badge @(conductor.Estado ? "status-success" : "status-danger")">
+                        @(conductor.Estado ? "Activo" : "Suspendido")
+                    </span>
+                </td>
+                <td>
+                    <div class="table-actions mb-1">
+                        <a asp-controller="Conductor" asp-action="Detalle" asp-route-id="@conductor.IdConductor" class="btn btn-sm btn-outline-secondary">
+                            Detalle
+                        </a>
+                    </div>
                     @if (conductor.Estado)
                     {
-                        <form asp-controller="Conductor" asp-action="Suspender" method="post">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="id" value="@conductor.IdConductor" />
-                            <button type="submit" class="btn btn-sm btn-outline-danger">Suspender</button>
-                        </form>
+                        <div class="table-actions">
+                            <a asp-controller="Conductor" asp-action="Suspender" asp-route-id="@conductor.IdConductor" class="btn btn-sm btn-outline-danger">
+                                Suspender
+                            </a>
+                        </div>
                     }
                     else
                     {
-                        <form asp-controller="Conductor" asp-action="Reactivar" method="post">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="id" value="@conductor.IdConductor" />
-                            <button type="submit" class="btn btn-sm btn-outline-success">Reactivar</button>
-                        </form>
+                        <div class="table-actions">
+                            <a asp-controller="Conductor" asp-action="Reactivar" asp-route-id="@conductor.IdConductor" class="btn btn-sm btn-outline-success">
+                                Reactivar
+                            </a>
+                        </div>
                     }
                 </td>
             </tr>

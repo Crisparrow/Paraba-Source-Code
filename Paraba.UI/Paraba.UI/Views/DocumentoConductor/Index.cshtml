@@ -1,4 +1,4 @@
-@model List<Paraba.UI.ViewModels.DocumentoConductorViewModel>
+@model Paraba.UI.ViewModels.DocumentoConductorFiltroViewModel
 
 @{
     ViewData["Title"] = "Documentos";
@@ -11,55 +11,120 @@
     </div>
 </div>
 
-<table class="table table-bordered table-hover align-middle">
-    <thead class="table-dark">
-        <tr>
-            <th>ID</th>
-            <th>Conductor</th>
-            <th>Documento</th>
-            <th>Numero</th>
-            <th>Archivo</th>
-            <th>Vencimiento</th>
-            <th>Estado</th>
-            <th>Observacion</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var documento in Model)
-        {
-            <tr>
-                <td>@documento.IdDocumentoConductor</td>
-                <td>@documento.Conductor</td>
-                <td>@documento.TipoDocumento</td>
-                <td>@documento.NumeroDocumento</td>
-                <td>@documento.UrlArchivo</td>
-                <td>@(documento.FechaVencimiento?.ToString("dd/MM/yyyy") ?? "No aplica")</td>
-                <td><strong>@documento.EstadoVerificacion</strong></td>
-                <td>@documento.Observacion</td>
-                <td>
-                    @if (documento.EstadoVerificacion == "Pendiente")
-                    {
-                        <div class="d-flex gap-2">
-                            <form asp-controller="DocumentoConductor" asp-action="Aprobar" method="post">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="id" value="@documento.IdDocumentoConductor" />
-                                <button type="submit" class="btn btn-sm btn-success">Aprobar</button>
-                            </form>
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Pendientes</div>
+            <div class="h4 mb-0">@Model.TotalPendientes</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Aprobados</div>
+            <div class="h4 mb-0">@Model.TotalAprobados</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Rechazados</div>
+            <div class="h4 mb-0">@Model.TotalRechazados</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Vencidos</div>
+            <div class="h4 mb-0">@Model.TotalVencidos</div>
+        </div>
+    </div>
+</div>
 
-                            <form asp-controller="DocumentoConductor" asp-action="Rechazar" method="post">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="id" value="@documento.IdDocumentoConductor" />
-                                <button type="submit" class="btn btn-sm btn-outline-danger">Rechazar</button>
-                            </form>
-                        </div>
-                    }
-                    else
-                    {
-                        <span class="text-muted">Revision cerrada</span>
-                    }
-                </td>
+<form asp-controller="DocumentoConductor" asp-action="Index" method="get" class="row g-3 mb-4">
+    <div class="col-md-4">
+        <label class="form-label">Buscar</label>
+        <input asp-for="Buscar" class="form-control" placeholder="Conductor, documento o numero" />
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Estado</label>
+        <select asp-for="EstadoVerificacion" asp-items="Model.Estados" class="form-select"></select>
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+        <div class="form-check mb-2">
+            <input asp-for="SoloVencidos" class="form-check-input" />
+            <label asp-for="SoloVencidos" class="form-check-label">Solo vencidos</label>
+        </div>
+    </div>
+    <div class="col-md-3 d-flex align-items-end gap-2">
+        <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+        <a asp-controller="DocumentoConductor" asp-action="Index" class="btn btn-outline-secondary">Limpiar</a>
+    </div>
+</form>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Conductor</th>
+                <th>Documento</th>
+                <th>Numero</th>
+                <th>Archivo</th>
+                <th>Vencimiento</th>
+                <th>Estado</th>
+                <th>Observacion</th>
+                <th>Acciones</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var documento in Model.Documentos)
+            {
+                var estadoClase = documento.EstadoVerificacion switch
+                {
+                    "Aprobado" => "status-success",
+                    "Rechazado" => "status-danger",
+                    _ => "status-warning"
+                };
+                var estaVencido = documento.FechaVencimiento != null && documento.FechaVencimiento.Value.Date < DateTime.Today;
+
+                <tr>
+                    <td>@documento.IdDocumentoConductor</td>
+                    <td>@documento.Conductor</td>
+                    <td>@documento.TipoDocumento</td>
+                    <td>@documento.NumeroDocumento</td>
+                    <td>@documento.UrlArchivo</td>
+                    <td>
+                        @(documento.FechaVencimiento?.ToString("dd/MM/yyyy") ?? "No aplica")
+                        @if (estaVencido)
+                        {
+                            <div><span class="status-badge status-danger">Vencido</span></div>
+                        }
+                    </td>
+                    <td><span class="status-badge @estadoClase">@documento.EstadoVerificacion</span></td>
+                    <td>@documento.Observacion</td>
+                    <td>
+                        <div class="table-actions mb-1">
+                            <a asp-controller="DocumentoConductor" asp-action="Detalle" asp-route-id="@documento.IdDocumentoConductor" class="btn btn-sm btn-outline-secondary">Detalle</a>
+                        </div>
+                        @if (documento.EstadoVerificacion == "Pendiente")
+                        {
+                            <div class="table-actions">
+                                <a asp-controller="DocumentoConductor" asp-action="Aprobar" asp-route-id="@documento.IdDocumentoConductor" class="btn btn-sm btn-success">Aprobar</a>
+                                <a asp-controller="DocumentoConductor" asp-action="Rechazar" asp-route-id="@documento.IdDocumentoConductor" class="btn btn-sm btn-outline-danger">Rechazar</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Revision cerrada</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@if (!Model.Documentos.Any())
+{
+    <div class="alert alert-info">
+        No hay documentos con los filtros seleccionados.
+    </div>
+}

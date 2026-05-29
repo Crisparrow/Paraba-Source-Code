@@ -1,0 +1,68 @@
+@model Paraba.UI.ViewModels.RevisionDocumentoConductorViewModel
+
+@{
+    ViewData["Title"] = "Detalle de documento";
+
+    var estadoClase = Model.EstadoVerificacion switch
+    {
+        "Aprobado" => "status-success",
+        "Rechazado" => "status-danger",
+        _ => "status-warning"
+    };
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Detalle de documento</h1>
+        <p class="text-muted mb-0">Revision administrativa antes de aprobar o rechazar.</p>
+    </div>
+    <div class="d-flex gap-2">
+        @if (Model.EstadoVerificacion == "Pendiente")
+        {
+            <a asp-controller="DocumentoConductor" asp-action="Aprobar" asp-route-id="@Model.IdDocumentoConductor" class="btn btn-success">Aprobar</a>
+            <a asp-controller="DocumentoConductor" asp-action="Rechazar" asp-route-id="@Model.IdDocumentoConductor" class="btn btn-outline-danger">Rechazar</a>
+        }
+        <a asp-controller="DocumentoConductor" asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+    </div>
+</div>
+
+@if (Model.EstaVencido)
+{
+    <div class="alert alert-danger">
+        Este documento esta vencido y no debe aprobarse. Solicita una version actualizada al conductor.
+    </div>
+}
+
+<section class="detail-panel">
+    <h2>Documento</h2>
+    <div class="detail-list">
+        <div class="detail-row">
+            <span class="detail-label">Conductor</span>
+            <span class="detail-value">@Model.Conductor</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Tipo</span>
+            <span class="detail-value">@Model.TipoDocumento</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Numero</span>
+            <span class="detail-value">@Model.NumeroDocumento</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Archivo</span>
+            <span class="detail-value">@Model.UrlArchivo</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Vencimiento</span>
+            <span class="detail-value">@(Model.FechaVencimiento?.ToString("dd/MM/yyyy") ?? "No aplica")</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Estado</span>
+            <span class="detail-value"><span class="status-badge @estadoClase">@Model.EstadoVerificacion</span></span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Observacion</span>
+            <span class="detail-value">@Model.Observacion</span>
+        </div>
+    </div>
+</section>

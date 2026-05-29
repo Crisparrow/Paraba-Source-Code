@@ -10,12 +10,14 @@ namespace Paraba.UI.Controllers
         private readonly ConductorService conductorService = new ConductorService();
         private readonly VehiculoService vehiculoService = new VehiculoService();
         private readonly CalificacionService calificacionService = new CalificacionService();
+        private readonly TipoServicioService tipoServicioService = new TipoServicioService();
 
         public IActionResult Index()
         {
             var conductores = conductorService.ListarConductores();
             var vehiculos = vehiculoService.ListarVehiculos();
             var calificaciones = calificacionService.ListarCalificaciones();
+            var tiposServicio = tipoServicioService.ListarTiposServicio();
 
             var perfiles = conductores.Select(conductor =>
             {
@@ -30,7 +32,9 @@ namespace Paraba.UI.Controllers
                     NombreCompleto = conductor.NombreCompleto,
                     Telefono = conductor.Telefono,
                     Correo = conductor.Correo,
-                    TipoServicio = ObtenerTipoServicio(vehiculo?.IdTipoServicio ?? 0),
+                    TipoServicio = vehiculo == null
+                        ? "Sin modalidad"
+                        : tiposServicio.FirstOrDefault(item => item.IdTipoServicio == vehiculo.IdTipoServicio)?.Nombre ?? "Tipo no identificado",
                     Vehiculo = vehiculo == null ? "Sin vehiculo registrado" : $"{vehiculo.Marca} {vehiculo.Modelo}",
                     Placa = vehiculo?.Placa ?? "Sin placa",
                     ConductorVerificado = conductor.Verificado,
@@ -42,16 +46,6 @@ namespace Paraba.UI.Controllers
             }).ToList();
 
             return View(perfiles);
-        }
-
-        private static string ObtenerTipoServicio(int idTipoServicio)
-        {
-            return idTipoServicio switch
-            {
-                1 => "Taxi",
-                2 => "Moto taxi",
-                _ => "Sin modalidad"
-            };
         }
 
         private static decimal CalcularPromedio(List<ENTITY.Models.Calificacion> calificaciones)

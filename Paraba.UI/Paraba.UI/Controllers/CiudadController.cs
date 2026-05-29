@@ -8,24 +8,21 @@ namespace Paraba.UI.Controllers
     public class CiudadController : Controller
     {
         private readonly CiudadService ciudadService = new CiudadService();
+        private readonly DepartamentoService departamentoService = new DepartamentoService();
 
         public IActionResult Index()
         {
             var ciudades = ciudadService.ListarCiudades();
+            var departamentos = departamentoService.ListarDepartamentos();
             var ciudadesViewModel = ciudades.Select(ciudad => new CiudadViewModel
             {
                 IdCiudad = ciudad.IdCiudad,
-                Departamento = ObtenerDepartamento(ciudad.IdDepartamento),
+                Departamento = departamentos.FirstOrDefault(item => item.IdDepartamento == ciudad.IdDepartamento)?.Nombre ?? "Departamento no identificado",
                 Nombre = ciudad.Nombre,
                 Estado = ciudad.Estado
             }).ToList();
 
             return View(ciudadesViewModel);
-        }
-
-        private static string ObtenerDepartamento(int idDepartamento)
-        {
-            return idDepartamento == 1 ? "Santa Cruz" : "Departamento no identificado";
         }
     }
 }

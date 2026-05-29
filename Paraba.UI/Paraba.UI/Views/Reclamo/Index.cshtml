@@ -1,0 +1,66 @@
+@model List<Paraba.UI.ViewModels.ReclamoViewModel>
+
+@{
+    ViewData["Title"] = "Reclamos";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Reclamos administrativos</h1>
+        <p class="text-muted mb-0">Seguimiento formal de reclamos abiertos y cerrados.</p>
+    </div>
+    <a asp-controller="Reclamo" asp-action="Crear" class="btn btn-primary">Nuevo reclamo</a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Prioridad</th>
+                <th>Estado</th>
+                <th>Tipo</th>
+                <th>Viaje</th>
+                <th>Pasajero</th>
+                <th>Conductor</th>
+                <th>Descripcion</th>
+                <th>Registro</th>
+                <th>Cierre</th>
+                <th>Accion</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var estadoClase = item.Estado == "Cerrado" ? "status-success" : "status-warning";
+                var prioridadClase = item.Prioridad == "Alta" ? "status-danger" : "status-warning";
+                <tr>
+                    <td>@item.IdReclamo</td>
+                    <td><span class="status-badge @prioridadClase">@item.Prioridad</span></td>
+                    <td><span class="status-badge @estadoClase">@item.Estado</span></td>
+                    <td>@item.TipoReclamo</td>
+                    <td>@(item.IdViaje?.ToString() ?? "-")</td>
+                    <td>@item.Pasajero</td>
+                    <td>@item.Conductor</td>
+                    <td>@item.Descripcion</td>
+                    <td>@item.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@(item.FechaCierre?.ToString("dd/MM/yyyy HH:mm") ?? "-")</td>
+                    <td>
+                        @if (item.Estado != "Cerrado")
+                        {
+                            <form asp-controller="Reclamo" asp-action="Cerrar" asp-route-id="@item.IdReclamo" method="post" class="d-grid gap-2">
+                                @Html.AntiForgeryToken()
+                                <input name="observacionCierre" class="form-control form-control-sm" placeholder="Observacion de cierre" />
+                                <button type="submit" class="btn btn-sm btn-success">Cerrar</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-muted">@item.ObservacionCierre</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

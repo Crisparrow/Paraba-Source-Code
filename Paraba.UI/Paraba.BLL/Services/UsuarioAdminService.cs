@@ -25,6 +25,11 @@ namespace Paraba.BLL.Services
             return usuarioAdminRepository.ListarRolesAdmin();
         }
 
+        public List<AuditoriaAccesoAdmin> ListarAuditoriaAccesos()
+        {
+            return usuarioAdminRepository.ListarAuditoriaAccesos();
+        }
+
         public UsuarioAdmin? ValidarLogin(string correo, string password, string ipOrigen)
         {
             UsuarioAdmin? usuario = usuarioAdminRepository.ObtenerPorCorreo(correo);
@@ -107,16 +112,73 @@ namespace Paraba.BLL.Services
             });
 
             usuarioAdminRepository.AsignarRol(idUsuarioAdmin, idRolAdmin);
+            RegistrarAcceso(idUsuarioAdmin, correo, true, "Sistema", "Usuario administrador creado.");
         }
 
-        public void SuspenderUsuario(int idUsuarioAdmin)
+        public void SuspenderUsuario(int idUsuarioAdmin, int idUsuarioActual, string motivo)
         {
+            ValidarIntervencionUsuario(idUsuarioAdmin, idUsuarioActual, motivo, true);
             usuarioAdminRepository.ActualizarEstado(idUsuarioAdmin, false);
+            UsuarioAdmin? usuario = ListarUsuarios().FirstOrDefault(item => item.IdUsuarioAdmin == idUsuarioAdmin);
+            RegistrarAcceso(idUsuarioAdmin, usuario?.Correo ?? "No identificado", true, "Panel administrativo", $"Usuario administrador suspendido. Motivo: {motivo.Trim()}");
         }
 
-        public void ReactivarUsuario(int idUsuarioAdmin)
+        public void ReactivarUsuario(int idUsuarioAdmin, string motivo)
         {
+            if (idUsuarioAdmin <= 0)
+            {
+                throw new ArgumentException("Debe seleccionar un usuario valido.");
+            }
+
+            if (string.IsNullOrWhiteSpace(motivo) || motivo.Trim().Length < 10)
+            {
+                throw new ArgumentException("Debe ingresar un motivo administrativo valido.");
+            }
+
+            UsuarioAdmin? usuario = ListarUsuarios().FirstOrDefault(item => item.IdUsuarioAdmin == idUsuarioAdmin);
+
+            if (usuario == null)
+            {
+                throw new ArgumentException("El usuario no existe.");
+            }
+
+            if (usuario.Estado)
+            {
+                throw new ArgumentException("El usuario ya esta activo.");
+            }
+
             usuarioAdminRepository.ActualizarEstado(idUsuarioAdmin, true);
+            RegistrarAcceso(idUsuarioAdmin, usuario.Correo, true, "Panel administrativo", $"Usuario administrador reactivado. Motivo: {motivo.Trim()}");
+        }
+
+        private void ValidarIntervencionUsuario(int idUsuarioAdmin, int idUsuarioActual, string motivo, bool esSuspension)
+        {
+            if (idUsuarioAdmin <= 0)
+            {
+                throw new ArgumentException("Debe seleccionar un usuario valido.");
+            }
+
+            if (esSuspension && idUsuarioAdmin == idUsuarioActual)
+            {
+                throw new ArgumentException("No puedes suspender tu propio usuario administrador.");
+            }
+
+            if (string.IsNullOrWhiteSpace(motivo) || motivo.Trim().Length < 10)
+            {
+                throw new ArgumentException("Debe ingresar un motivo administrativo valido.");
+            }
+
+            UsuarioAdmin? usuario = ListarUsuarios().FirstOrDefault(item => item.IdUsuarioAdmin == idUsuarioAdmin);
+
+            if (usuario == null)
+            {
+                throw new ArgumentException("El usuario no existe.");
+            }
+
+            if (esSuspension && !usuario.Estado)
+            {
+                throw new ArgumentException("El usuario ya esta suspendido.");
+            }
         }
 
         private void RegistrarAcceso(int? idUsuarioAdmin, string correo, bool exitoso, string ipOrigen, string observacion)

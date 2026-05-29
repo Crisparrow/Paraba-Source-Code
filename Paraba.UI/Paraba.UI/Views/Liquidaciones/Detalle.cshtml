@@ -1,0 +1,130 @@
+@model Paraba.UI.ViewModels.DetalleLiquidacionViewModel
+
+@{
+    ViewData["Title"] = "Detalle de liquidacion";
+
+    var estadoClase = Model.Estado switch
+    {
+        "Pagada" => "status-success",
+        "Anulada" => "status-danger",
+        _ => "status-warning"
+    };
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Detalle de liquidacion #@Model.IdLiquidacionConductor</h1>
+        <p class="text-muted mb-0">Resumen financiero congelado y viajes incluidos.</p>
+    </div>
+    <div class="d-flex gap-2">
+        @if (Model.Estado == "Cerrada")
+        {
+            <a asp-controller="Liquidaciones" asp-action="MarcarPagada" asp-route-id="@Model.IdLiquidacionConductor" class="btn btn-success">Marcar pagada</a>
+            <a asp-controller="Liquidaciones" asp-action="Anular" asp-route-id="@Model.IdLiquidacionConductor" class="btn btn-outline-danger">Anular</a>
+        }
+        <a asp-controller="Liquidaciones" asp-action="Historial" class="btn btn-outline-secondary">Volver</a>
+    </div>
+</div>
+
+<div class="detail-grid">
+    <section class="detail-panel">
+        <h2>Liquidacion</h2>
+        <div class="detail-list">
+            <div class="detail-row">
+                <span class="detail-label">Conductor</span>
+                <span class="detail-value">@Model.Conductor</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Periodo</span>
+                <span class="detail-value">@Model.FechaDesde.ToString("dd/MM/yyyy") - @Model.FechaHasta.ToString("dd/MM/yyyy")</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Estado</span>
+                <span class="detail-value"><span class="status-badge @estadoClase">@Model.Estado</span></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Usuario cierre</span>
+                <span class="detail-value">@Model.UsuarioCierre</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="detail-panel">
+        <h2>Totales</h2>
+        <div class="detail-list">
+            <div class="detail-row">
+                <span class="detail-label">Total bruto</span>
+                <span class="detail-value money-value">@Model.TotalBruto.ToString("0.00")</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Comision PARABA</span>
+                <span class="detail-value money-value">@Model.TotalComisionParaba.ToString("0.00")</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Neto conductor</span>
+                <span class="detail-value money-value">@Model.TotalNetoConductor.ToString("0.00")</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Comision promedio</span>
+                <span class="detail-value">@Model.PorcentajeComision.ToString("0.##")%</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="detail-panel">
+        <h2>Fechas y observacion</h2>
+        <div class="detail-list">
+            <div class="detail-row">
+                <span class="detail-label">Cierre</span>
+                <span class="detail-value">@Model.FechaCierre.ToString("dd/MM/yyyy HH:mm")</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Pago</span>
+                <span class="detail-value">@(Model.FechaPago?.ToString("dd/MM/yyyy HH:mm") ?? "-")</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Observacion</span>
+                <span class="detail-value">@Model.Observacion</span>
+            </div>
+        </div>
+    </section>
+</div>
+
+<section class="detail-panel">
+    <h2>Viajes incluidos</h2>
+
+    @if (!Model.Detalles.Any())
+    {
+        <div class="alert alert-secondary mb-0">No se encontraron viajes asociados a esta liquidacion.</div>
+    }
+    else
+    {
+        <table class="table table-bordered table-hover align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>Viaje</th>
+                    <th>Pasajero</th>
+                    <th>Servicio</th>
+                    <th>Ruta</th>
+                    <th>Tarifa final</th>
+                    <th>Comision PARABA</th>
+                    <th>Neto conductor</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Detalles)
+                {
+                    <tr>
+                        <td>@item.IdViaje</td>
+                        <td>@item.Pasajero</td>
+                        <td>@item.TipoServicio</td>
+                        <td>@item.Ruta</td>
+                        <td>@item.TarifaFinal.ToString("0.00")</td>
+                        <td>@item.ComisionParaba.ToString("0.00")</td>
+                        <td>@item.NetoConductor.ToString("0.00")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</section>

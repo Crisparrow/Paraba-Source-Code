@@ -8,14 +8,16 @@ namespace Paraba.UI.Controllers
     public class TarifaController : Controller
     {
         private readonly TarifaService tarifaService = new TarifaService();
+        private readonly TipoServicioService tipoServicioService = new TipoServicioService();
 
         public IActionResult Index()
         {
             var tarifas = tarifaService.ListarTarifas();
+            var tiposServicio = tipoServicioService.ListarTiposServicio();
             var tarifasViewModel = tarifas.Select(tarifa => new TarifaViewModel
             {
                 IdTarifa = tarifa.IdTarifa,
-                TipoServicio = ObtenerTipoServicio(tarifa.IdTipoServicio),
+                TipoServicio = tiposServicio.FirstOrDefault(item => item.IdTipoServicio == tarifa.IdTipoServicio)?.Nombre ?? "Tipo no identificado",
                 TarifaBase = tarifa.TarifaBase,
                 CostoPorKilometro = tarifa.CostoPorKilometro,
                 CostoPorMinuto = tarifa.CostoPorMinuto,
@@ -24,16 +26,6 @@ namespace Paraba.UI.Controllers
             }).ToList();
 
             return View(tarifasViewModel);
-        }
-
-        private static string ObtenerTipoServicio(int idTipoServicio)
-        {
-            return idTipoServicio switch
-            {
-                1 => "Taxi",
-                2 => "Moto taxi",
-                _ => "Tipo no identificado"
-            };
         }
     }
 }

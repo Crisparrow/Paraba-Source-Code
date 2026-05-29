@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Paraba.BLL.Services;
+using Paraba.UI.ViewModels;
 
 namespace Paraba.UI.Controllers
 {
@@ -7,12 +8,29 @@ namespace Paraba.UI.Controllers
     public class VehiculoController : Controller
     {
         private readonly VehiculoService vehiculoService = new VehiculoService();
+        private readonly ConductorService conductorService = new ConductorService();
+        private readonly TipoServicioService tipoServicioService = new TipoServicioService();
 
         public IActionResult Index()
         {
+            var conductores = conductorService.ListarConductores();
+            var tiposServicio = tipoServicioService.ListarTiposServicio();
             var vehiculos = vehiculoService.ListarVehiculos();
+            var vehiculosViewModel = vehiculos.Select(vehiculo => new VehiculoViewModel
+            {
+                IdVehiculo = vehiculo.IdVehiculo,
+                Conductor = conductores.FirstOrDefault(item => item.IdConductor == vehiculo.IdConductor)?.NombreCompleto ?? "Conductor no identificado",
+                TipoServicio = tiposServicio.FirstOrDefault(item => item.IdTipoServicio == vehiculo.IdTipoServicio)?.Nombre ?? "Tipo no identificado",
+                Placa = vehiculo.Placa,
+                Marca = vehiculo.Marca,
+                Modelo = vehiculo.Modelo,
+                Color = vehiculo.Color,
+                Anio = vehiculo.Anio,
+                Verificado = vehiculo.Verificado,
+                Estado = vehiculo.Estado
+            }).ToList();
 
-            return View(vehiculos);
+            return View(vehiculosViewModel);
         }
     }
 }

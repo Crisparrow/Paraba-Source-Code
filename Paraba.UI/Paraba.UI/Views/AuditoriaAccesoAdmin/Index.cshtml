@@ -1,0 +1,69 @@
+@model Paraba.UI.ViewModels.AuditoriaAccesoAdminFiltroViewModel
+
+@{
+    ViewData["Title"] = "Auditoria accesos";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Auditoria de accesos admin</h1>
+        <p class="text-muted mb-0">Historial de logins, intentos fallidos y cierres de sesion.</p>
+    </div>
+</div>
+
+<form asp-controller="AuditoriaAccesoAdmin" asp-action="Index" method="get" class="row g-3 mb-4">
+    <div class="col-md-3">
+        <label class="form-label">Desde</label>
+        <input asp-for="FechaDesde" class="form-control" type="date" />
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Hasta</label>
+        <input asp-for="FechaHasta" class="form-control" type="date" />
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Correo</label>
+        <input asp-for="Correo" class="form-control" />
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Resultado</label>
+        <select asp-for="Exitoso" class="form-select">
+            <option value="">Todos</option>
+            <option value="true">Exitoso</option>
+            <option value="false">Fallido</option>
+        </select>
+    </div>
+    <div class="col-md-1 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+    </div>
+</form>
+
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Accion</th>
+            <th>Resultado</th>
+            <th>IP</th>
+            <th>Observacion</th>
+            <th>Fecha</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Auditorias)
+        {
+            <tr>
+                <td>@item.IdAuditoriaAccesoAdmin</td>
+                <td>
+                    <strong>@item.Correo</strong>
+                    <div class="text-muted small">ID @(item.IdUsuarioAdmin?.ToString() ?? "No identificado")</div>
+                </td>
+                <td>@item.Accion</td>
+                <td>@(item.Exitoso ? "Exitoso" : "Fallido")</td>
+                <td>@item.IpOrigen</td>
+                <td>@item.Observacion</td>
+                <td>@item.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</td>
+            </tr>
+        }
+    </tbody>
+</table>

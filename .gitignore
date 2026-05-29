@@ -1,0 +1,25 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.rsuser
+
+# Build outputs
+bin/
+obj/
+[Bb]in/
+[Oo]bj/
+
+# .NET
+TestResults/
+*.nupkg
+*.snupkg
+
+# Runtime/local files
+*.log
+*.tmp
+
+# OS files
+Thumbs.db
+Desktop.ini
+

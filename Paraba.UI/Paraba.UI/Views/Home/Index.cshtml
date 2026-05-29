@@ -1,8 +1,147 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@model Paraba.UI.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Dashboard operativo</h1>
+        <p class="text-muted mb-0">Alertas reales para controlar conductores, viajes, documentos y finanzas.</p>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <a asp-controller="Conductor" asp-action="Pendientes" class="text-decoration-none text-reset">
+            <div class="border rounded p-3 h-100">
+                <div class="text-muted small">Conductores por verificar</div>
+                <div class="h3 mb-1">@Model.ConductoresPendientes</div>
+                <div class="small text-muted">Requieren revision administrativa.</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a asp-controller="DocumentoConductor" asp-action="Index" class="text-decoration-none text-reset">
+            <div class="border rounded p-3 h-100">
+                <div class="text-muted small">Documentos pendientes</div>
+                <div class="h3 mb-1">@Model.DocumentosPendientes</div>
+                <div class="small text-muted">@Model.DocumentosVencidos vencido(s).</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a asp-controller="Liquidaciones" asp-action="Index" class="text-decoration-none text-reset">
+            <div class="border rounded p-3 h-100">
+                <div class="text-muted small">Viajes por liquidar</div>
+                <div class="h3 mb-1">@Model.ViajesPendientesLiquidacion</div>
+                <div class="small text-muted">Monto bruto: @Model.MontoPendienteLiquidacion.ToString("0.00")</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a asp-controller="Liquidaciones" asp-action="Historial" class="text-decoration-none text-reset">
+            <div class="border rounded p-3 h-100">
+                <div class="text-muted small">Pagos pendientes</div>
+                <div class="h3 mb-1">@Model.LiquidacionesPendientesPago</div>
+                <div class="small text-muted">Neto: @Model.NetoPendientePago.ToString("0.00")</div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="border rounded p-3 h-100">
+            <div class="text-muted small">Viajes hoy</div>
+            <div class="h3 mb-1">@Model.ViajesHoy</div>
+            <div class="small text-muted">@Model.ViajesFinalizadosHoy finalizado(s), @Model.ViajesCanceladosHoy cancelado(s).</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="border rounded p-3 h-100">
+            <div class="text-muted small">Ingresos hoy</div>
+            <div class="h3 mb-1">@Model.IngresosHoy.ToString("0.00")</div>
+            <div class="small text-muted">Solo viajes finalizados.</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="border rounded p-3 h-100">
+            <div class="text-muted small">Viajes en curso</div>
+            <div class="h3 mb-1">@Model.ViajesEnCurso</div>
+            <div class="small text-muted">@Model.ViajesSolicitados solicitado(s), @Model.ViajesAceptados aceptado(s).</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="border rounded p-3 h-100">
+            <div class="text-muted small">Promedio de calificacion</div>
+            <div class="h3 mb-1">@Model.PromedioCalificacion.ToString("0.00")</div>
+            <div class="small text-muted">Sobre calificaciones activas.</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-8">
+        <div class="border rounded p-3 h-100">
+            <h2 class="h5 mb-3">Estado general de operacion</h2>
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Area</th>
+                            <th>Indicador</th>
+                            <th>Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Viajes</td>
+                            <td>Total registrados</td>
+                            <td>@Model.TotalViajes</td>
+                        </tr>
+                        <tr>
+                            <td>Viajes</td>
+                            <td>Finalizados / cancelados</td>
+                            <td>@Model.ViajesFinalizados / @Model.ViajesCancelados</td>
+                        </tr>
+                        <tr>
+                            <td>Conductores</td>
+                            <td>Activos / verificados</td>
+                            <td>@Model.ConductoresActivos / @Model.ConductoresVerificados</td>
+                        </tr>
+                        <tr>
+                            <td>Clientes</td>
+                            <td>Pasajeros activos</td>
+                            <td>@Model.PasajerosActivos</td>
+                        </tr>
+                        <tr>
+                            <td>Finanzas</td>
+                            <td>Ingresos finalizados historicos</td>
+                            <td>@Model.IngresosFinalizados.ToString("0.00")</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="border rounded p-3 h-100">
+            <h2 class="h5 mb-3">Alertas de accion</h2>
+            <div class="d-grid gap-2">
+                <a asp-controller="Conductor" asp-action="Pendientes" class="btn btn-outline-primary text-start">
+                    Revisar conductores pendientes (@Model.ConductoresPendientes)
+                </a>
+                <a asp-controller="DocumentoConductor" asp-action="Index" class="btn btn-outline-primary text-start">
+                    Revisar documentos (@Model.DocumentosPendientes)
+                </a>
+                <a asp-controller="Liquidaciones" asp-action="Index" class="btn btn-outline-primary text-start">
+                    Preparar liquidaciones (@Model.ViajesPendientesLiquidacion)
+                </a>
+                <a asp-controller="Liquidaciones" asp-action="Historial" class="btn btn-outline-primary text-start">
+                    Revisar pagos pendientes (@Model.LiquidacionesPendientesPago)
+                </a>
+            </div>
+        </div>
+    </div>
 </div>

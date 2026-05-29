@@ -13,35 +13,45 @@ namespace Paraba.BLL.Services
             return conductorRepository.Listar();
         }
 
-        public bool SuspenderConductor(int idConductor)
+        public bool SuspenderConductor(int idConductor, string motivo)
         {
             if (idConductor <= 0)
             {
                 throw new ArgumentException("Debe seleccionar un conductor valido.");
+            }
+
+            if (string.IsNullOrWhiteSpace(motivo) || motivo.Trim().Length < 10)
+            {
+                throw new ArgumentException("Debe ingresar un motivo administrativo valido.");
             }
 
             bool actualizado = conductorRepository.ActualizarEstado(idConductor, false);
 
             if (actualizado)
             {
-                RegistrarAuditoria(idConductor, "Conductor suspendido", "Activo", "Suspendido", "Conductor suspendido desde el panel administrativo.");
+                RegistrarAuditoria(idConductor, "Conductor suspendido", "Activo", "Suspendido", motivo.Trim());
             }
 
             return actualizado;
         }
 
-        public bool ReactivarConductor(int idConductor)
+        public bool ReactivarConductor(int idConductor, string motivo)
         {
             if (idConductor <= 0)
             {
                 throw new ArgumentException("Debe seleccionar un conductor valido.");
             }
 
+            if (string.IsNullOrWhiteSpace(motivo) || motivo.Trim().Length < 10)
+            {
+                throw new ArgumentException("Debe ingresar un motivo administrativo valido.");
+            }
+
             bool actualizado = conductorRepository.ActualizarEstado(idConductor, true);
 
             if (actualizado)
             {
-                RegistrarAuditoria(idConductor, "Conductor reactivado", "Suspendido", "Activo", "Conductor reactivado desde el panel administrativo.");
+                RegistrarAuditoria(idConductor, "Conductor reactivado", "Suspendido", "Activo", motivo.Trim());
             }
 
             return actualizado;

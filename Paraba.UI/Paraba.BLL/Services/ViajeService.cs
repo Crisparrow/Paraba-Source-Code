@@ -195,9 +195,14 @@ namespace Paraba.BLL.Services
             RegistrarAuditoria(idViaje, "Viaje finalizado", "En curso", "Finalizado", viaje.TarifaAceptada, viaje.TarifaAceptada, "El viaje fue finalizado.");
         }
 
-        public void CancelarViaje(int idViaje)
+        public void CancelarViaje(int idViaje, string motivo)
         {
             Viaje viaje = ObtenerViajeValido(idViaje);
+
+            if (string.IsNullOrWhiteSpace(motivo) || motivo.Trim().Length < 10)
+            {
+                throw new ArgumentException("Debe ingresar un motivo administrativo valido.");
+            }
 
             if (viaje.IdEstadoViaje == 4 || viaje.IdEstadoViaje == 5)
             {
@@ -205,7 +210,7 @@ namespace Paraba.BLL.Services
             }
 
             viajeRepository.CancelarViaje(idViaje);
-            RegistrarAuditoria(idViaje, "Viaje cancelado", ObtenerNombreEstado(viaje.IdEstadoViaje), "Cancelado", viaje.TarifaAceptada, viaje.TarifaAceptada, "El viaje fue cancelado desde el panel administrativo.");
+            RegistrarAuditoria(idViaje, "Viaje cancelado", ObtenerNombreEstado(viaje.IdEstadoViaje), "Cancelado", viaje.TarifaAceptada, viaje.TarifaAceptada, motivo.Trim());
         }
 
         private Viaje ObtenerViajeValido(int idViaje)

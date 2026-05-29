@@ -1,0 +1,120 @@
+@model Paraba.UI.ViewModels.ReporteViajesViewModel
+
+@{
+    ViewData["Title"] = "Reporte de viajes";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Reporte de viajes</h1>
+        <p class="text-muted mb-0">Consulta operativa y financiera de viajes registrados.</p>
+    </div>
+    <a asp-controller="ReporteViajes"
+       asp-action="ExportarCsv"
+       asp-route-FechaDesde="@Model.FechaDesde?.ToString("yyyy-MM-dd")"
+       asp-route-FechaHasta="@Model.FechaHasta?.ToString("yyyy-MM-dd")"
+       asp-route-IdEstadoViaje="@Model.IdEstadoViaje"
+       asp-route-IdTipoServicio="@Model.IdTipoServicio"
+       asp-route-IdConductor="@Model.IdConductor"
+       class="btn btn-outline-success">Exportar CSV</a>
+</div>
+
+<form asp-controller="ReporteViajes" asp-action="Index" method="get" class="row g-3 mb-4">
+    <div class="col-md-2">
+        <label class="form-label">Desde</label>
+        <input asp-for="FechaDesde" class="form-control" type="date" />
+    </div>
+
+    <div class="col-md-2">
+        <label class="form-label">Hasta</label>
+        <input asp-for="FechaHasta" class="form-control" type="date" />
+    </div>
+
+    <div class="col-md-2">
+        <label class="form-label">Estado</label>
+        <select asp-for="IdEstadoViaje" asp-items="Model.EstadosViaje" class="form-select"></select>
+    </div>
+
+    <div class="col-md-2">
+        <label class="form-label">Servicio</label>
+        <select asp-for="IdTipoServicio" asp-items="Model.TiposServicio" class="form-select"></select>
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">Conductor</label>
+        <select asp-for="IdConductor" asp-items="Model.Conductores" class="form-select"></select>
+    </div>
+
+    <div class="col-md-1 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+    </div>
+</form>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-2">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Viajes</div>
+            <div class="h4 mb-0">@Model.TotalViajes</div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Finalizados</div>
+            <div class="h4 mb-0">@Model.TotalFinalizados</div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Cancelados</div>
+            <div class="h4 mb-0">@Model.TotalCancelados</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Ingresos finalizados</div>
+            <div class="h4 mb-0">@Model.IngresosFinalizados.ToString("0.00")</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Promedio tarifa aceptada</div>
+            <div class="h4 mb-0">@Model.PromedioTarifaAceptada.ToString("0.00")</div>
+        </div>
+    </div>
+</div>
+
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Pasajero</th>
+            <th>Conductor</th>
+            <th>Servicio</th>
+            <th>Ruta</th>
+            <th>Estado</th>
+            <th>Sugerida</th>
+            <th>Oferta</th>
+            <th>Aceptada</th>
+            <th>Final</th>
+            <th>Solicitud</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var viaje in Model.Viajes)
+        {
+            <tr>
+                <td>@viaje.IdViaje</td>
+                <td>@viaje.Pasajero</td>
+                <td>@viaje.Conductor</td>
+                <td>@viaje.TipoServicio</td>
+                <td>@viaje.Ruta</td>
+                <td>@viaje.Estado</td>
+                <td>@viaje.TarifaSugerida.ToString("0.00")</td>
+                <td>@viaje.TarifaOfertada.ToString("0.00")</td>
+                <td>@(viaje.TarifaAceptada?.ToString("0.00") ?? "-")</td>
+                <td>@viaje.TarifaFinal.ToString("0.00")</td>
+                <td>@viaje.FechaSolicitud.ToString("dd/MM/yyyy HH:mm")</td>
+            </tr>
+        }
+    </tbody>
+</table>

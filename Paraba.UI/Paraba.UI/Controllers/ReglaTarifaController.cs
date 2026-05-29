@@ -8,17 +8,25 @@ namespace Paraba.UI.Controllers
     public class ReglaTarifaController : Controller
     {
         private readonly ReglaTarifaService reglaTarifaService = new ReglaTarifaService();
+        private readonly TipoServicioService tipoServicioService = new TipoServicioService();
+        private readonly ZonaService zonaService = new ZonaService();
 
         public IActionResult Index()
         {
             var reglas = reglaTarifaService.ListarReglasTarifa();
+            var tiposServicio = tipoServicioService.ListarTiposServicio();
+            var zonas = zonaService.ListarZonas();
             var reglasViewModel = reglas.Select(regla => new ReglaTarifaViewModel
             {
                 IdReglaTarifa = regla.IdReglaTarifa,
                 Nombre = regla.Nombre,
                 TipoRegla = regla.TipoRegla,
-                TipoServicio = ObtenerTipoServicio(regla.IdTipoServicio),
-                Zona = ObtenerZona(regla.IdZona),
+                TipoServicio = regla.IdTipoServicio == null
+                    ? "Todos"
+                    : tiposServicio.FirstOrDefault(item => item.IdTipoServicio == regla.IdTipoServicio)?.Nombre ?? "Tipo no identificado",
+                Zona = regla.IdZona == null
+                    ? "Todas"
+                    : zonas.FirstOrDefault(item => item.IdZona == regla.IdZona)?.Nombre ?? "Zona no identificada",
                 PorcentajeIncremento = regla.PorcentajeIncremento,
                 MontoIncremento = regla.MontoIncremento,
                 Horario = ObtenerHorario(regla.HoraInicio, regla.HoraFin),
@@ -27,29 +35,6 @@ namespace Paraba.UI.Controllers
             }).ToList();
 
             return View(reglasViewModel);
-        }
-
-        private static string ObtenerTipoServicio(int? idTipoServicio)
-        {
-            return idTipoServicio switch
-            {
-                1 => "Taxi",
-                2 => "Moto taxi",
-                _ => "Todos"
-            };
-        }
-
-        private static string ObtenerZona(int? idZona)
-        {
-            return idZona switch
-            {
-                1 => "Centro",
-                2 => "Norte",
-                3 => "Sur",
-                4 => "Terminal",
-                5 => "Universidad",
-                _ => "Todas"
-            };
         }
 
         private static string ObtenerHorario(TimeSpan? horaInicio, TimeSpan? horaFin)

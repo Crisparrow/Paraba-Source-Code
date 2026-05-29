@@ -1,0 +1,50 @@
+@model Paraba.UI.ViewModels.RevisionDocumentoConductorViewModel
+
+@{
+    ViewData["Title"] = "Aprobar documento";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Aprobar documento</h1>
+        <p class="text-muted mb-0">Confirma la aprobacion solo si el documento es valido y legible.</p>
+    </div>
+    <a asp-controller="DocumentoConductor" asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+@if (Model.EstaVencido)
+{
+    <div class="alert alert-danger">
+        Este documento esta vencido. El sistema no permitira aprobarlo.
+    </div>
+}
+
+<div class="border rounded p-3 mb-3">
+    <div><strong>Conductor:</strong> @Model.Conductor</div>
+    <div><strong>Documento:</strong> @Model.TipoDocumento</div>
+    <div><strong>Numero:</strong> @Model.NumeroDocumento</div>
+    <div><strong>Archivo:</strong> @Model.UrlArchivo</div>
+    <div><strong>Vencimiento:</strong> @(Model.FechaVencimiento?.ToString("dd/MM/yyyy") ?? "No aplica")</div>
+</div>
+
+<form asp-controller="DocumentoConductor" asp-action="ConfirmarAprobacion" method="post" class="row g-3">
+    @Html.AntiForgeryToken()
+    <input asp-for="IdDocumentoConductor" type="hidden" />
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="col-12">
+        <label asp-for="ObservacionAprobacion" class="form-label">Observacion administrativa opcional</label>
+        <textarea asp-for="ObservacionAprobacion" class="form-control" rows="4" maxlength="300"></textarea>
+        <span asp-validation-for="ObservacionAprobacion" class="text-danger"></span>
+    </div>
+
+    <div class="col-12 d-flex gap-2">
+        <button type="submit" class="btn btn-success" disabled="@Model.EstaVencido">Confirmar aprobacion</button>
+        <a asp-controller="DocumentoConductor" asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

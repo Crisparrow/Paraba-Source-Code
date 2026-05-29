@@ -1,0 +1,121 @@
+@model Paraba.UI.ViewModels.DetalleUsuarioAdminViewModel
+
+@{
+    ViewData["Title"] = "Detalle usuario admin";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Detalle usuario admin</h1>
+        <p class="text-muted mb-0">Control de acceso, roles e historial de seguridad.</p>
+    </div>
+    <div class="d-flex gap-2">
+        @if (Model.Estado && !Model.EsUsuarioActual)
+        {
+            <a asp-controller="UsuarioAdmin" asp-action="Suspender" asp-route-id="@Model.IdUsuarioAdmin" class="btn btn-outline-danger">Suspender</a>
+        }
+        else if (!Model.Estado)
+        {
+            <a asp-controller="UsuarioAdmin" asp-action="Reactivar" asp-route-id="@Model.IdUsuarioAdmin" class="btn btn-outline-success">Reactivar</a>
+        }
+        <a asp-controller="UsuarioAdmin" asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+    </div>
+</div>
+
+@if (Model.EsUsuarioActual)
+{
+    <div class="alert alert-info">
+        Este es tu usuario actual. Por seguridad, no puedes suspender tu propia cuenta.
+    </div>
+}
+
+<div class="detail-grid">
+    <section class="detail-panel">
+        <h2>Usuario</h2>
+        <div class="detail-list">
+            <div class="detail-row">
+                <span class="detail-label">Nombre</span>
+                <span class="detail-value">@Model.NombreCompleto</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Correo</span>
+                <span class="detail-value">@Model.Correo</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Roles</span>
+                <span class="detail-value">@Model.Roles</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="detail-panel">
+        <h2>Seguridad</h2>
+        <div class="detail-list">
+            <div class="detail-row">
+                <span class="detail-label">Estado</span>
+                <span class="detail-value">
+                    <span class="status-badge @(Model.Estado ? "status-success" : "status-danger")">
+                        @(Model.Estado ? "Activo" : "Suspendido")
+                    </span>
+                </span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Intentos fallidos</span>
+                <span class="detail-value">@Model.IntentosFallidos</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Ultimo acceso</span>
+                <span class="detail-value">@(Model.UltimoAcceso?.ToString("dd/MM/yyyy HH:mm") ?? "Sin acceso")</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="detail-panel">
+        <h2>Registro</h2>
+        <div class="detail-list">
+            <div class="detail-row">
+                <span class="detail-label">Fecha registro</span>
+                <span class="detail-value">@Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Usuario actual</span>
+                <span class="detail-value">@(Model.EsUsuarioActual ? "Si" : "No")</span>
+            </div>
+        </div>
+    </section>
+</div>
+
+<section class="detail-panel">
+    <h2>Auditoria de accesos y seguridad</h2>
+
+    @if (!Model.Auditorias.Any())
+    {
+        <div class="alert alert-secondary mb-0">Este usuario aun no tiene eventos de auditoria registrados.</div>
+    }
+    else
+    {
+        <table class="table table-bordered table-hover align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Accion</th>
+                    <th>Exitoso</th>
+                    <th>IP</th>
+                    <th>Observacion</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Auditorias)
+                {
+                    <tr>
+                        <td>@item.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@item.Accion</td>
+                        <td>@(item.Exitoso ? "Si" : "No")</td>
+                        <td>@item.IpOrigen</td>
+                        <td>@item.Observacion</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</section>

@@ -168,6 +168,49 @@ namespace Paraba.DAL.Repositories
             return roles;
         }
 
+        public List<AuditoriaAccesoAdmin> ListarAuditoriaAccesos()
+        {
+            List<AuditoriaAccesoAdmin> auditorias = new List<AuditoriaAccesoAdmin>();
+
+            using SqlConnection cn = conexion.ObtenerConexion();
+
+            string query = @"
+                SELECT
+                    IdAuditoriaAccesoAdmin,
+                    IdUsuarioAdmin,
+                    Correo,
+                    Accion,
+                    Exitoso,
+                    IpOrigen,
+                    Observacion,
+                    FechaRegistro
+                FROM AuditoriaAccesosAdmin
+                ORDER BY FechaRegistro DESC, IdAuditoriaAccesoAdmin DESC";
+
+            using SqlCommand cmd = new SqlCommand(query, cn);
+
+            cn.Open();
+
+            using SqlDataReader dr = cmd.ExecuteReader();
+
+            while (dr.Read())
+            {
+                auditorias.Add(new AuditoriaAccesoAdmin
+                {
+                    IdAuditoriaAccesoAdmin = Convert.ToInt32(dr["IdAuditoriaAccesoAdmin"]),
+                    IdUsuarioAdmin = dr["IdUsuarioAdmin"] == DBNull.Value ? null : Convert.ToInt32(dr["IdUsuarioAdmin"]),
+                    Correo = dr["Correo"].ToString() ?? string.Empty,
+                    Accion = dr["Accion"].ToString() ?? string.Empty,
+                    Exitoso = Convert.ToBoolean(dr["Exitoso"]),
+                    IpOrigen = dr["IpOrigen"].ToString() ?? string.Empty,
+                    Observacion = dr["Observacion"].ToString() ?? string.Empty,
+                    FechaRegistro = Convert.ToDateTime(dr["FechaRegistro"])
+                });
+            }
+
+            return auditorias;
+        }
+
         public int Crear(UsuarioAdmin usuario)
         {
             using SqlConnection cn = conexion.ObtenerConexion();

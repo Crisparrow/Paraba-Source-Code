@@ -1,0 +1,193 @@
+@model Paraba.UI.ViewModels.DetalleViajeViewModel
+
+@{
+    ViewData["Title"] = "Detalle de viaje";
+
+    var estadoClase = Model.EstadoViaje switch
+    {
+        "Aceptado" => "status-success",
+        "En curso" => "status-info",
+        "Finalizado" => "status-muted",
+        "Cancelado" => "status-danger",
+        _ => "status-warning"
+    };
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Detalle de viaje #@Model.IdViaje</h1>
+        <p class="text-muted mb-0">Vista administrativa para auditoria, soporte e intervencion controlada.</p>
+    </div>
+    <div class="d-flex gap-2">
+        @if (Model.PuedeCancelar)
+        {
+            <a asp-controller="Viaje" asp-action="Cancelar" asp-route-id="@Model.IdViaje" class="btn btn-outline-danger">Cancelar admin</a>
+        }
+        <a asp-controller="Viaje" asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+    </div>
+</div>
+
+<div class="detail-grid">
+    <section class="detail-panel">
+        <h2>Resumen</h2>
+        <div class="detail-list">
+            <div class="detail-row">
+                <span class="detail-label">Estado</span>
+                <span class="detail-value"><span class="status-badge @estadoClase">@Model.EstadoViaje</span></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Servicio</span>
+                <span class="detail-value">@Model.TipoServicio</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Origen</span>
+                <span class="detail-value">@Model.Origen</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Destino</span>
+                <span class="detail-value">@Model.Destino</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="detail-panel">
+        <h2>Pasajero</h2>
+        <div class="detail-list">
+            <div class="detail-row">
+                <span class="detail-label">Nombre</span>
+                <span class="detail-value">@Model.Pasajero</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Documento</span>
+                <span class="detail-value">@Model.DocumentoPasajero</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Telefono</span>
+                <span class="detail-value">@Model.TelefonoPasajero</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Correo</span>
+                <span class="detail-value">@Model.CorreoPasajero</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="detail-panel">
+        <h2>Conductor y vehiculo</h2>
+        <div class="detail-list">
+            <div class="detail-row">
+                <span class="detail-label">Conductor</span>
+                <span class="detail-value">@Model.Conductor</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Telefono</span>
+                <span class="detail-value">@Model.TelefonoConductor</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Vehiculo</span>
+                <span class="detail-value">@Model.Vehiculo</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Placa / color</span>
+                <span class="detail-value">@Model.Placa / @Model.Color</span>
+            </div>
+        </div>
+    </section>
+</div>
+
+<div class="detail-grid">
+    <section class="detail-panel">
+        <h2>Tarifas</h2>
+        <div class="detail-list">
+            <div class="detail-row">
+                <span class="detail-label">Sugerida PARABA</span>
+                <span class="detail-value money-value">@Model.TarifaSugerida.ToString("0.00")</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Oferta pasajero</span>
+                <span class="detail-value money-value">@Model.TarifaOfertada.ToString("0.00")</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Contraoferta conductor</span>
+                <span class="detail-value">@(Model.TarifaContraoferta?.ToString("0.00") ?? "-")</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Aceptada / final</span>
+                <span class="detail-value money-value">@((Model.TarifaAceptada ?? Model.TarifaFinal).ToString("0.00"))</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="detail-panel">
+        <h2>Fechas</h2>
+        <div class="detail-list">
+            <div class="detail-row">
+                <span class="detail-label">Solicitud</span>
+                <span class="detail-value">@Model.FechaSolicitud.ToString("dd/MM/yyyy HH:mm")</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Inicio</span>
+                <span class="detail-value">@(Model.FechaInicio?.ToString("dd/MM/yyyy HH:mm") ?? "-")</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Fin</span>
+                <span class="detail-value">@(Model.FechaFin?.ToString("dd/MM/yyyy HH:mm") ?? "-")</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="detail-panel">
+        <h2>Control administrativo</h2>
+        <div class="detail-list">
+            <div class="detail-row">
+                <span class="detail-label">Puede cancelarse</span>
+                <span class="detail-value">@(Model.PuedeCancelar ? "Si" : "No")</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Eventos auditados</span>
+                <span class="detail-value">@Model.Auditorias.Count</span>
+            </div>
+        </div>
+    </section>
+</div>
+
+<section class="detail-panel">
+    <h2>Auditoria del viaje</h2>
+
+    @if (!Model.Auditorias.Any())
+    {
+        <div class="alert alert-secondary mb-0">Este viaje todavia no tiene eventos de auditoria registrados.</div>
+    }
+    else
+    {
+        <table class="table table-bordered table-hover align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Accion</th>
+                    <th>Estado anterior</th>
+                    <th>Estado nuevo</th>
+                    <th>Tarifa anterior</th>
+                    <th>Tarifa nueva</th>
+                    <th>Usuario</th>
+                    <th>Observacion</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var auditoria in Model.Auditorias)
+                {
+                    <tr>
+                        <td>@auditoria.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@auditoria.Accion</td>
+                        <td>@auditoria.EstadoAnterior</td>
+                        <td>@auditoria.EstadoNuevo</td>
+                        <td>@(auditoria.TarifaAnterior?.ToString("0.00") ?? "-")</td>
+                        <td>@(auditoria.TarifaNueva?.ToString("0.00") ?? "-")</td>
+                        <td>@auditoria.UsuarioSistema</td>
+                        <td>@auditoria.Observacion</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</section>

@@ -1,0 +1,52 @@
+@model Paraba.UI.ViewModels.ReclamoViewModel
+
+@{
+    ViewData["Title"] = "Nuevo reclamo";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Nuevo reclamo</h1>
+        <p class="text-muted mb-0">Registro administrativo de un caso reportado por pasajero, conductor u operacion.</p>
+    </div>
+    <a asp-controller="Reclamo" asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+<form asp-controller="Reclamo" asp-action="Crear" method="post" class="row g-3">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="col-md-3">
+        <label asp-for="IdViaje" class="form-label">ID viaje</label>
+        <input asp-for="IdViaje" class="form-control" />
+    </div>
+    <div class="col-md-3">
+        <label asp-for="IdPasajero" class="form-label">ID pasajero</label>
+        <input asp-for="IdPasajero" class="form-control" />
+    </div>
+    <div class="col-md-3">
+        <label asp-for="IdConductor" class="form-label">ID conductor</label>
+        <input asp-for="IdConductor" class="form-control" />
+    </div>
+    <div class="col-md-3">
+        <label asp-for="Prioridad" class="form-label">Prioridad</label>
+        <select asp-for="Prioridad" class="form-select">
+            <option>Media</option>
+            <option>Alta</option>
+            <option>Baja</option>
+        </select>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="TipoReclamo" class="form-label">Tipo</label>
+        <input asp-for="TipoReclamo" class="form-control" placeholder="Cobro, trato, seguridad, demora" />
+        <span asp-validation-for="TipoReclamo" class="text-danger"></span>
+    </div>
+    <div class="col-md-8">
+        <label asp-for="Descripcion" class="form-label">Descripcion</label>
+        <textarea asp-for="Descripcion" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Descripcion" class="text-danger"></span>
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Registrar reclamo</button>
+    </div>
+</form>

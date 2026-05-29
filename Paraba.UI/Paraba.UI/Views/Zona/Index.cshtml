@@ -18,8 +18,13 @@
             <th>Ciudad</th>
             <th>Nombre</th>
             <th>Descripcion</th>
+            <th>Cobertura</th>
+            <th>Riesgo</th>
+            <th>Demanda</th>
+            <th>Observacion operativa</th>
             <th>Estado</th>
             <th>Registro</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
@@ -30,8 +35,15 @@
                 <td>@zona.Ciudad</td>
                 <td><strong>@zona.Nombre</strong></td>
                 <td>@zona.Descripcion</td>
+                <td>@(zona.CoberturaActiva ? "Activa" : "Sin cobertura")</td>
+                <td>@(zona.EsZonaRiesgo ? "Riesgo" : "Normal")</td>
+                <td>@(zona.AltaDemanda ? "Alta" : "Normal")</td>
+                <td>@zona.ObservacionOperativa</td>
                 <td>@(zona.Estado ? "Activo" : "Inactivo")</td>
                 <td>@zona.FechaRegistro.ToString("dd/MM/yyyy")</td>
+                <td>
+                    <a asp-controller="Zona" asp-action="Operacion" asp-route-id="@zona.IdZona" class="btn btn-sm btn-outline-primary">Operacion</a>
+                </td>
             </tr>
         }
     </tbody>

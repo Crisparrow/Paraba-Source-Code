@@ -1,0 +1,131 @@
+@model Paraba.UI.ViewModels.HistorialLiquidacionesViewModel
+
+@{
+    ViewData["Title"] = "Historial liquidaciones";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Historial de liquidaciones</h1>
+        <p class="text-muted mb-0">Liquidaciones cerradas, pagos a conductores y anulaciones financieras.</p>
+    </div>
+    <a asp-controller="Liquidaciones" asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Cerradas por pagar</div>
+            <div class="h4 mb-0">@Model.TotalCerradas</div>
+            <div class="small text-muted">Neto: @Model.TotalNetoPendientePago.ToString("0.00")</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Pagadas</div>
+            <div class="h4 mb-0">@Model.TotalPagadas</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Anuladas</div>
+            <div class="h4 mb-0">@Model.TotalAnuladas</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Comision PARABA</div>
+            <div class="h4 mb-0">@Model.TotalComisionParaba.ToString("0.00")</div>
+        </div>
+    </div>
+</div>
+
+<form asp-controller="Liquidaciones" asp-action="Historial" method="get" class="row g-3 mb-4">
+    <div class="col-md-3">
+        <label class="form-label">Estado</label>
+        <select asp-for="Estado" asp-items="Model.Estados" class="form-select"></select>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Cierre desde</label>
+        <input asp-for="FechaDesde" class="form-control" type="date" />
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Cierre hasta</label>
+        <input asp-for="FechaHasta" class="form-control" type="date" />
+    </div>
+    <div class="col-md-3 d-flex align-items-end gap-2">
+        <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+        <a asp-controller="Liquidaciones" asp-action="Historial" class="btn btn-outline-secondary">Limpiar</a>
+    </div>
+</form>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Conductor</th>
+                <th>Periodo</th>
+                <th>Comision %</th>
+                <th>Total bruto</th>
+                <th>Comision PARABA</th>
+                <th>Neto conductor</th>
+                <th>Estado</th>
+                <th>Usuario cierre</th>
+                <th>Fecha cierre</th>
+                <th>Fecha pago</th>
+                <th>Observacion</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Liquidaciones)
+            {
+                var estadoClase = item.Estado switch
+                {
+                    "Pagada" => "status-success",
+                    "Anulada" => "status-danger",
+                    _ => "status-warning"
+                };
+
+                <tr>
+                    <td>@item.IdLiquidacionConductor</td>
+                    <td>@item.Conductor</td>
+                    <td>@item.FechaDesde.ToString("dd/MM/yyyy") - @item.FechaHasta.ToString("dd/MM/yyyy")</td>
+                    <td>@item.PorcentajeComision.ToString("0.##")</td>
+                    <td>@item.TotalBruto.ToString("0.00")</td>
+                    <td>@item.TotalComisionParaba.ToString("0.00")</td>
+                    <td>@item.TotalNetoConductor.ToString("0.00")</td>
+                    <td><span class="status-badge @estadoClase">@item.Estado</span></td>
+                    <td>@item.UsuarioCierre</td>
+                    <td>@item.FechaCierre.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@(item.FechaPago?.ToString("dd/MM/yyyy HH:mm") ?? "-")</td>
+                    <td>@item.Observacion</td>
+                    <td>
+                        <div class="table-actions mb-1">
+                            <a asp-controller="Liquidaciones" asp-action="Detalle" asp-route-id="@item.IdLiquidacionConductor" class="btn btn-sm btn-outline-secondary w-100">Detalle</a>
+                        </div>
+                        @if (item.Estado == "Cerrada")
+                        {
+                            <div class="table-actions">
+                                <a asp-controller="Liquidaciones" asp-action="MarcarPagada" asp-route-id="@item.IdLiquidacionConductor" class="btn btn-sm btn-success w-100">Marcar pagada</a>
+                                <a asp-controller="Liquidaciones" asp-action="Anular" asp-route-id="@item.IdLiquidacionConductor" class="btn btn-sm btn-outline-danger w-100">Anular</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Cerrado</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@if (!Model.Liquidaciones.Any())
+{
+    <div class="alert alert-info">
+        No hay liquidaciones con los filtros seleccionados.
+    </div>
+}

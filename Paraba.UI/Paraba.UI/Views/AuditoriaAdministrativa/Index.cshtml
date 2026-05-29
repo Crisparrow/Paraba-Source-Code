@@ -1,0 +1,44 @@
+@model List<Paraba.ENTITY.Models.AuditoriaAdministrativa>
+
+@{
+    ViewData["Title"] = "Auditoria administrativa";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <h1 class="h3 mb-1">Auditoria administrativa</h1>
+        <p class="text-muted mb-0">Registro de acciones criticas realizadas desde el panel.</p>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Modulo</th>
+                <th>Accion</th>
+                <th>Entidad</th>
+                <th>ID entidad</th>
+                <th>Usuario</th>
+                <th>Observacion</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.IdAuditoriaAdministrativa</td>
+                    <td>@item.Modulo</td>
+                    <td>@item.Accion</td>
+                    <td>@item.Entidad</td>
+                    <td>@(item.IdEntidad?.ToString() ?? "-")</td>
+                    <td>@item.UsuarioSistema</td>
+                    <td>@item.Observacion</td>
+                    <td>@item.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

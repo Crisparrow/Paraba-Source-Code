@@ -8,16 +8,20 @@ namespace Paraba.UI.Controllers
     public class CalificacionController : Controller
     {
         private readonly CalificacionService calificacionService = new CalificacionService();
+        private readonly PasajeroService pasajeroService = new PasajeroService();
+        private readonly ConductorService conductorService = new ConductorService();
 
         public IActionResult Index()
         {
+            var pasajeros = pasajeroService.ListarPasajeros();
+            var conductores = conductorService.ListarConductores();
             var calificaciones = calificacionService.ListarCalificaciones();
             var calificacionesViewModel = calificaciones.Select(calificacion => new CalificacionViewModel
             {
                 IdCalificacion = calificacion.IdCalificacion,
                 IdViaje = calificacion.IdViaje,
-                Pasajero = ObtenerNombrePasajero(calificacion.IdPasajero),
-                Conductor = ObtenerNombreConductor(calificacion.IdConductor),
+                Pasajero = pasajeros.FirstOrDefault(item => item.IdPasajero == calificacion.IdPasajero)?.NombreCompleto ?? "Pasajero no identificado",
+                Conductor = conductores.FirstOrDefault(item => item.IdConductor == calificacion.IdConductor)?.NombreCompleto ?? "Conductor no identificado",
                 Puntaje = calificacion.Puntaje,
                 Comentario = calificacion.Comentario,
                 Estado = calificacion.Estado,
@@ -25,26 +29,6 @@ namespace Paraba.UI.Controllers
             }).ToList();
 
             return View(calificacionesViewModel);
-        }
-
-        private static string ObtenerNombrePasajero(int idPasajero)
-        {
-            return idPasajero switch
-            {
-                1 => "Mariana Vargas",
-                2 => "Jorge Salinas",
-                _ => "Pasajero no identificado"
-            };
-        }
-
-        private static string ObtenerNombreConductor(int idConductor)
-        {
-            return idConductor switch
-            {
-                1 => "Carlos Mendoza",
-                2 => "Ana Rojas",
-                _ => "Conductor no identificado"
-            };
         }
     }
 }

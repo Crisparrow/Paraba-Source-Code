@@ -7,9 +7,12 @@
 <div class="d-flex align-items-center justify-content-between mb-3">
     <div>
         <h1 class="h3 mb-1">Viajes</h1>
-        <p class="text-muted mb-0">Solicitudes y viajes registrados en PARABA.</p>
+        <p class="text-muted mb-0">Monitoreo administrativo de solicitudes y viajes creados desde las apps.</p>
     </div>
-    <a asp-controller="Viaje" asp-action="CrearSolicitud" class="btn btn-primary">Nueva solicitud</a>
+</div>
+
+<div class="alert alert-info">
+    Este panel no crea viajes ni actua como pasajero o conductor. Las solicitudes, ofertas, contraofertas, inicio y finalizacion se realizan desde las apps correspondientes.
 </div>
 
 <table class="table table-bordered table-hover align-middle">
@@ -33,6 +36,15 @@
     <tbody>
         @foreach (var viaje in Model)
         {
+            var estadoClase = viaje.EstadoViaje switch
+            {
+                "Aceptado" => "status-success",
+                "En curso" => "status-info",
+                "Finalizado" => "status-muted",
+                "Cancelado" => "status-danger",
+                _ => "status-warning"
+            };
+
             <tr>
                 <td>@viaje.IdViaje</td>
                 <td>@viaje.Pasajero</td>
@@ -43,49 +55,44 @@
                     <strong>@viaje.Origen</strong>
                     <div class="text-muted small">@viaje.Destino</div>
                 </td>
-                <td>@viaje.TarifaSugerida.ToString("0.00")</td>
-                <td>@viaje.TarifaOfertada.ToString("0.00")</td>
-                <td>@(viaje.TarifaContraoferta?.ToString("0.00") ?? "Sin contraoferta")</td>
-                <td>@(viaje.TarifaAceptada?.ToString("0.00") ?? "Pendiente")</td>
-                <td>@viaje.EstadoViaje</td>
+                <td><span class="money-value">@viaje.TarifaSugerida.ToString("0.00")</span></td>
+                <td><span class="money-value">@viaje.TarifaOfertada.ToString("0.00")</span></td>
+                <td>
+                    @if (viaje.TarifaContraoferta.HasValue)
+                    {
+                        <span class="money-value">@viaje.TarifaContraoferta.Value.ToString("0.00")</span>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Sin contraoferta</span>
+                    }
+                </td>
+                <td>
+                    @if (viaje.TarifaAceptada.HasValue)
+                    {
+                        <span class="money-value">@viaje.TarifaAceptada.Value.ToString("0.00")</span>
+                    }
+                    else
+                    {
+                        <span class="status-badge status-warning">Pendiente</span>
+                    }
+                </td>
+                <td><span class="status-badge @estadoClase">@viaje.EstadoViaje</span></td>
                 <td>@viaje.FechaSolicitud.ToString("dd/MM/yyyy HH:mm")</td>
                 <td>
-                    <div class="d-flex flex-column gap-1">
-                        @if (viaje.EstadoViaje == "Solicitado")
-                        {
-                            <a asp-controller="Viaje" asp-action="Contraoferta" asp-route-id="@viaje.IdViaje" class="btn btn-sm btn-outline-primary">
-                                Contraoferta
-                            </a>
-                            <a asp-controller="Viaje" asp-action="ResponderContraoferta" asp-route-id="@viaje.IdViaje" class="btn btn-sm btn-outline-success">
-                                Responder
-                            </a>
-                        }
-
-                        @if (viaje.EstadoViaje == "Aceptado")
-                        {
-                            <form asp-controller="Viaje" asp-action="Iniciar" method="post">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="idViaje" value="@viaje.IdViaje" />
-                                <button type="submit" class="btn btn-sm btn-warning w-100">Iniciar</button>
-                            </form>
-                        }
-
-                        @if (viaje.EstadoViaje == "En curso")
-                        {
-                            <form asp-controller="Viaje" asp-action="Finalizar" method="post">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="idViaje" value="@viaje.IdViaje" />
-                                <button type="submit" class="btn btn-sm btn-dark w-100">Finalizar</button>
-                            </form>
-                        }
-
+                    <div class="table-actions">
+                        <a asp-controller="Viaje" asp-action="Detalle" asp-route-id="@viaje.IdViaje" class="btn btn-sm btn-outline-secondary w-100">
+                            Detalle
+                        </a>
                         @if (viaje.EstadoViaje != "Finalizado" && viaje.EstadoViaje != "Cancelado")
                         {
-                            <form asp-controller="Viaje" asp-action="Cancelar" method="post">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="idViaje" value="@viaje.IdViaje" />
-                                <button type="submit" class="btn btn-sm btn-outline-danger w-100">Cancelar</button>
-                            </form>
+                            <a asp-controller="Viaje" asp-action="Cancelar" asp-route-id="@viaje.IdViaje" class="btn btn-sm btn-outline-danger w-100">
+                                Cancelar admin
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Sin acciones</span>
                         }
                     </div>
                 </td>
