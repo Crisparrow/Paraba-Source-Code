@@ -1,3 +1,4 @@
+using System.Data;
 using Microsoft.Data.SqlClient;
 using Paraba.DAL.Connections;
 using Paraba.ENTITY.Models;
@@ -14,25 +15,8 @@ namespace Paraba.DAL.Repositories
 
             using SqlConnection cn = conexion.ObtenerConexion();
 
-            string query = @"
-                SELECT
-                    IdLiquidacionConductor,
-                    IdConductor,
-                    FechaDesde,
-                    FechaHasta,
-                    PorcentajeComision,
-                    TotalBruto,
-                    TotalComisionParaba,
-                    TotalNetoConductor,
-                    Estado,
-                    UsuarioCierre,
-                    FechaCierre,
-                    FechaPago,
-                    Observacion
-                FROM LiquidacionesConductores
-                ORDER BY FechaCierre DESC, IdLiquidacionConductor DESC";
-
-            using SqlCommand cmd = new SqlCommand(query, cn);
+            using SqlCommand cmd = new SqlCommand("dbo.sp_LiquidacionesConductores_Listar", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
 
             cn.Open();
 
@@ -67,11 +51,8 @@ namespace Paraba.DAL.Repositories
 
             using SqlConnection cn = conexion.ObtenerConexion();
 
-            string query = @"
-                SELECT DISTINCT IdViaje
-                FROM LiquidacionesConductoresDetalle";
-
-            using SqlCommand cmd = new SqlCommand(query, cn);
+            using SqlCommand cmd = new SqlCommand("dbo.sp_LiquidacionesConductores_ListarIdsViajesLiquidados", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
 
             cn.Open();
 
@@ -91,20 +72,8 @@ namespace Paraba.DAL.Repositories
 
             using SqlConnection cn = conexion.ObtenerConexion();
 
-            string query = @"
-                SELECT
-                    IdLiquidacionConductorDetalle,
-                    IdLiquidacionConductor,
-                    IdViaje,
-                    TarifaFinal,
-                    ComisionParaba,
-                    NetoConductor,
-                    FechaRegistro
-                FROM LiquidacionesConductoresDetalle
-                WHERE IdLiquidacionConductor = @IdLiquidacionConductor
-                ORDER BY IdViaje";
-
-            using SqlCommand cmd = new SqlCommand(query, cn);
+            using SqlCommand cmd = new SqlCommand("dbo.sp_LiquidacionesConductores_ListarDetalles", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@IdLiquidacionConductor", idLiquidacionConductor);
 
             cn.Open();
@@ -132,43 +101,26 @@ namespace Paraba.DAL.Repositories
         {
             using SqlConnection cn = conexion.ObtenerConexion();
 
-            string query = @"
-                UPDATE LiquidacionesConductores
-                SET
-                    Estado = 'Pagada',
-                    FechaPago = GETDATE(),
-                    Observacion = @Observacion
-                WHERE
-                    IdLiquidacionConductor = @IdLiquidacionConductor
-                    AND Estado = 'Cerrada'";
-
-            using SqlCommand cmd = new SqlCommand(query, cn);
+            using SqlCommand cmd = new SqlCommand("dbo.sp_LiquidacionesConductores_MarcarPagada", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@IdLiquidacionConductor", idLiquidacionConductor);
             cmd.Parameters.AddWithValue("@Observacion", observacion);
 
             cn.Open();
-            cmd.ExecuteNonQuery();
+            cmd.ExecuteScalar();
         }
 
         public void Anular(int idLiquidacionConductor, string motivo)
         {
             using SqlConnection cn = conexion.ObtenerConexion();
 
-            string query = @"
-                UPDATE LiquidacionesConductores
-                SET
-                    Estado = 'Anulada',
-                    Observacion = @Observacion
-                WHERE
-                    IdLiquidacionConductor = @IdLiquidacionConductor
-                    AND Estado = 'Cerrada'";
-
-            using SqlCommand cmd = new SqlCommand(query, cn);
+            using SqlCommand cmd = new SqlCommand("dbo.sp_LiquidacionesConductores_Anular", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@IdLiquidacionConductor", idLiquidacionConductor);
             cmd.Parameters.AddWithValue("@Observacion", motivo);
 
             cn.Open();
-            cmd.ExecuteNonQuery();
+            cmd.ExecuteScalar();
         }
 
         public int Crear(LiquidacionConductor liquidacion, List<LiquidacionConductorDetalle> detalles)
@@ -180,38 +132,8 @@ namespace Paraba.DAL.Repositories
 
             try
             {
-                string queryCabecera = @"
-                    INSERT INTO LiquidacionesConductores
-                    (
-                        IdConductor,
-                        FechaDesde,
-                        FechaHasta,
-                        PorcentajeComision,
-                        TotalBruto,
-                        TotalComisionParaba,
-                        TotalNetoConductor,
-                        Estado,
-                        UsuarioCierre,
-                        FechaCierre,
-                        Observacion
-                    )
-                    OUTPUT INSERTED.IdLiquidacionConductor
-                    VALUES
-                    (
-                        @IdConductor,
-                        @FechaDesde,
-                        @FechaHasta,
-                        @PorcentajeComision,
-                        @TotalBruto,
-                        @TotalComisionParaba,
-                        @TotalNetoConductor,
-                        @Estado,
-                        @UsuarioCierre,
-                        @FechaCierre,
-                        @Observacion
-                    )";
-
-                using SqlCommand cmdCabecera = new SqlCommand(queryCabecera, cn, transaction);
+                using SqlCommand cmdCabecera = new SqlCommand("dbo.sp_LiquidacionesConductores_CrearCabecera", cn, transaction);
+                cmdCabecera.CommandType = CommandType.StoredProcedure;
                 cmdCabecera.Parameters.AddWithValue("@IdConductor", liquidacion.IdConductor);
                 cmdCabecera.Parameters.AddWithValue("@FechaDesde", liquidacion.FechaDesde.Date);
                 cmdCabecera.Parameters.AddWithValue("@FechaHasta", liquidacion.FechaHasta.Date);
@@ -226,29 +148,10 @@ namespace Paraba.DAL.Repositories
 
                 int idLiquidacion = Convert.ToInt32(cmdCabecera.ExecuteScalar());
 
-                string queryDetalle = @"
-                    INSERT INTO LiquidacionesConductoresDetalle
-                    (
-                        IdLiquidacionConductor,
-                        IdViaje,
-                        TarifaFinal,
-                        ComisionParaba,
-                        NetoConductor,
-                        FechaRegistro
-                    )
-                    VALUES
-                    (
-                        @IdLiquidacionConductor,
-                        @IdViaje,
-                        @TarifaFinal,
-                        @ComisionParaba,
-                        @NetoConductor,
-                        @FechaRegistro
-                    )";
-
                 foreach (var detalle in detalles)
                 {
-                    using SqlCommand cmdDetalle = new SqlCommand(queryDetalle, cn, transaction);
+                    using SqlCommand cmdDetalle = new SqlCommand("dbo.sp_LiquidacionesConductores_CrearDetalle", cn, transaction);
+                    cmdDetalle.CommandType = CommandType.StoredProcedure;
                     cmdDetalle.Parameters.AddWithValue("@IdLiquidacionConductor", idLiquidacion);
                     cmdDetalle.Parameters.AddWithValue("@IdViaje", detalle.IdViaje);
                     cmdDetalle.Parameters.AddWithValue("@TarifaFinal", detalle.TarifaFinal);
