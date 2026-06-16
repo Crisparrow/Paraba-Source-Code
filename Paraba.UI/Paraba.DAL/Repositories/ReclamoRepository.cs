@@ -1,6 +1,7 @@
 using Microsoft.Data.SqlClient;
 using Paraba.DAL.Connections;
 using Paraba.ENTITY.Models;
+using System.Data;
 
 namespace Paraba.DAL.Repositories
 {
@@ -12,13 +13,9 @@ namespace Paraba.DAL.Repositories
         {
             List<Reclamo> lista = new List<Reclamo>();
             using SqlConnection cn = conexion.ObtenerConexion();
-            string query = @"
-                SELECT IdReclamo, IdViaje, IdPasajero, IdConductor, TipoReclamo, Descripcion, Estado, Prioridad,
-                    UsuarioRegistro, UsuarioCierre, ObservacionCierre, FechaRegistro, FechaCierre
-                FROM Reclamos
-                ORDER BY FechaRegistro DESC, IdReclamo DESC";
+            using SqlCommand cmd = new SqlCommand("dbo.sp_Reclamos_Listar", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
 
-            using SqlCommand cmd = new SqlCommand(query, cn);
             cn.Open();
             using SqlDataReader dr = cmd.ExecuteReader();
             while (dr.Read())
@@ -47,11 +44,8 @@ namespace Paraba.DAL.Repositories
         public void Registrar(Reclamo reclamo)
         {
             using SqlConnection cn = conexion.ObtenerConexion();
-            string query = @"
-                INSERT INTO Reclamos (IdViaje, IdPasajero, IdConductor, TipoReclamo, Descripcion, Estado, Prioridad, UsuarioRegistro, FechaRegistro)
-                VALUES (@IdViaje, @IdPasajero, @IdConductor, @TipoReclamo, @Descripcion, 'Abierto', @Prioridad, @UsuarioRegistro, GETDATE())";
-
-            using SqlCommand cmd = new SqlCommand(query, cn);
+            using SqlCommand cmd = new SqlCommand("dbo.sp_Reclamos_Registrar", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@IdViaje", reclamo.IdViaje == null ? DBNull.Value : reclamo.IdViaje);
             cmd.Parameters.AddWithValue("@IdPasajero", reclamo.IdPasajero == null ? DBNull.Value : reclamo.IdPasajero);
             cmd.Parameters.AddWithValue("@IdConductor", reclamo.IdConductor == null ? DBNull.Value : reclamo.IdConductor);
@@ -61,25 +55,21 @@ namespace Paraba.DAL.Repositories
             cmd.Parameters.AddWithValue("@UsuarioRegistro", reclamo.UsuarioRegistro);
 
             cn.Open();
-            cmd.ExecuteNonQuery();
+            cmd.ExecuteScalar();
         }
 
         public void Cerrar(int idReclamo, string estado, string usuarioCierre, string observacionCierre)
         {
             using SqlConnection cn = conexion.ObtenerConexion();
-            string query = @"
-                UPDATE Reclamos
-                SET Estado = @Estado, UsuarioCierre = @UsuarioCierre, ObservacionCierre = @ObservacionCierre, FechaCierre = GETDATE()
-                WHERE IdReclamo = @IdReclamo AND Estado <> 'Cerrado'";
-
-            using SqlCommand cmd = new SqlCommand(query, cn);
+            using SqlCommand cmd = new SqlCommand("dbo.sp_Reclamos_Cerrar", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@IdReclamo", idReclamo);
             cmd.Parameters.AddWithValue("@Estado", estado);
             cmd.Parameters.AddWithValue("@UsuarioCierre", usuarioCierre);
             cmd.Parameters.AddWithValue("@ObservacionCierre", observacionCierre);
 
             cn.Open();
-            cmd.ExecuteNonQuery();
+            cmd.ExecuteScalar();
         }
     }
 }
