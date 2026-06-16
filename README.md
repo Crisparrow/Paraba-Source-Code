@@ -4,26 +4,41 @@ Sistema administrativo web de PARABA para taxi y moto taxi.
 
 ## Requisitos
 
-- Visual Studio
-- .NET 10
+- Visual Studio 2022 actualizado
+- .NET 8 SDK
 - SQL Server
 - SQL Server Management Studio
 
 ## Como abrir el proyecto
 
 1. Clonar este repositorio.
-2. Abrir Visual Studio.
+2. Abrir Visual Studio 2022.
 3. Abrir la solucion:
    `Paraba.UI/Paraba.slnx`
 4. Restaurar/compilar la solucion.
-5. Crear la base de datos ejecutando en SQL Server Management Studio:
-   `ParabaDBSQL/00_Create_ParabaDB_Complete.sql`
+5. Crear la base de datos ejecutando en SQL Server Management Studio los scripts de `ParabaDBSQL` en este orden:
+   - `00_Create_ParabaDB_Complete.sql`
+   - `01_Update_Service_Categories.sql`
+   - `02_Create_Test_Admin_Users.sql`
+   - `03_Create_Base_Stored_Procedures.sql`
+   - `04_Create_Verification_Stored_Procedures.sql`
+   - `05_Create_Admin_Trip_Stored_Procedures.sql`
+   - `06_Create_Liquidation_Stored_Procedures.sql`
+   - `07_Create_Support_Stored_Procedures.sql`
+   - `08_Create_Admin_Audit_Stored_Procedures.sql`
 6. Ejecutar el proyecto `Paraba.UI`.
 
 ## Acceso inicial
 
 - Correo: `admin@paraba.com`
 - Password: `ParabaAdmin2026!`
+
+Usuarios de prueba por rol:
+
+- `operaciones@paraba.com` / `ParabaTest2026!`
+- `soporte@paraba.com` / `ParabaTest2026!`
+- `verificador@paraba.com` / `ParabaTest2026!`
+- `finanzas@paraba.com` / `ParabaTest2026!`
 
 ## Conexion SQL Server
 
