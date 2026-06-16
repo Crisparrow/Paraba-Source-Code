@@ -11,6 +11,7 @@ namespace Paraba.UI.Controllers
     public class UsuarioAdminController : Controller
     {
         private readonly UsuarioAdminService usuarioAdminService = new UsuarioAdminService();
+        private readonly AuditoriaAdministrativaService auditoriaAdministrativaService = new AuditoriaAdministrativaService();
 
         public IActionResult Index()
         {
@@ -92,6 +93,14 @@ namespace Paraba.UI.Controllers
                     viewModel.Correo,
                     viewModel.Password,
                     viewModel.IdRolAdmin);
+
+                auditoriaAdministrativaService.Registrar(
+                    "Seguridad",
+                    "Usuario administrador creado",
+                    "UsuarioAdmin",
+                    null,
+                    ObtenerUsuario(),
+                    $"Usuario creado: {viewModel.Correo}");
             }
             catch (ArgumentException ex)
             {
@@ -170,10 +179,12 @@ namespace Paraba.UI.Controllers
                 if (accion == "Suspender")
                 {
                     usuarioAdminService.SuspenderUsuario(viewModel.IdUsuarioAdmin, ObtenerIdUsuarioActual(), viewModel.Motivo);
+                    auditoriaAdministrativaService.Registrar("Seguridad", "Usuario administrador suspendido", "UsuarioAdmin", viewModel.IdUsuarioAdmin, ObtenerUsuario(), viewModel.Motivo);
                 }
                 else
                 {
                     usuarioAdminService.ReactivarUsuario(viewModel.IdUsuarioAdmin, viewModel.Motivo);
+                    auditoriaAdministrativaService.Registrar("Seguridad", "Usuario administrador reactivado", "UsuarioAdmin", viewModel.IdUsuarioAdmin, ObtenerUsuario(), viewModel.Motivo);
                 }
             }
             catch (ArgumentException ex)
@@ -231,6 +242,11 @@ namespace Paraba.UI.Controllers
             string? valor = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             return int.TryParse(valor, out int idUsuarioAdmin) ? idUsuarioAdmin : 0;
+        }
+
+        private string ObtenerUsuario()
+        {
+            return User.FindFirstValue(ClaimTypes.Email) ?? User.Identity?.Name ?? "Admin PARABA";
         }
     }
 }

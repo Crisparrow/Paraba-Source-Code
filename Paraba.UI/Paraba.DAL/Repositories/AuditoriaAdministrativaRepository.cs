@@ -1,6 +1,7 @@
 using Microsoft.Data.SqlClient;
 using Paraba.DAL.Connections;
 using Paraba.ENTITY.Models;
+using System.Data;
 
 namespace Paraba.DAL.Repositories
 {
@@ -13,12 +14,8 @@ namespace Paraba.DAL.Repositories
             List<AuditoriaAdministrativa> lista = new List<AuditoriaAdministrativa>();
 
             using SqlConnection cn = conexion.ObtenerConexion();
-            string query = @"
-                SELECT IdAuditoriaAdministrativa, Modulo, Accion, Entidad, IdEntidad, UsuarioSistema, Observacion, FechaRegistro
-                FROM AuditoriaAdministrativa
-                ORDER BY FechaRegistro DESC, IdAuditoriaAdministrativa DESC";
-
-            using SqlCommand cmd = new SqlCommand(query, cn);
+            using SqlCommand cmd = new SqlCommand("dbo.sp_AuditoriaAdministrativa_Listar", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
             cn.Open();
 
             using SqlDataReader dr = cmd.ExecuteReader();
@@ -43,11 +40,8 @@ namespace Paraba.DAL.Repositories
         public void Registrar(AuditoriaAdministrativa auditoria)
         {
             using SqlConnection cn = conexion.ObtenerConexion();
-            string query = @"
-                INSERT INTO AuditoriaAdministrativa (Modulo, Accion, Entidad, IdEntidad, UsuarioSistema, Observacion, FechaRegistro)
-                VALUES (@Modulo, @Accion, @Entidad, @IdEntidad, @UsuarioSistema, @Observacion, GETDATE())";
-
-            using SqlCommand cmd = new SqlCommand(query, cn);
+            using SqlCommand cmd = new SqlCommand("dbo.sp_AuditoriaAdministrativa_Registrar", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@Modulo", auditoria.Modulo);
             cmd.Parameters.AddWithValue("@Accion", auditoria.Accion);
             cmd.Parameters.AddWithValue("@Entidad", auditoria.Entidad);
@@ -56,7 +50,7 @@ namespace Paraba.DAL.Repositories
             cmd.Parameters.AddWithValue("@Observacion", auditoria.Observacion);
 
             cn.Open();
-            cmd.ExecuteNonQuery();
+            cmd.ExecuteScalar();
         }
     }
 }

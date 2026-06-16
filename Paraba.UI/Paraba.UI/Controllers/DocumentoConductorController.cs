@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Paraba.BLL.Services;
 using Paraba.UI.ViewModels;
+using System.Security.Claims;
 
 namespace Paraba.UI.Controllers
 {
@@ -9,6 +10,7 @@ namespace Paraba.UI.Controllers
     {
         private readonly DocumentoConductorService documentoConductorService = new DocumentoConductorService();
         private readonly ConductorService conductorService = new ConductorService();
+        private readonly AuditoriaAdministrativaService auditoriaAdministrativaService = new AuditoriaAdministrativaService();
 
         public IActionResult Index(DocumentoConductorFiltroViewModel filtros)
         {
@@ -121,6 +123,14 @@ namespace Paraba.UI.Controllers
                 documentoConductorService.AprobarDocumento(
                     viewModel.IdDocumentoConductor,
                     viewModel.ObservacionAprobacion);
+
+                auditoriaAdministrativaService.Registrar(
+                    "Verificacion",
+                    "Documento aprobado",
+                    "DocumentoConductor",
+                    viewModel.IdDocumentoConductor,
+                    ObtenerUsuario(),
+                    $"{viewModel.TipoDocumento} aprobado para {viewModel.Conductor}. {viewModel.ObservacionAprobacion}");
             }
             catch (ArgumentException ex)
             {
@@ -167,6 +177,14 @@ namespace Paraba.UI.Controllers
                 documentoConductorService.RechazarDocumento(
                     viewModel.IdDocumentoConductor,
                     viewModel.MotivoRechazo);
+
+                auditoriaAdministrativaService.Registrar(
+                    "Verificacion",
+                    "Documento rechazado",
+                    "DocumentoConductor",
+                    viewModel.IdDocumentoConductor,
+                    ObtenerUsuario(),
+                    viewModel.MotivoRechazo);
             }
             catch (ArgumentException ex)
             {
@@ -206,6 +224,11 @@ namespace Paraba.UI.Controllers
             return conductorService.ListarConductores()
                 .FirstOrDefault(item => item.IdConductor == idConductor)?.NombreCompleto
                 ?? "Conductor no identificado";
+        }
+
+        private string ObtenerUsuario()
+        {
+            return User.FindFirstValue(ClaimTypes.Email) ?? User.Identity?.Name ?? "Admin PARABA";
         }
     }
 }

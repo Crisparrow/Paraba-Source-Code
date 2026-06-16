@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Paraba.BLL.Services;
 using Paraba.UI.ViewModels;
+using System.Security.Claims;
 
 namespace Paraba.UI.Controllers
 {
@@ -13,6 +14,7 @@ namespace Paraba.UI.Controllers
         private readonly VehiculoService vehiculoService = new VehiculoService();
         private readonly TipoServicioService tipoServicioService = new TipoServicioService();
         private readonly AuditoriaViajeService auditoriaViajeService = new AuditoriaViajeService();
+        private readonly AuditoriaAdministrativaService auditoriaAdministrativaService = new AuditoriaAdministrativaService();
 
         public IActionResult Index()
         {
@@ -139,6 +141,7 @@ namespace Paraba.UI.Controllers
             try
             {
                 viajeAdminService.CancelarViaje(viewModel.IdViaje, viewModel.Motivo);
+                auditoriaAdministrativaService.Registrar("Operaciones", "Viaje cancelado por administracion", "Viaje", viewModel.IdViaje, ObtenerUsuario(), viewModel.Motivo);
             }
             catch (ArgumentException ex)
             {
@@ -197,6 +200,11 @@ namespace Paraba.UI.Controllers
             return tipoServicioService.ListarTiposServicio()
                 .FirstOrDefault(item => item.IdTipoServicio == idTipoServicio)?.Nombre
                 ?? "Tipo no identificado";
+        }
+
+        private string ObtenerUsuario()
+        {
+            return User.FindFirstValue(ClaimTypes.Email) ?? User.Identity?.Name ?? "Admin PARABA";
         }
 
         private static string ObtenerEstadoViaje(int idEstadoViaje)

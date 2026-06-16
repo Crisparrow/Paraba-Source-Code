@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Paraba.BLL.Services;
 using Paraba.UI.ViewModels;
+using System.Security.Claims;
 
 namespace Paraba.UI.Controllers
 {
@@ -14,6 +15,7 @@ namespace Paraba.UI.Controllers
         private readonly CalificacionService calificacionService = new CalificacionService();
         private readonly PasajeroService pasajeroService = new PasajeroService();
         private readonly AuditoriaConductorService auditoriaConductorService = new AuditoriaConductorService();
+        private readonly AuditoriaAdministrativaService auditoriaAdministrativaService = new AuditoriaAdministrativaService();
 
         public IActionResult Index()
         {
@@ -207,10 +209,12 @@ namespace Paraba.UI.Controllers
                 if (accion == "Suspender")
                 {
                     conductorService.SuspenderConductor(viewModel.IdConductor, viewModel.Motivo);
+                    auditoriaAdministrativaService.Registrar("Conductores", "Conductor suspendido", "Conductor", viewModel.IdConductor, ObtenerUsuario(), viewModel.Motivo);
                 }
                 else
                 {
                     conductorService.ReactivarConductor(viewModel.IdConductor, viewModel.Motivo);
+                    auditoriaAdministrativaService.Registrar("Conductores", "Conductor reactivado", "Conductor", viewModel.IdConductor, ObtenerUsuario(), viewModel.Motivo);
                 }
             }
             catch (ArgumentException ex)
@@ -249,6 +253,11 @@ namespace Paraba.UI.Controllers
                 EstadoActual = conductor.Estado ? "Activo" : "Suspendido",
                 Accion = accion
             };
+        }
+
+        private string ObtenerUsuario()
+        {
+            return User.FindFirstValue(ClaimTypes.Email) ?? User.Identity?.Name ?? "Admin PARABA";
         }
     }
 }
