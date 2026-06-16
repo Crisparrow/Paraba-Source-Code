@@ -1,3 +1,4 @@
+using System.Data;
 using Microsoft.Data.SqlClient;
 using Paraba.DAL.Connections;
 using Paraba.ENTITY.Models;
@@ -14,21 +15,8 @@ namespace Paraba.DAL.Repositories
 
             using SqlConnection cn = conexion.ObtenerConexion();
 
-            string query = @"
-                SELECT
-                    IdDocumentoConductor,
-                    IdConductor,
-                    TipoDocumento,
-                    NumeroDocumento,
-                    UrlArchivo,
-                    FechaVencimiento,
-                    EstadoVerificacion,
-                    Observacion,
-                    FechaRegistro
-                FROM DocumentosConductor
-                ORDER BY IdDocumentoConductor";
-
-            using SqlCommand cmd = new SqlCommand(query, cn);
+            using SqlCommand cmd = new SqlCommand("dbo.sp_DocumentosConductor_Listar", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
 
             cn.Open();
 
@@ -57,21 +45,8 @@ namespace Paraba.DAL.Repositories
         {
             using SqlConnection cn = conexion.ObtenerConexion();
 
-            string query = @"
-                SELECT
-                    IdDocumentoConductor,
-                    IdConductor,
-                    TipoDocumento,
-                    NumeroDocumento,
-                    UrlArchivo,
-                    FechaVencimiento,
-                    EstadoVerificacion,
-                    Observacion,
-                    FechaRegistro
-                FROM DocumentosConductor
-                WHERE IdDocumentoConductor = @IdDocumentoConductor";
-
-            using SqlCommand cmd = new SqlCommand(query, cn);
+            using SqlCommand cmd = new SqlCommand("dbo.sp_DocumentosConductor_ObtenerPorId", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@IdDocumentoConductor", idDocumentoConductor);
 
             cn.Open();
@@ -101,21 +76,15 @@ namespace Paraba.DAL.Repositories
         {
             using SqlConnection cn = conexion.ObtenerConexion();
 
-            string query = @"
-                UPDATE DocumentosConductor
-                SET
-                    EstadoVerificacion = @EstadoVerificacion,
-                    Observacion = @Observacion
-                WHERE IdDocumentoConductor = @IdDocumentoConductor";
-
-            using SqlCommand cmd = new SqlCommand(query, cn);
+            using SqlCommand cmd = new SqlCommand("dbo.sp_DocumentosConductor_ActualizarEstadoVerificacion", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@IdDocumentoConductor", idDocumentoConductor);
             cmd.Parameters.AddWithValue("@EstadoVerificacion", estadoVerificacion);
             cmd.Parameters.AddWithValue("@Observacion", observacion);
 
             cn.Open();
 
-            int filasAfectadas = cmd.ExecuteNonQuery();
+            int filasAfectadas = Convert.ToInt32(cmd.ExecuteScalar());
 
             return filasAfectadas > 0;
         }

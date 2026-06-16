@@ -47,18 +47,14 @@ namespace Paraba.DAL.Repositories
         {
             using SqlConnection cn = conexion.ObtenerConexion();
 
-            string query = @"
-                UPDATE Conductores
-                SET Verificado = @Verificado
-                WHERE IdConductor = @IdConductor";
-
-            using SqlCommand cmd = new SqlCommand(query, cn);
+            using SqlCommand cmd = new SqlCommand("dbo.sp_Conductores_ActualizarVerificado", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@IdConductor", idConductor);
             cmd.Parameters.AddWithValue("@Verificado", verificado);
 
             cn.Open();
 
-            int filasAfectadas = cmd.ExecuteNonQuery();
+            int filasAfectadas = Convert.ToInt32(cmd.ExecuteScalar());
 
             return filasAfectadas > 0;
         }
@@ -67,20 +63,14 @@ namespace Paraba.DAL.Repositories
         {
             using SqlConnection cn = conexion.ObtenerConexion();
 
-            string query = @"
-                UPDATE Conductores
-                SET
-                    Estado = @Estado,
-                    Disponible = CASE WHEN @Estado = 0 THEN 0 ELSE Disponible END
-                WHERE IdConductor = @IdConductor";
-
-            using SqlCommand cmd = new SqlCommand(query, cn);
+            using SqlCommand cmd = new SqlCommand("dbo.sp_Conductores_ActualizarEstado", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@IdConductor", idConductor);
             cmd.Parameters.AddWithValue("@Estado", estado);
 
             cn.Open();
 
-            int filasAfectadas = cmd.ExecuteNonQuery();
+            int filasAfectadas = Convert.ToInt32(cmd.ExecuteScalar());
 
             return filasAfectadas > 0;
         }
