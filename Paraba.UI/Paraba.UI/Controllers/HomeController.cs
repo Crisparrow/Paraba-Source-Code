@@ -10,7 +10,7 @@ namespace Paraba.UI.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-        private readonly ViajeService viajeService = new ViajeService();
+        private readonly ViajeAdminService viajeAdminService = new ViajeAdminService();
         private readonly ConductorService conductorService = new ConductorService();
         private readonly DocumentoConductorService documentoConductorService = new DocumentoConductorService();
         private readonly PasajeroService pasajeroService = new PasajeroService();
@@ -19,7 +19,7 @@ namespace Paraba.UI.Controllers
 
         public IActionResult Index()
         {
-            var viajes = viajeService.ListarViajes();
+            var viajes = viajeAdminService.ListarViajes();
             var conductores = conductorService.ListarConductores();
             var documentos = documentoConductorService.ListarDocumentos();
             var pasajeros = pasajeroService.ListarPasajeros();
@@ -87,3 +87,4 @@ namespace Paraba.UI.Controllers
         }
     }
 }
+

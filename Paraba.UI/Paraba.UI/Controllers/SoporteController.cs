@@ -8,14 +8,14 @@ namespace Paraba.UI.Controllers
     [Authorize(Roles = "SuperAdmin,Soporte,Operaciones")]
     public class SoporteController : Controller
     {
-        private readonly ViajeService viajeService = new ViajeService();
+        private readonly ViajeAdminService viajeAdminService = new ViajeAdminService();
         private readonly PasajeroService pasajeroService = new PasajeroService();
         private readonly ConductorService conductorService = new ConductorService();
         private readonly CalificacionService calificacionService = new CalificacionService();
 
         public IActionResult Index()
         {
-            var viajes = viajeService.ListarViajes();
+            var viajes = viajeAdminService.ListarViajes();
             var pasajeros = pasajeroService.ListarPasajeros();
             var conductores = conductorService.ListarConductores();
             var calificaciones = calificacionService.ListarCalificaciones()
@@ -87,3 +87,4 @@ namespace Paraba.UI.Controllers
         }
     }
 }
+

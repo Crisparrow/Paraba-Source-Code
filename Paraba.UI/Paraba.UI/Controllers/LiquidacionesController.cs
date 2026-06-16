@@ -10,7 +10,7 @@ namespace Paraba.UI.Controllers
     [Authorize(Roles = "SuperAdmin,Finanzas")]
     public class LiquidacionesController : Controller
     {
-        private readonly ViajeService viajeService = new ViajeService();
+        private readonly ViajeAdminService viajeAdminService = new ViajeAdminService();
         private readonly ConductorService conductorService = new ConductorService();
         private readonly PasajeroService pasajeroService = new PasajeroService();
         private readonly TipoServicioService tipoServicioService = new TipoServicioService();
@@ -114,7 +114,7 @@ namespace Paraba.UI.Controllers
                     viewModel.FechaHasta.Value,
                     filtros.PorcentajeComision,
                     usuarioCierre,
-                    viajeService.ListarViajes(),
+                    viajeAdminService.ListarViajes(),
                     viewModel.ObservacionCierre);
                 auditoriaAdministrativaService.Registrar("Finanzas", "Liquidacion cerrada", "LiquidacionConductor", idLiquidacion, usuarioCierre, $"Neto conductor: {viewModel.TotalNetoConductor:0.00}");
 
@@ -206,7 +206,7 @@ namespace Paraba.UI.Controllers
             var comisiones = comisionServicioService.ListarComisiones();
             var idsViajesLiquidados = liquidacionConductorService.ListarIdsViajesLiquidados();
 
-            var viajesFinalizados = viajeService.ListarViajes()
+            var viajesFinalizados = viajeAdminService.ListarViajes()
                 .Where(item => item.IdEstadoViaje == 4 &&
                     item.FechaFin != null &&
                     !idsViajesLiquidados.Contains(item.IdViaje))
@@ -394,7 +394,7 @@ namespace Paraba.UI.Controllers
             var conductores = conductorService.ListarConductores();
             var pasajeros = pasajeroService.ListarPasajeros();
             var tiposServicio = tipoServicioService.ListarTiposServicio();
-            var viajes = viajeService.ListarViajes();
+            var viajes = viajeAdminService.ListarViajes();
             var detalles = liquidacionConductorService.ListarDetalles(idLiquidacionConductor)
                 .Select(detalle =>
                 {
@@ -438,3 +438,4 @@ namespace Paraba.UI.Controllers
         }
     }
 }
+

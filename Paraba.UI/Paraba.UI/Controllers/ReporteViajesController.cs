@@ -11,7 +11,7 @@ namespace Paraba.UI.Controllers
     [Authorize(Roles = "SuperAdmin,Operaciones,Soporte,Finanzas")]
     public class ReporteViajesController : Controller
     {
-        private readonly ViajeService viajeService = new ViajeService();
+        private readonly ViajeAdminService viajeAdminService = new ViajeAdminService();
         private readonly PasajeroService pasajeroService = new PasajeroService();
         private readonly ConductorService conductorService = new ConductorService();
         private readonly TipoServicioService tipoServicioService = new TipoServicioService();
@@ -59,7 +59,7 @@ namespace Paraba.UI.Controllers
             var tiposServicio = tipoServicioService.ListarTiposServicio();
             var estadosViaje = estadoViajeService.ListarEstadosViaje();
 
-            var viajes = viajeService.ListarViajes().AsEnumerable();
+            var viajes = viajeAdminService.ListarViajes().AsEnumerable();
 
             if (filtros.FechaDesde != null)
             {
@@ -159,3 +159,4 @@ namespace Paraba.UI.Controllers
         }
     }
 }
+

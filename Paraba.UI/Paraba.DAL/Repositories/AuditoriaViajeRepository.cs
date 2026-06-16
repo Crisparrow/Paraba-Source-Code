@@ -1,3 +1,4 @@
+using System.Data;
 using Microsoft.Data.SqlClient;
 using Paraba.DAL.Connections;
 using Paraba.ENTITY.Models;
@@ -14,22 +15,8 @@ namespace Paraba.DAL.Repositories
 
             using SqlConnection cn = conexion.ObtenerConexion();
 
-            string query = @"
-                SELECT
-                    IdAuditoriaViaje,
-                    IdViaje,
-                    Accion,
-                    EstadoAnterior,
-                    EstadoNuevo,
-                    TarifaAnterior,
-                    TarifaNueva,
-                    UsuarioSistema,
-                    Observacion,
-                    FechaRegistro
-                FROM AuditoriaViajes
-                ORDER BY FechaRegistro DESC, IdAuditoriaViaje DESC";
-
-            using SqlCommand cmd = new SqlCommand(query, cn);
+            using SqlCommand cmd = new SqlCommand("dbo.sp_AuditoriaViajes_Listar", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
 
             cn.Open();
 
@@ -59,33 +46,8 @@ namespace Paraba.DAL.Repositories
         {
             using SqlConnection cn = conexion.ObtenerConexion();
 
-            string query = @"
-                INSERT INTO AuditoriaViajes
-                (
-                    IdViaje,
-                    Accion,
-                    EstadoAnterior,
-                    EstadoNuevo,
-                    TarifaAnterior,
-                    TarifaNueva,
-                    UsuarioSistema,
-                    Observacion,
-                    FechaRegistro
-                )
-                VALUES
-                (
-                    @IdViaje,
-                    @Accion,
-                    @EstadoAnterior,
-                    @EstadoNuevo,
-                    @TarifaAnterior,
-                    @TarifaNueva,
-                    @UsuarioSistema,
-                    @Observacion,
-                    @FechaRegistro
-                )";
-
-            using SqlCommand cmd = new SqlCommand(query, cn);
+            using SqlCommand cmd = new SqlCommand("dbo.sp_AuditoriaViajes_Registrar", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
 
             cmd.Parameters.AddWithValue("@IdViaje", auditoria.IdViaje);
             cmd.Parameters.AddWithValue("@Accion", auditoria.Accion);

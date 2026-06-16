@@ -7,7 +7,7 @@ namespace Paraba.UI.Controllers
     [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin,Operaciones,Soporte")]
     public class ViajeController : Controller
     {
-        private readonly ViajeService viajeService = new ViajeService();
+        private readonly ViajeAdminService viajeAdminService = new ViajeAdminService();
         private readonly PasajeroService pasajeroService = new PasajeroService();
         private readonly ConductorService conductorService = new ConductorService();
         private readonly VehiculoService vehiculoService = new VehiculoService();
@@ -16,7 +16,7 @@ namespace Paraba.UI.Controllers
 
         public IActionResult Index()
         {
-            var viajes = viajeService.ListarViajes();
+            var viajes = viajeAdminService.ListarViajes();
             var viajesViewModel = viajes.Select(viaje => new ViajeViewModel
             {
                 IdViaje = viaje.IdViaje,
@@ -41,7 +41,7 @@ namespace Paraba.UI.Controllers
 
         public IActionResult Detalle(int id)
         {
-            var viaje = viajeService.ListarViajes().FirstOrDefault(item => item.IdViaje == id);
+            var viaje = viajeAdminService.ListarViajes().FirstOrDefault(item => item.IdViaje == id);
 
             if (viaje == null)
             {
@@ -138,7 +138,7 @@ namespace Paraba.UI.Controllers
 
             try
             {
-                viajeService.CancelarViaje(viewModel.IdViaje, viewModel.Motivo);
+                viajeAdminService.CancelarViaje(viewModel.IdViaje, viewModel.Motivo);
             }
             catch (ArgumentException ex)
             {
@@ -151,7 +151,7 @@ namespace Paraba.UI.Controllers
 
         private IntervencionViajeViewModel? CrearIntervencionViajeViewModel(int idViaje)
         {
-            var viaje = viajeService.ListarViajes().FirstOrDefault(item => item.IdViaje == idViaje);
+            var viaje = viajeAdminService.ListarViajes().FirstOrDefault(item => item.IdViaje == idViaje);
 
             if (viaje == null || viaje.IdEstadoViaje == 4 || viaje.IdEstadoViaje == 5)
             {
@@ -213,3 +213,4 @@ namespace Paraba.UI.Controllers
         }
     }
 }
+

@@ -3,7 +3,7 @@ using Paraba.ENTITY.Models;
 
 namespace Paraba.BLL.Services
 {
-    public class ViajeService
+    public class ViajeAppService
     {
         private readonly ViajeRepository viajeRepository = new ViajeRepository();
         private readonly CalculadoraTarifaService calculadoraTarifaService = new CalculadoraTarifaService();

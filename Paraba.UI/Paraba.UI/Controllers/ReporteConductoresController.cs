@@ -10,7 +10,7 @@ namespace Paraba.UI.Controllers
     public class ReporteConductoresController : Controller
     {
         private readonly ConductorService conductorService = new ConductorService();
-        private readonly ViajeService viajeService = new ViajeService();
+        private readonly ViajeAdminService viajeAdminService = new ViajeAdminService();
         private readonly CalificacionService calificacionService = new CalificacionService();
         private readonly AuditoriaAdministrativaService auditoriaAdministrativaService = new AuditoriaAdministrativaService();
 
@@ -51,7 +51,7 @@ namespace Paraba.UI.Controllers
 
         private void PrepararReporte(ReporteConductoresViewModel filtros)
         {
-            var viajes = viajeService.ListarViajes();
+            var viajes = viajeAdminService.ListarViajes();
             var calificaciones = calificacionService.ListarCalificaciones()
                 .Where(item => item.Estado)
                 .ToList();
@@ -123,3 +123,4 @@ namespace Paraba.UI.Controllers
         }
     }
 }
+

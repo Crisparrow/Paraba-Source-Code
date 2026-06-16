@@ -1,3 +1,4 @@
+using System.Data;
 using Microsoft.Data.SqlClient;
 using Paraba.DAL.Connections;
 using Paraba.ENTITY.Models;
@@ -14,29 +15,8 @@ namespace Paraba.DAL.Repositories
 
             using SqlConnection cn = conexion.ObtenerConexion();
 
-            string query = @"
-                SELECT
-                    IdViaje,
-                    IdPasajero,
-                    IdConductor,
-                    IdVehiculo,
-                    IdTipoServicio,
-                    IdEstadoViaje,
-                    Origen,
-                    Destino,
-                    TarifaEstimada,
-                    TarifaFinal,
-                    TarifaSugerida,
-                    TarifaOfertada,
-                    TarifaContraoferta,
-                    TarifaAceptada,
-                    FechaSolicitud,
-                    FechaInicio,
-                    FechaFin
-                FROM Viajes
-                ORDER BY IdViaje";
-
-            using SqlCommand cmd = new SqlCommand(query, cn);
+            using SqlCommand cmd = new SqlCommand("dbo.sp_Viajes_ListarAdmin", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
 
             cn.Open();
 
@@ -226,21 +206,13 @@ namespace Paraba.DAL.Repositories
         {
             using SqlConnection cn = conexion.ObtenerConexion();
 
-            string query = @"
-                UPDATE Viajes
-                SET
-                    IdEstadoViaje = 5,
-                    FechaFin = ISNULL(FechaFin, GETDATE())
-                WHERE
-                    IdViaje = @IdViaje
-                    AND IdEstadoViaje IN (1, 2, 3)";
-
-            using SqlCommand cmd = new SqlCommand(query, cn);
+            using SqlCommand cmd = new SqlCommand("dbo.sp_Viajes_CancelarAdmin", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
 
             cmd.Parameters.AddWithValue("@IdViaje", idViaje);
 
             cn.Open();
-            cmd.ExecuteNonQuery();
+            cmd.ExecuteScalar();
         }
     }
 }

@@ -8,13 +8,13 @@ namespace Paraba.UI.Controllers
     [Authorize(Roles = "SuperAdmin,Finanzas")]
     public class ReporteFinancieroController : Controller
     {
-        private readonly ViajeService viajeService = new ViajeService();
+        private readonly ViajeAdminService viajeAdminService = new ViajeAdminService();
         private readonly LiquidacionConductorService liquidacionConductorService = new LiquidacionConductorService();
         private readonly ConductorService conductorService = new ConductorService();
 
         public IActionResult Index(ReporteFinancieroViewModel filtros)
         {
-            var viajes = viajeService.ListarViajes().Where(item => item.IdEstadoViaje == 4).AsEnumerable();
+            var viajes = viajeAdminService.ListarViajes().Where(item => item.IdEstadoViaje == 4).AsEnumerable();
             var liquidaciones = liquidacionConductorService.ListarLiquidaciones().AsEnumerable();
             var conductores = conductorService.ListarConductores();
 
@@ -56,3 +56,4 @@ namespace Paraba.UI.Controllers
         }
     }
 }
+
