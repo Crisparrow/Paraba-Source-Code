@@ -1,3 +1,4 @@
+using System.Data;
 using Microsoft.Data.SqlClient;
 using Paraba.DAL.Connections;
 using Paraba.ENTITY.Models;
@@ -14,23 +15,8 @@ namespace Paraba.DAL.Repositories
 
             using SqlConnection cn = conexion.ObtenerConexion();
 
-            string query = @"
-                SELECT
-                    IdVehiculo,
-                    IdConductor,
-                    IdTipoServicio,
-                    Placa,
-                    Marca,
-                    Modelo,
-                    Color,
-                    Anio,
-                    Verificado,
-                    Estado,
-                    FechaRegistro
-                FROM Vehiculos
-                ORDER BY IdVehiculo";
-
-            using SqlCommand cmd = new SqlCommand(query, cn);
+            using SqlCommand cmd = new SqlCommand("dbo.sp_Vehiculos_Listar", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
 
             cn.Open();
 

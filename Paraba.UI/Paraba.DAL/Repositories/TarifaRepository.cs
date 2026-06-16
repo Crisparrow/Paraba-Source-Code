@@ -1,3 +1,4 @@
+using System.Data;
 using Microsoft.Data.SqlClient;
 using Paraba.DAL.Connections;
 using Paraba.ENTITY.Models;
@@ -14,20 +15,8 @@ namespace Paraba.DAL.Repositories
 
             using SqlConnection cn = conexion.ObtenerConexion();
 
-            string query = @"
-                SELECT
-                    IdTarifa,
-                    IdTipoServicio,
-                    TarifaBase,
-                    CostoPorKilometro,
-                    CostoPorMinuto,
-                    TarifaMinima,
-                    Estado,
-                    FechaRegistro
-                FROM Tarifas
-                ORDER BY IdTarifa";
-
-            using SqlCommand cmd = new SqlCommand(query, cn);
+            using SqlCommand cmd = new SqlCommand("dbo.sp_Tarifas_Listar", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
 
             cn.Open();
 
