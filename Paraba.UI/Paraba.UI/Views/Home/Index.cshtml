@@ -2,6 +2,11 @@
 
 @{
     ViewData["Title"] = "Dashboard";
+    bool puedeVerConductores = User.IsInRole("SuperAdmin") || User.IsInRole("Verificador") || User.IsInRole("Soporte");
+    bool puedeVerDocumentos = User.IsInRole("SuperAdmin") || User.IsInRole("Verificador");
+    bool puedeVerFinanzas = User.IsInRole("SuperAdmin") || User.IsInRole("Finanzas");
+    bool puedeVerOperacion = User.IsInRole("SuperAdmin") || User.IsInRole("Operaciones") || User.IsInRole("Soporte");
+    bool puedeVerClientes = User.IsInRole("SuperAdmin") || User.IsInRole("Soporte");
 }
 
 <div class="d-flex align-items-center justify-content-between mb-3">
@@ -12,73 +17,91 @@
 </div>
 
 <div class="row g-3 mb-4">
-    <div class="col-md-3">
-        <a asp-controller="Conductor" asp-action="Pendientes" class="text-decoration-none text-reset">
-            <div class="border rounded p-3 h-100">
-                <div class="text-muted small">Conductores por verificar</div>
-                <div class="h3 mb-1">@Model.ConductoresPendientes</div>
-                <div class="small text-muted">Requieren revision administrativa.</div>
-            </div>
-        </a>
-    </div>
-    <div class="col-md-3">
-        <a asp-controller="DocumentoConductor" asp-action="Index" class="text-decoration-none text-reset">
-            <div class="border rounded p-3 h-100">
-                <div class="text-muted small">Documentos pendientes</div>
-                <div class="h3 mb-1">@Model.DocumentosPendientes</div>
-                <div class="small text-muted">@Model.DocumentosVencidos vencido(s).</div>
-            </div>
-        </a>
-    </div>
-    <div class="col-md-3">
-        <a asp-controller="Liquidaciones" asp-action="Index" class="text-decoration-none text-reset">
-            <div class="border rounded p-3 h-100">
-                <div class="text-muted small">Viajes por liquidar</div>
-                <div class="h3 mb-1">@Model.ViajesPendientesLiquidacion</div>
-                <div class="small text-muted">Monto bruto: @Model.MontoPendienteLiquidacion.ToString("0.00")</div>
-            </div>
-        </a>
-    </div>
-    <div class="col-md-3">
-        <a asp-controller="Liquidaciones" asp-action="Historial" class="text-decoration-none text-reset">
-            <div class="border rounded p-3 h-100">
-                <div class="text-muted small">Pagos pendientes</div>
-                <div class="h3 mb-1">@Model.LiquidacionesPendientesPago</div>
-                <div class="small text-muted">Neto: @Model.NetoPendientePago.ToString("0.00")</div>
-            </div>
-        </a>
-    </div>
+    @if (puedeVerConductores)
+    {
+        <div class="col-md-3">
+            <a asp-controller="Conductor" asp-action="Pendientes" class="text-decoration-none text-reset">
+                <div class="border rounded p-3 h-100">
+                    <div class="text-muted small">Conductores por verificar</div>
+                    <div class="h3 mb-1">@Model.ConductoresPendientes</div>
+                    <div class="small text-muted">Requieren revision administrativa.</div>
+                </div>
+            </a>
+        </div>
+    }
+    @if (puedeVerDocumentos)
+    {
+        <div class="col-md-3">
+            <a asp-controller="DocumentoConductor" asp-action="Index" class="text-decoration-none text-reset">
+                <div class="border rounded p-3 h-100">
+                    <div class="text-muted small">Documentos pendientes</div>
+                    <div class="h3 mb-1">@Model.DocumentosPendientes</div>
+                    <div class="small text-muted">@Model.DocumentosVencidos vencido(s).</div>
+                </div>
+            </a>
+        </div>
+    }
+    @if (puedeVerFinanzas)
+    {
+        <div class="col-md-3">
+            <a asp-controller="Liquidaciones" asp-action="Index" class="text-decoration-none text-reset">
+                <div class="border rounded p-3 h-100">
+                    <div class="text-muted small">Viajes por liquidar</div>
+                    <div class="h3 mb-1">@Model.ViajesPendientesLiquidacion</div>
+                    <div class="small text-muted">Monto bruto: @Model.MontoPendienteLiquidacion.ToString("0.00")</div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a asp-controller="Liquidaciones" asp-action="Historial" class="text-decoration-none text-reset">
+                <div class="border rounded p-3 h-100">
+                    <div class="text-muted small">Pagos pendientes</div>
+                    <div class="h3 mb-1">@Model.LiquidacionesPendientesPago</div>
+                    <div class="small text-muted">Neto: @Model.NetoPendientePago.ToString("0.00")</div>
+                </div>
+            </a>
+        </div>
+    }
 </div>
 
 <div class="row g-3 mb-4">
-    <div class="col-md-3">
-        <div class="border rounded p-3 h-100">
-            <div class="text-muted small">Viajes hoy</div>
-            <div class="h3 mb-1">@Model.ViajesHoy</div>
-            <div class="small text-muted">@Model.ViajesFinalizadosHoy finalizado(s), @Model.ViajesCanceladosHoy cancelado(s).</div>
+    @if (puedeVerOperacion)
+    {
+        <div class="col-md-3">
+            <div class="border rounded p-3 h-100">
+                <div class="text-muted small">Viajes hoy</div>
+                <div class="h3 mb-1">@Model.ViajesHoy</div>
+                <div class="small text-muted">@Model.ViajesFinalizadosHoy finalizado(s), @Model.ViajesCanceladosHoy cancelado(s).</div>
+            </div>
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="border rounded p-3 h-100">
-            <div class="text-muted small">Ingresos hoy</div>
-            <div class="h3 mb-1">@Model.IngresosHoy.ToString("0.00")</div>
-            <div class="small text-muted">Solo viajes finalizados.</div>
+        <div class="col-md-3">
+            <div class="border rounded p-3 h-100">
+                <div class="text-muted small">Viajes en curso</div>
+                <div class="h3 mb-1">@Model.ViajesEnCurso</div>
+                <div class="small text-muted">@Model.ViajesSolicitados solicitado(s), @Model.ViajesAceptados aceptado(s).</div>
+            </div>
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="border rounded p-3 h-100">
-            <div class="text-muted small">Viajes en curso</div>
-            <div class="h3 mb-1">@Model.ViajesEnCurso</div>
-            <div class="small text-muted">@Model.ViajesSolicitados solicitado(s), @Model.ViajesAceptados aceptado(s).</div>
+    }
+    @if (puedeVerFinanzas)
+    {
+        <div class="col-md-3">
+            <div class="border rounded p-3 h-100">
+                <div class="text-muted small">Ingresos hoy</div>
+                <div class="h3 mb-1">@Model.IngresosHoy.ToString("0.00")</div>
+                <div class="small text-muted">Solo viajes finalizados.</div>
+            </div>
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="border rounded p-3 h-100">
-            <div class="text-muted small">Promedio de calificacion</div>
-            <div class="h3 mb-1">@Model.PromedioCalificacion.ToString("0.00")</div>
-            <div class="small text-muted">Sobre calificaciones activas.</div>
+    }
+    @if (puedeVerClientes)
+    {
+        <div class="col-md-3">
+            <div class="border rounded p-3 h-100">
+                <div class="text-muted small">Promedio de calificacion</div>
+                <div class="h3 mb-1">@Model.PromedioCalificacion.ToString("0.00")</div>
+                <div class="small text-muted">Sobre calificaciones activas.</div>
+            </div>
         </div>
-    </div>
+    }
 </div>
 
 <div class="row g-3">
@@ -95,31 +118,43 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Viajes</td>
-                            <td>Total registrados</td>
-                            <td>@Model.TotalViajes</td>
-                        </tr>
-                        <tr>
-                            <td>Viajes</td>
-                            <td>Finalizados / cancelados</td>
-                            <td>@Model.ViajesFinalizados / @Model.ViajesCancelados</td>
-                        </tr>
-                        <tr>
-                            <td>Conductores</td>
-                            <td>Activos / verificados</td>
-                            <td>@Model.ConductoresActivos / @Model.ConductoresVerificados</td>
-                        </tr>
-                        <tr>
-                            <td>Clientes</td>
-                            <td>Pasajeros activos</td>
-                            <td>@Model.PasajerosActivos</td>
-                        </tr>
-                        <tr>
-                            <td>Finanzas</td>
-                            <td>Ingresos finalizados historicos</td>
-                            <td>@Model.IngresosFinalizados.ToString("0.00")</td>
-                        </tr>
+                        @if (puedeVerOperacion)
+                        {
+                            <tr>
+                                <td>Viajes</td>
+                                <td>Total registrados</td>
+                                <td>@Model.TotalViajes</td>
+                            </tr>
+                            <tr>
+                                <td>Viajes</td>
+                                <td>Finalizados / cancelados</td>
+                                <td>@Model.ViajesFinalizados / @Model.ViajesCancelados</td>
+                            </tr>
+                        }
+                        @if (puedeVerConductores)
+                        {
+                            <tr>
+                                <td>Conductores</td>
+                                <td>Activos / verificados</td>
+                                <td>@Model.ConductoresActivos / @Model.ConductoresVerificados</td>
+                            </tr>
+                        }
+                        @if (puedeVerClientes)
+                        {
+                            <tr>
+                                <td>Clientes</td>
+                                <td>Pasajeros activos</td>
+                                <td>@Model.PasajerosActivos</td>
+                            </tr>
+                        }
+                        @if (puedeVerFinanzas)
+                        {
+                            <tr>
+                                <td>Finanzas</td>
+                                <td>Ingresos finalizados historicos</td>
+                                <td>@Model.IngresosFinalizados.ToString("0.00")</td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
             </div>
@@ -129,18 +164,27 @@
         <div class="border rounded p-3 h-100">
             <h2 class="h5 mb-3">Alertas de accion</h2>
             <div class="d-grid gap-2">
-                <a asp-controller="Conductor" asp-action="Pendientes" class="btn btn-outline-primary text-start">
-                    Revisar conductores pendientes (@Model.ConductoresPendientes)
-                </a>
-                <a asp-controller="DocumentoConductor" asp-action="Index" class="btn btn-outline-primary text-start">
-                    Revisar documentos (@Model.DocumentosPendientes)
-                </a>
-                <a asp-controller="Liquidaciones" asp-action="Index" class="btn btn-outline-primary text-start">
-                    Preparar liquidaciones (@Model.ViajesPendientesLiquidacion)
-                </a>
-                <a asp-controller="Liquidaciones" asp-action="Historial" class="btn btn-outline-primary text-start">
-                    Revisar pagos pendientes (@Model.LiquidacionesPendientesPago)
-                </a>
+                @if (puedeVerConductores)
+                {
+                    <a asp-controller="Conductor" asp-action="Pendientes" class="btn btn-outline-primary text-start">
+                        Revisar conductores pendientes (@Model.ConductoresPendientes)
+                    </a>
+                }
+                @if (puedeVerDocumentos)
+                {
+                    <a asp-controller="DocumentoConductor" asp-action="Index" class="btn btn-outline-primary text-start">
+                        Revisar documentos (@Model.DocumentosPendientes)
+                    </a>
+                }
+                @if (puedeVerFinanzas)
+                {
+                    <a asp-controller="Liquidaciones" asp-action="Index" class="btn btn-outline-primary text-start">
+                        Preparar liquidaciones (@Model.ViajesPendientesLiquidacion)
+                    </a>
+                    <a asp-controller="Liquidaciones" asp-action="Historial" class="btn btn-outline-primary text-start">
+                        Revisar pagos pendientes (@Model.LiquidacionesPendientesPago)
+                    </a>
+                }
             </div>
         </div>
     </div>

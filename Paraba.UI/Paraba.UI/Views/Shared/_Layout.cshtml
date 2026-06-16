@@ -40,6 +40,10 @@
                         <a asp-controller="Soporte" asp-action="Index">Soporte operativo</a>
                         <a asp-controller="Reclamo" asp-action="Index">Reclamos</a>
                         <a asp-controller="ReporteViajes" asp-action="Index">Reporte viajes</a>
+                        @if (User.IsInRole("Operaciones"))
+                        {
+                            <a asp-controller="ReporteConductores" asp-action="Index">Reporte conductores</a>
+                        }
                         <a asp-controller="SimuladorTarifa" asp-action="Index">Sugerir tarifa</a>
                     </div>
                 }
@@ -51,7 +55,10 @@
                         <a asp-controller="Conductor" asp-action="Index">Conductores</a>
                         <a asp-controller="Conductor" asp-action="Pendientes">Pendientes</a>
                         <a asp-controller="Vehiculo" asp-action="Index">Vehiculos</a>
-                        <a asp-controller="DocumentoConductor" asp-action="Index">Documentos</a>
+                        @if (User.IsInRole("SuperAdmin") || User.IsInRole("Verificador"))
+                        {
+                            <a asp-controller="DocumentoConductor" asp-action="Index">Documentos</a>
+                        }
                         <a asp-controller="PerfilConductor" asp-action="Index">Perfiles</a>
                         <a asp-controller="ReporteConductores" asp-action="Index">Reporte conductores</a>
                     </div>
@@ -73,6 +80,10 @@
                         <a asp-controller="Liquidaciones" asp-action="Index">Liquidaciones</a>
                         <a asp-controller="Liquidaciones" asp-action="Historial">Historial liquidaciones</a>
                         <a asp-controller="ReporteFinanciero" asp-action="Index">Reporte financiero</a>
+                        @if (User.IsInRole("Finanzas"))
+                        {
+                            <a asp-controller="ReporteViajes" asp-action="Index">Reporte viajes</a>
+                        }
                         <a asp-controller="ComisionServicio" asp-action="Index">Comisiones</a>
                         <a asp-controller="Tarifa" asp-action="Index">Tarifas</a>
                     </div>

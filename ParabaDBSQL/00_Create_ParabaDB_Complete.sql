@@ -408,7 +408,12 @@ VALUES
 GO
 
 INSERT INTO TiposServicio (Nombre, Estado)
-VALUES ('Taxi', 1), ('Moto taxi', 1);
+VALUES
+('Taxi economico', 1),
+('Moto taxi', 1),
+('Taxi confort', 1),
+('Taxi XL', 1),
+('Taxi premium', 1);
 GO
 
 INSERT INTO EstadosViaje (Nombre, Estado)
@@ -437,7 +442,7 @@ INSERT INTO Vehiculos
 VALUES
 (1, 1, '5482-ABC', 'Toyota', 'Corolla', 'Blanco', 2020, 1, 1, GETDATE()),
 (2, 2, '7621-KLP', 'Honda', 'CB 125F', 'Rojo', 2022, 1, 1, GETDATE()),
-(3, 1, '9012-PBB', 'Suzuki', 'Swift', 'Negro', 2021, 1, 1, GETDATE());
+(3, 3, '9012-PBB', 'Suzuki', 'Swift', 'Negro', 2021, 1, 1, GETDATE());
 GO
 
 INSERT INTO Pasajeros
@@ -451,15 +456,21 @@ GO
 INSERT INTO Tarifas
 (IdTipoServicio, TarifaBase, CostoPorKilometro, CostoPorMinuto, TarifaMinima, Estado, FechaRegistro)
 VALUES
-(1, 0, 0.80, 0.30, 8.00, 1, GETDATE()),
-(2, 0, 0.50, 0.20, 5.00, 1, GETDATE());
+(1, 0, 0.80, 0.80, 10.00, 1, GETDATE()),
+(2, 0, 0.50, 0.40, 6.00, 1, GETDATE()),
+(3, 0, 1.00, 0.90, 12.00, 1, GETDATE()),
+(4, 0, 1.20, 1.00, 15.00, 1, GETDATE()),
+(5, 0, 1.60, 1.20, 20.00, 1, GETDATE());
 GO
 
 INSERT INTO ComisionesServicio
 (IdTipoServicio, PorcentajeComision, FechaInicioVigencia, FechaFinVigencia, Estado, FechaRegistro)
 VALUES
 (1, 10.00, CAST(GETDATE() AS DATE), NULL, 1, GETDATE()),
-(2, 8.00, CAST(GETDATE() AS DATE), NULL, 1, GETDATE());
+(2, 8.00, CAST(GETDATE() AS DATE), NULL, 1, GETDATE()),
+(3, 11.00, CAST(GETDATE() AS DATE), NULL, 1, GETDATE()),
+(4, 12.00, CAST(GETDATE() AS DATE), NULL, 1, GETDATE()),
+(5, 15.00, CAST(GETDATE() AS DATE), NULL, 1, GETDATE());
 GO
 
 INSERT INTO ReglasTarifa
