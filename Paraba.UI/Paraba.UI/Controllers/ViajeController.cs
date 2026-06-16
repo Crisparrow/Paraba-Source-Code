@@ -105,6 +105,7 @@ namespace Paraba.UI.Controllers
         }
 
         [HttpGet]
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin,Operaciones")]
         public IActionResult Cancelar(int id)
         {
             var viewModel = CrearIntervencionViajeViewModel(id);
@@ -119,6 +120,7 @@ namespace Paraba.UI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin,Operaciones")]
         public IActionResult ConfirmarCancelacion(IntervencionViajeViewModel viewModel)
         {
             var datosViaje = CrearIntervencionViajeViewModel(viewModel.IdViaje);

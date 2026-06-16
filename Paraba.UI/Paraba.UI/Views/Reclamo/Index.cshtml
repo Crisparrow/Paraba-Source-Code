@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Reclamos";
+    bool puedeGestionarReclamos = User.IsInRole("SuperAdmin") || User.IsInRole("Soporte");
 }
 
 <div class="d-flex align-items-center justify-content-between mb-3">
@@ -9,7 +10,10 @@
         <h1 class="h3 mb-1">Reclamos administrativos</h1>
         <p class="text-muted mb-0">Seguimiento formal de reclamos abiertos y cerrados.</p>
     </div>
-    <a asp-controller="Reclamo" asp-action="Crear" class="btn btn-primary">Nuevo reclamo</a>
+    @if (puedeGestionarReclamos)
+    {
+        <a asp-controller="Reclamo" asp-action="Crear" class="btn btn-primary">Nuevo reclamo</a>
+    }
 </div>
 
 <div class="table-responsive">
@@ -46,7 +50,7 @@
                     <td>@item.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</td>
                     <td>@(item.FechaCierre?.ToString("dd/MM/yyyy HH:mm") ?? "-")</td>
                     <td>
-                        @if (item.Estado != "Cerrado")
+                        @if (puedeGestionarReclamos && item.Estado != "Cerrado")
                         {
                             <form asp-controller="Reclamo" asp-action="Cerrar" asp-route-id="@item.IdReclamo" method="post" class="d-grid gap-2">
                                 @Html.AntiForgeryToken()

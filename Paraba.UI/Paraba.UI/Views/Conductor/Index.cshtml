@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Conductores";
+    bool puedeIntervenirConductores = User.IsInRole("SuperAdmin") || User.IsInRole("Verificador");
 }
 
 <div class="d-flex align-items-center justify-content-between mb-3">
@@ -56,7 +57,7 @@
                             Detalle
                         </a>
                     </div>
-                    @if (conductor.Estado)
+                    @if (puedeIntervenirConductores && conductor.Estado)
                     {
                         <div class="table-actions">
                             <a asp-controller="Conductor" asp-action="Suspender" asp-route-id="@conductor.IdConductor" class="btn btn-sm btn-outline-danger">
@@ -64,7 +65,7 @@
                             </a>
                         </div>
                     }
-                    else
+                    else if (puedeIntervenirConductores)
                     {
                         <div class="table-actions">
                             <a asp-controller="Conductor" asp-action="Reactivar" asp-route-id="@conductor.IdConductor" class="btn btn-sm btn-outline-success">

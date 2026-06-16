@@ -42,6 +42,7 @@ namespace Paraba.UI.Controllers
             return View(reclamos);
         }
 
+        [Authorize(Roles = "SuperAdmin,Soporte")]
         public IActionResult Crear()
         {
             return View(new ReclamoViewModel());
@@ -49,6 +50,7 @@ namespace Paraba.UI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "SuperAdmin,Soporte")]
         public IActionResult Crear(ReclamoViewModel viewModel)
         {
             if (!ModelState.IsValid)
@@ -84,6 +86,7 @@ namespace Paraba.UI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "SuperAdmin,Soporte")]
         public IActionResult Cerrar(int id, string observacionCierre)
         {
             string usuario = ObtenerUsuario();

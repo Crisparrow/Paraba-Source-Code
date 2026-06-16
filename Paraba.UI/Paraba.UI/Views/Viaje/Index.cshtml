@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Viajes";
+    bool puedeCancelarViajes = User.IsInRole("SuperAdmin") || User.IsInRole("Operaciones");
 }
 
 <div class="d-flex align-items-center justify-content-between mb-3">
@@ -84,7 +85,7 @@
                         <a asp-controller="Viaje" asp-action="Detalle" asp-route-id="@viaje.IdViaje" class="btn btn-sm btn-outline-secondary w-100">
                             Detalle
                         </a>
-                        @if (viaje.EstadoViaje != "Finalizado" && viaje.EstadoViaje != "Cancelado")
+                        @if (puedeCancelarViajes && viaje.EstadoViaje != "Finalizado" && viaje.EstadoViaje != "Cancelado")
                         {
                             <a asp-controller="Viaje" asp-action="Cancelar" asp-route-id="@viaje.IdViaje" class="btn btn-sm btn-outline-danger w-100">
                                 Cancelar admin

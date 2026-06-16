@@ -147,6 +147,7 @@ namespace Paraba.UI.Controllers
             return View(conductoresPendientes);
         }
 
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin,Verificador")]
         public IActionResult Suspender(int id)
         {
             var viewModel = CrearIntervencionConductorViewModel(id, "Suspender");
@@ -161,11 +162,13 @@ namespace Paraba.UI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin,Verificador")]
         public IActionResult ConfirmarSuspension(IntervencionConductorViewModel viewModel)
         {
             return ConfirmarIntervencion(viewModel, "Suspender");
         }
 
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin,Verificador")]
         public IActionResult Reactivar(int id)
         {
             var viewModel = CrearIntervencionConductorViewModel(id, "Reactivar");
@@ -180,6 +183,7 @@ namespace Paraba.UI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin,Verificador")]
         public IActionResult ConfirmarReactivacion(IntervencionConductorViewModel viewModel)
         {
             return ConfirmarIntervencion(viewModel, "Reactivar");
