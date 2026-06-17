@@ -1,3 +1,15 @@
+@{
+    string currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
+    string currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? string.Empty;
+    string IsActive(string controller, string? action = null)
+    {
+        bool sameController = string.Equals(currentController, controller, StringComparison.OrdinalIgnoreCase);
+        bool sameAction = string.IsNullOrWhiteSpace(action) || string.Equals(currentAction, action, StringComparison.OrdinalIgnoreCase);
+
+        return sameController && sameAction ? "active" : string.Empty;
+    }
+}
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -29,22 +41,22 @@
             <nav id="adminNavigation" class="admin-nav collapse">
                 <div class="admin-nav-section">
                     <span class="admin-nav-title">Inicio</span>
-                    <a asp-controller="Home" asp-action="Index">Dashboard</a>
+                    <a class="@IsActive("Home")" asp-controller="Home" asp-action="Index">Dashboard</a>
                 </div>
 
                 @if (User.IsInRole("SuperAdmin") || User.IsInRole("Operaciones") || User.IsInRole("Soporte"))
                 {
                     <div class="admin-nav-section">
                         <span class="admin-nav-title">Operacion</span>
-                        <a asp-controller="Viaje" asp-action="Index">Viajes</a>
-                        <a asp-controller="Soporte" asp-action="Index">Soporte operativo</a>
-                        <a asp-controller="Reclamo" asp-action="Index">Reclamos</a>
-                        <a asp-controller="ReporteViajes" asp-action="Index">Reporte viajes</a>
+                        <a class="@IsActive("Viaje")" asp-controller="Viaje" asp-action="Index">Viajes</a>
+                        <a class="@IsActive("Soporte")" asp-controller="Soporte" asp-action="Index">Soporte operativo</a>
+                        <a class="@IsActive("Reclamo")" asp-controller="Reclamo" asp-action="Index">Reclamos</a>
+                        <a class="@IsActive("ReporteViajes")" asp-controller="ReporteViajes" asp-action="Index">Reporte viajes</a>
                         @if (User.IsInRole("Operaciones"))
                         {
-                            <a asp-controller="ReporteConductores" asp-action="Index">Reporte conductores</a>
+                            <a class="@IsActive("ReporteConductores")" asp-controller="ReporteConductores" asp-action="Index">Reporte conductores</a>
                         }
-                        <a asp-controller="SimuladorTarifa" asp-action="Index">Sugerir tarifa</a>
+                        <a class="@IsActive("SimuladorTarifa")" asp-controller="SimuladorTarifa" asp-action="Index">Sugerir tarifa</a>
                     </div>
                 }
 
@@ -52,15 +64,15 @@
                 {
                     <div class="admin-nav-section">
                         <span class="admin-nav-title">Conductores</span>
-                        <a asp-controller="Conductor" asp-action="Index">Conductores</a>
-                        <a asp-controller="Conductor" asp-action="Pendientes">Pendientes</a>
-                        <a asp-controller="Vehiculo" asp-action="Index">Vehiculos</a>
+                        <a class="@IsActive("Conductor", "Index")" asp-controller="Conductor" asp-action="Index">Conductores</a>
+                        <a class="@IsActive("Conductor", "Pendientes")" asp-controller="Conductor" asp-action="Pendientes">Pendientes</a>
+                        <a class="@IsActive("Vehiculo")" asp-controller="Vehiculo" asp-action="Index">Vehiculos</a>
                         @if (User.IsInRole("SuperAdmin") || User.IsInRole("Verificador"))
                         {
-                            <a asp-controller="DocumentoConductor" asp-action="Index">Documentos</a>
+                            <a class="@IsActive("DocumentoConductor")" asp-controller="DocumentoConductor" asp-action="Index">Documentos</a>
                         }
-                        <a asp-controller="PerfilConductor" asp-action="Index">Perfiles</a>
-                        <a asp-controller="ReporteConductores" asp-action="Index">Reporte conductores</a>
+                        <a class="@IsActive("PerfilConductor")" asp-controller="PerfilConductor" asp-action="Index">Perfiles</a>
+                        <a class="@IsActive("ReporteConductores")" asp-controller="ReporteConductores" asp-action="Index">Reporte conductores</a>
                     </div>
                 }
 
@@ -68,8 +80,8 @@
                 {
                     <div class="admin-nav-section">
                         <span class="admin-nav-title">Clientes</span>
-                        <a asp-controller="Pasajero" asp-action="Index">Pasajeros</a>
-                        <a asp-controller="Calificacion" asp-action="Index">Calificaciones</a>
+                        <a class="@IsActive("Pasajero")" asp-controller="Pasajero" asp-action="Index">Pasajeros</a>
+                        <a class="@IsActive("Calificacion")" asp-controller="Calificacion" asp-action="Index">Calificaciones</a>
                     </div>
                 }
 
@@ -77,15 +89,15 @@
                 {
                     <div class="admin-nav-section">
                         <span class="admin-nav-title">Finanzas</span>
-                        <a asp-controller="Liquidaciones" asp-action="Index">Liquidaciones</a>
-                        <a asp-controller="Liquidaciones" asp-action="Historial">Historial liquidaciones</a>
-                        <a asp-controller="ReporteFinanciero" asp-action="Index">Reporte financiero</a>
+                        <a class="@IsActive("Liquidaciones", "Index")" asp-controller="Liquidaciones" asp-action="Index">Liquidaciones</a>
+                        <a class="@IsActive("Liquidaciones", "Historial")" asp-controller="Liquidaciones" asp-action="Historial">Historial liquidaciones</a>
+                        <a class="@IsActive("ReporteFinanciero")" asp-controller="ReporteFinanciero" asp-action="Index">Reporte financiero</a>
                         @if (User.IsInRole("Finanzas"))
                         {
-                            <a asp-controller="ReporteViajes" asp-action="Index">Reporte viajes</a>
+                            <a class="@IsActive("ReporteViajes")" asp-controller="ReporteViajes" asp-action="Index">Reporte viajes</a>
                         }
-                        <a asp-controller="ComisionServicio" asp-action="Index">Comisiones</a>
-                        <a asp-controller="Tarifa" asp-action="Index">Tarifas</a>
+                        <a class="@IsActive("ComisionServicio")" asp-controller="ComisionServicio" asp-action="Index">Comisiones</a>
+                        <a class="@IsActive("Tarifa")" asp-controller="Tarifa" asp-action="Index">Tarifas</a>
                     </div>
                 }
 
@@ -93,14 +105,14 @@
                 {
                     <div class="admin-nav-section">
                         <span class="admin-nav-title">Configuracion</span>
-                        <a asp-controller="ReglaTarifa" asp-action="Index">Reglas tarifa</a>
-                        <a asp-controller="TipoServicio" asp-action="Index">Tipos servicio</a>
-                        <a asp-controller="TipoVia" asp-action="Index">Tipos via</a>
-                        <a asp-controller="EstadoViaje" asp-action="Index">Estados viaje</a>
-                        <a asp-controller="Pais" asp-action="Index">Paises</a>
-                        <a asp-controller="Departamento" asp-action="Index">Departamentos</a>
-                        <a asp-controller="Ciudad" asp-action="Index">Ciudades</a>
-                        <a asp-controller="Zona" asp-action="Index">Zonas</a>
+                        <a class="@IsActive("ReglaTarifa")" asp-controller="ReglaTarifa" asp-action="Index">Reglas tarifa</a>
+                        <a class="@IsActive("TipoServicio")" asp-controller="TipoServicio" asp-action="Index">Tipos servicio</a>
+                        <a class="@IsActive("TipoVia")" asp-controller="TipoVia" asp-action="Index">Tipos via</a>
+                        <a class="@IsActive("EstadoViaje")" asp-controller="EstadoViaje" asp-action="Index">Estados viaje</a>
+                        <a class="@IsActive("Pais")" asp-controller="Pais" asp-action="Index">Paises</a>
+                        <a class="@IsActive("Departamento")" asp-controller="Departamento" asp-action="Index">Departamentos</a>
+                        <a class="@IsActive("Ciudad")" asp-controller="Ciudad" asp-action="Index">Ciudades</a>
+                        <a class="@IsActive("Zona")" asp-controller="Zona" asp-action="Index">Zonas</a>
                     </div>
                 }
 
@@ -108,11 +120,11 @@
                 {
                     <div class="admin-nav-section">
                         <span class="admin-nav-title">Seguridad</span>
-                        <a asp-controller="UsuarioAdmin" asp-action="Index">Usuarios admin</a>
-                        <a asp-controller="AuditoriaAccesoAdmin" asp-action="Index">Auditoria accesos</a>
-                        <a asp-controller="AuditoriaAdministrativa" asp-action="Index">Auditoria administrativa</a>
-                        <a asp-controller="AuditoriaViaje" asp-action="Index">Auditoria viajes</a>
-                        <a asp-controller="AuditoriaConductor" asp-action="Index">Auditoria conductores</a>
+                        <a class="@IsActive("UsuarioAdmin")" asp-controller="UsuarioAdmin" asp-action="Index">Usuarios admin</a>
+                        <a class="@IsActive("AuditoriaAccesoAdmin")" asp-controller="AuditoriaAccesoAdmin" asp-action="Index">Auditoria accesos</a>
+                        <a class="@IsActive("AuditoriaAdministrativa")" asp-controller="AuditoriaAdministrativa" asp-action="Index">Auditoria administrativa</a>
+                        <a class="@IsActive("AuditoriaViaje")" asp-controller="AuditoriaViaje" asp-action="Index">Auditoria viajes</a>
+                        <a class="@IsActive("AuditoriaConductor")" asp-controller="AuditoriaConductor" asp-action="Index">Auditoria conductores</a>
                     </div>
                 }
             </nav>

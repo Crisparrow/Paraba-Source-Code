@@ -3,10 +3,12 @@ html {
   --paraba-red: #ef102f;
   --paraba-green: #28b81f;
   --paraba-dark: #121417;
+  --paraba-dark-2: #191f25;
   --paraba-panel: #ffffff;
-  --paraba-bg: #f5f7f8;
+  --paraba-bg: #f3f5f7;
   --paraba-border: #dfe4ea;
   --paraba-muted: #687384;
+  --paraba-shadow: 0 12px 30px rgba(17, 24, 39, 0.07);
 }
 
 @media (min-width: 768px) {
@@ -18,10 +20,8 @@ html {
 body {
   margin: 0;
   color: #1f2933;
-  background:
-    radial-gradient(circle at top left, rgba(239, 16, 47, 0.08), transparent 28rem),
-    radial-gradient(circle at top right, rgba(40, 184, 31, 0.08), transparent 24rem),
-    var(--paraba-bg);
+  background: var(--paraba-bg);
+  -webkit-font-smoothing: antialiased;
 }
 
 .btn:focus,
@@ -39,7 +39,7 @@ body {
 
 .admin-layout {
   display: grid;
-  grid-template-columns: 292px minmax(0, 1fr);
+  grid-template-columns: 280px minmax(0, 1fr);
   min-height: 100vh;
 }
 
@@ -51,6 +51,8 @@ body {
   border-right: 1px solid #252b31;
   background: var(--paraba-dark);
   box-shadow: 18px 0 40px rgba(17, 24, 39, 0.08);
+  scrollbar-color: #3a424c #11161b;
+  scrollbar-width: thin;
 }
 
 .admin-brand {
@@ -62,7 +64,7 @@ body {
   text-decoration: none;
   border-bottom: 1px solid #252b31;
   background:
-    linear-gradient(135deg, rgba(239, 16, 47, 0.18), rgba(40, 184, 31, 0.09)),
+    linear-gradient(135deg, rgba(239, 16, 47, 0.22), rgba(40, 184, 31, 0.12)),
     #121417;
 }
 
@@ -101,7 +103,7 @@ body {
 }
 
 .admin-nav {
-  padding: 0.75rem;
+  padding: 0.85rem;
 }
 
 .admin-nav.collapse {
@@ -121,14 +123,25 @@ body {
   text-align: left;
 }
 
+.admin-menu-toggle::after {
+  content: "Abrir navegacion";
+  float: right;
+  color: #aab3bf;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
 .admin-nav-section {
-  margin-bottom: 1rem;
-  padding-bottom: 0.25rem;
+  margin-bottom: 0.75rem;
+  padding: 0.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.015);
 }
 
 .admin-nav-title {
   display: block;
-  padding: 0.35rem 0.5rem;
+  padding: 0.2rem 0.45rem 0.4rem;
   color: #8994a3;
   font-size: 0.72rem;
   font-weight: 700;
@@ -137,22 +150,31 @@ body {
 
 .admin-nav a {
   display: block;
-  padding: 0.48rem 0.65rem;
+  padding: 0.52rem 0.65rem;
   margin: 0.08rem 0;
   color: #e8edf2;
   text-decoration: none;
   border-radius: 6px;
   border-left: 3px solid transparent;
+  line-height: 1.2;
+  transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease;
 }
 
-.admin-nav a:hover {
+.admin-nav a:hover,
+.admin-nav a.active {
   color: #ffffff;
-  background: #1d2329;
+  background: var(--paraba-dark-2);
   border-left-color: var(--paraba-green);
+}
+
+.admin-nav a.active {
+  box-shadow: inset 0 0 0 1px rgba(40, 184, 31, 0.12);
 }
 
 .admin-main {
   min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .admin-topbar {
@@ -166,7 +188,7 @@ body {
   min-height: 72px;
   padding: 0.85rem 1.5rem;
   border-bottom: 1px solid var(--paraba-border);
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(10px);
 }
 
@@ -192,8 +214,10 @@ body {
 }
 
 .admin-content {
+  width: 100%;
   padding: 1.5rem;
   max-width: 1560px;
+  overflow-x: hidden;
 }
 
 .admin-content > .d-flex:first-child {
@@ -210,6 +234,8 @@ body {
 .table {
   background: #ffffff;
   border-color: var(--paraba-border);
+  margin-bottom: 1rem;
+  box-shadow: var(--paraba-shadow);
 }
 
 .table thead.table-dark th {
@@ -221,18 +247,41 @@ body {
 .table td,
 .table th {
   vertical-align: middle;
+  border-color: #e3e8ee;
+}
+
+.table tbody tr:hover {
+  background: #fafbfc;
+}
+
+.table td {
+  color: #263241;
+}
+
+.table th {
+  font-size: 0.82rem;
+  letter-spacing: 0;
 }
 
 .form-control,
 .form-select {
   border-color: #cfd6df;
+  min-height: 38px;
+  border-radius: 6px;
+}
+
+.form-label {
+  margin-bottom: 0.35rem;
+  color: #344054;
+  font-size: 0.88rem;
+  font-weight: 700;
 }
 
 .border.rounded {
   border-color: var(--paraba-border) !important;
   border-radius: 6px !important;
   background: #ffffff;
-  box-shadow: 0 10px 26px rgba(17, 24, 39, 0.04);
+  box-shadow: var(--paraba-shadow);
 }
 
 .btn-primary {
@@ -263,6 +312,8 @@ body {
 
 .btn {
   border-radius: 6px;
+  font-weight: 650;
+  white-space: nowrap;
 }
 
 .alert {
@@ -322,7 +373,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
-  min-width: 130px;
+  min-width: 132px;
 }
 
 .table-actions form {
@@ -345,7 +396,7 @@ body {
   border: 1px solid var(--paraba-border);
   border-radius: 8px;
   background: #ffffff;
-  box-shadow: 0 10px 26px rgba(17, 24, 39, 0.04);
+  box-shadow: var(--paraba-shadow);
 }
 
 .detail-panel h2 {
@@ -396,6 +447,7 @@ body {
     max-height: none;
     border-right: 0;
     border-bottom: 1px solid #252b31;
+    box-shadow: 0 12px 30px rgba(17, 24, 39, 0.12);
   }
 
   .admin-brand {
@@ -411,7 +463,7 @@ body {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.5rem;
     padding: 0.75rem;
-    max-height: calc(100vh - 118px);
+    max-height: calc(100vh - 112px);
     overflow-y: auto;
   }
 
@@ -438,9 +490,7 @@ body {
   .admin-topbar {
     align-items: flex-start;
     flex-direction: column;
-    position: sticky;
-    top: 94px;
-    z-index: 30;
+    position: static;
     min-height: auto;
     padding: 0.8rem 1rem;
   }
@@ -457,8 +507,17 @@ body {
   .admin-content .table {
     display: block;
     width: 100%;
+    max-width: 100%;
     overflow-x: auto;
     white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-content .table thead,
+  .admin-content .table tbody,
+  .admin-content .table tr {
+    width: max-content;
+    min-width: 100%;
   }
 
   .detail-grid {
@@ -490,13 +549,44 @@ body {
     padding: 0.75rem;
   }
 
+  .admin-brand {
+    gap: 0.55rem;
+  }
+
+  .admin-brand small {
+    font-size: 0.72rem;
+  }
+
+  .admin-topbar h1 {
+    font-size: 1.05rem;
+  }
+
+  .admin-user {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .admin-user form,
+  .admin-user .btn {
+    width: 100%;
+  }
+
   .admin-content > .d-flex:first-child {
     align-items: flex-start !important;
     flex-direction: column;
     gap: 0.75rem;
   }
 
+  .admin-content > .d-flex:first-child .btn {
+    width: 100%;
+  }
+
   .row.g-3 > [class*="col-"] {
     min-width: 100%;
+  }
+
+  .table-actions {
+    min-width: 118px;
   }
 }
