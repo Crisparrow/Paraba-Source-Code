@@ -47,5 +47,46 @@ namespace Paraba.UI.ViewModels
         public int LiquidacionesPendientesPago { get; set; }
 
         public decimal NetoPendientePago { get; set; }
+
+        public int TotalAlertasOperativas =>
+            ConductoresPendientes +
+            DocumentosPendientes +
+            DocumentosVencidos +
+            ViajesPendientesLiquidacion +
+            LiquidacionesPendientesPago;
+
+        public decimal PorcentajeViajesFinalizados =>
+            TotalViajes == 0 ? 0 : Math.Round((decimal)ViajesFinalizados * 100 / TotalViajes, 1);
+
+        public decimal PorcentajeViajesCancelados =>
+            TotalViajes == 0 ? 0 : Math.Round((decimal)ViajesCancelados * 100 / TotalViajes, 1);
+
+        public decimal PorcentajeConductoresVerificados =>
+            ConductoresActivos == 0 ? 0 : Math.Round((decimal)ConductoresVerificados * 100 / ConductoresActivos, 1);
+
+        public string EstadoOperativo
+        {
+            get
+            {
+                if (DocumentosVencidos > 0 || LiquidacionesPendientesPago > 0)
+                {
+                    return "Atencion requerida";
+                }
+
+                if (ConductoresPendientes > 0 || DocumentosPendientes > 0 || ViajesPendientesLiquidacion > 0)
+                {
+                    return "Operacion con pendientes";
+                }
+
+                return "Operacion estable";
+            }
+        }
+
+        public string EstadoOperativoCss =>
+            EstadoOperativo == "Operacion estable"
+                ? "status-success"
+                : EstadoOperativo == "Operacion con pendientes"
+                    ? "status-warning"
+                    : "status-danger";
     }
 }

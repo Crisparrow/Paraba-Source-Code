@@ -16,6 +16,43 @@
     </div>
 </div>
 
+<div class="dashboard-executive mb-4">
+    <div>
+        <div class="text-muted small">Estado general</div>
+        <div class="d-flex flex-wrap align-items-center gap-2 mt-1">
+            <span class="status-badge @Model.EstadoOperativoCss">@Model.EstadoOperativo</span>
+            <span class="small text-muted">@Model.TotalAlertasOperativas alerta(s) operativa(s) abiertas.</span>
+        </div>
+    </div>
+    <div class="dashboard-kpi-strip">
+        @if (puedeVerOperacion)
+        {
+            <div>
+                <span>@Model.PorcentajeViajesFinalizados.ToString("0.0")%</span>
+                <small>Viajes finalizados</small>
+            </div>
+            <div>
+                <span>@Model.PorcentajeViajesCancelados.ToString("0.0")%</span>
+                <small>Cancelacion historica</small>
+            </div>
+        }
+        @if (puedeVerConductores)
+        {
+            <div>
+                <span>@Model.PorcentajeConductoresVerificados.ToString("0.0")%</span>
+                <small>Conductores verificados</small>
+            </div>
+        }
+        @if (puedeVerFinanzas)
+        {
+            <div>
+                <span>@Model.NetoPendientePago.ToString("0.00")</span>
+                <small>Neto pendiente pago</small>
+            </div>
+        }
+    </div>
+</div>
+
 <div class="row g-3 mb-4">
     @if (puedeVerConductores)
     {
