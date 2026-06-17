@@ -26,7 +26,8 @@ Sistema administrativo web de PARABA para taxi y moto taxi.
    - `06_Create_Liquidation_Stored_Procedures.sql`
    - `07_Create_Support_Stored_Procedures.sql`
    - `08_Create_Admin_Audit_Stored_Procedures.sql`
-6. Ejecutar el proyecto `Paraba.UI`.
+6. Ejecutar el proyecto `Paraba.UI` para el panel administrativo.
+7. Ejecutar el proyecto `Paraba.API` para la base que consumiran las apps moviles.
 
 ## Acceso inicial
 
@@ -59,3 +60,21 @@ El script principal y completo es:
 `ParabaDBSQL/00_Create_ParabaDB_Complete.sql`
 
 Los scripts dentro de `ParabaDBSQL/Legacy` son antiguos y solo quedan como referencia.
+
+## API para app del conductor
+
+Proyecto:
+
+`Paraba.UI/Paraba.API`
+
+Endpoints iniciales:
+
+- `GET /api/conductores/{idConductor}/perfil`
+- `GET /api/conductores/{idConductor}/viajes`
+- `GET /api/conductores/{idConductor}/viajes/activos`
+- `POST /api/conductores/{idConductor}/viajes/{idViaje}/contraoferta`
+- `POST /api/conductores/{idConductor}/viajes/{idViaje}/iniciar`
+- `POST /api/conductores/{idConductor}/viajes/{idViaje}/finalizar`
+- `POST /api/conductores/{idConductor}/viajes/{idViaje}/cancelar`
+
+Esta API es la base para la app Android/iPhone del conductor. El panel administrativo no debe usarse como app movil.

@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="Paraba.API/Paraba.API.csproj" />
   <Project Path="Paraba.BLL/Paraba.BLL.csproj" Id="46939ca6-f8ce-49aa-b857-e857979cfb74" />
   <Project Path="Paraba.DAL/Paraba.DAL.csproj" Id="45822fe0-3e86-43de-9d27-9279b9614410" />
   <Project Path="Paraba.ENTITY/Paraba.ENTITY.csproj" />
