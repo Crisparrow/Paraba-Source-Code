@@ -8,6 +8,8 @@ Sistema administrativo web de PARABA para taxi y moto taxi.
 - .NET 8 SDK
 - SQL Server
 - SQL Server Management Studio
+- Carga de trabajo .NET MAUI para la app movil
+- Android SDK y Java 17 JDK para compilar Android
 
 ## Como abrir el proyecto
 
@@ -28,6 +30,7 @@ Sistema administrativo web de PARABA para taxi y moto taxi.
    - `08_Create_Admin_Audit_Stored_Procedures.sql`
 6. Ejecutar el proyecto `Paraba.UI` para el panel administrativo.
 7. Ejecutar el proyecto `Paraba.API` para la base que consumiran las apps moviles.
+8. Ejecutar el proyecto `Paraba.DriverApp` para la app del conductor.
 
 ## Acceso inicial
 
@@ -78,3 +81,22 @@ Endpoints iniciales:
 - `POST /api/conductores/{idConductor}/viajes/{idViaje}/cancelar`
 
 Esta API es la base para la app Android/iPhone del conductor. El panel administrativo no debe usarse como app movil.
+
+## App movil del conductor
+
+Proyecto:
+
+`Paraba.UI/Paraba.DriverApp`
+
+Estado actual:
+
+- Proyecto .NET MAUI en .NET 8.
+- Compila para Windows.
+- Compila para Android.
+- Pantalla inicial del conductor con disponibilidad, resumen diario, viaje activo y acciones base.
+
+Notas:
+
+- Android se puede compilar desde Windows con Android SDK y Java 17.
+- iPhone/iOS comparte el mismo codigo MAUI, pero para compilar o publicar iOS se necesitara una Mac.
+- La app movil consumira `Paraba.API`; no debe consultar SQL Server directamente.

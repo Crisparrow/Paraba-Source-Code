@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Paraba.DriverApp.MainPage"
+             BackgroundColor="#07090D">
+
+    <Grid RowDefinitions="Auto,*">
+        <Border Grid.Row="0"
+                BackgroundColor="#10151C"
+                StrokeThickness="0"
+                Padding="20,18">
+            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                <Label Text="PARABA"
+                       TextColor="#F23845"
+                       FontSize="26"
+                       FontAttributes="Bold" />
+                <Border Grid.Column="1"
+                        BackgroundColor="#14271A"
+                        Stroke="#2DFF72"
+                        StrokeThickness="1"
+                        Padding="12,6">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="18" />
+                    </Border.StrokeShape>
+                    <Label x:Name="DriverStatusLabel"
+                           Text="Disponible"
+                           TextColor="#2DFF72"
+                           FontSize="13"
+                           FontAttributes="Bold" />
+                </Border>
+                <Label Grid.Row="1"
+                       Grid.ColumnSpan="2"
+                       Text="App del conductor"
+                       TextColor="#A8B0BA"
+                       FontSize="13" />
+            </Grid>
+        </Border>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="18" Spacing="16">
+                <Border BackgroundColor="#121821"
+                        Stroke="#263241"
+                        StrokeThickness="1"
+                        Padding="16">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="14" />
+                    </Border.StrokeShape>
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                        <Label Text="Carlos Mendoza"
+                               TextColor="White"
+                               FontSize="22"
+                               FontAttributes="Bold" />
+                        <Label Grid.Column="1"
+                               Text="5.00"
+                               TextColor="#2DFF72"
+                               FontSize="20"
+                               FontAttributes="Bold" />
+                        <Label Grid.Row="1"
+                               Text="Taxi - Toyota Corolla 5482-ABC"
+                               TextColor="#C7CED8"
+                               FontSize="14" />
+                        <Label Grid.Row="1"
+                               Grid.Column="1"
+                               Text="/ 5"
+                               TextColor="#A8B0BA"
+                               FontSize="13"
+                               VerticalOptions="End" />
+                        <Button Grid.Row="2"
+                                Grid.ColumnSpan="2"
+                                x:Name="ToggleAvailabilityButton"
+                                Text="Cambiar a no disponible"
+                                BackgroundColor="#20C65A"
+                                TextColor="#071009"
+                                FontAttributes="Bold"
+                                CornerRadius="10"
+                                Margin="0,14,0,0"
+                                Clicked="OnToggleAvailabilityClicked" />
+                    </Grid>
+                </Border>
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                    <Border BackgroundColor="#121821" Stroke="#263241" Padding="14">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="12" />
+                        </Border.StrokeShape>
+                        <VerticalStackLayout Spacing="3">
+                            <Label Text="Hoy"
+                                   TextColor="#A8B0BA"
+                                   FontSize="12" />
+                            <Label Text="Bs 86.50"
+                                   TextColor="White"
+                                   FontSize="22"
+                                   FontAttributes="Bold" />
+                            <Label Text="6 viajes"
+                                   TextColor="#2DFF72"
+                                   FontSize="13" />
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Column="1" BackgroundColor="#121821" Stroke="#263241" Padding="14">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="12" />
+                        </Border.StrokeShape>
+                        <VerticalStackLayout Spacing="3">
+                            <Label Text="Pendiente"
+                                   TextColor="#A8B0BA"
+                                   FontSize="12" />
+                            <Label Text="Bs 13.50"
+                                   TextColor="White"
+                                   FontSize="22"
+                                   FontAttributes="Bold" />
+                            <Label Text="Por liquidar"
+                                   TextColor="#F23845"
+                                   FontSize="13" />
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+
+                <Border BackgroundColor="#161D27"
+                        Stroke="#F23845"
+                        StrokeThickness="1"
+                        Padding="16">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="14" />
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Spacing="12">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="Viaje activo"
+                                   TextColor="White"
+                                   FontSize="20"
+                                   FontAttributes="Bold" />
+                            <Label Text="Aceptado"
+                                   TextColor="#2DFF72"
+                                   FontAttributes="Bold" />
+                        </Grid>
+
+                        <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                            <Label Text="Origen"
+                                   TextColor="#A8B0BA"
+                                   FontSize="12" />
+                            <Label Grid.Column="1"
+                                   Text="Feria Barrio Lindo"
+                                   TextColor="White"
+                                   FontAttributes="Bold" />
+                            <Label Grid.Row="1"
+                                   Text="Destino"
+                                   TextColor="#A8B0BA"
+                                   FontSize="12" />
+                            <Label Grid.Row="1"
+                                   Grid.Column="1"
+                                   Text="Plan 3000"
+                                   TextColor="White"
+                                   FontAttributes="Bold" />
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                            <VerticalStackLayout>
+                                <Label Text="Sugerida"
+                                       TextColor="#A8B0BA"
+                                       FontSize="12" />
+                                <Label Text="Bs 13.60"
+                                       TextColor="White"
+                                       FontAttributes="Bold" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1">
+                                <Label Text="Pasajero"
+                                       TextColor="#A8B0BA"
+                                       FontSize="12" />
+                                <Label Text="Bs 13.00"
+                                       TextColor="White"
+                                       FontAttributes="Bold" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="2">
+                                <Label Text="Aceptada"
+                                       TextColor="#A8B0BA"
+                                       FontSize="12" />
+                                <Label Text="Bs 13.50"
+                                       TextColor="#2DFF72"
+                                       FontAttributes="Bold" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                            <Button Text="Iniciar viaje"
+                                    BackgroundColor="#20C65A"
+                                    TextColor="#071009"
+                                    FontAttributes="Bold"
+                                    CornerRadius="10"
+                                    Clicked="OnStartTripClicked" />
+                            <Button Grid.Column="1"
+                                    Text="Finalizar"
+                                    BackgroundColor="#F23845"
+                                    TextColor="White"
+                                    FontAttributes="Bold"
+                                    CornerRadius="10"
+                                    Clicked="OnFinishTripClicked" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Label Text="Operaciones"
+                       TextColor="White"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       Margin="0,4,0,0" />
+
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="12">
+                    <Button Text="Contraofertas"
+                            BackgroundColor="#202A36"
+                            TextColor="White"
+                            CornerRadius="10" />
+                    <Button Grid.Column="1"
+                            Text="Documentos"
+                            BackgroundColor="#202A36"
+                            TextColor="White"
+                            CornerRadius="10" />
+                    <Button Grid.Row="1"
+                            Text="Ganancias"
+                            BackgroundColor="#202A36"
+                            TextColor="White"
+                            CornerRadius="10" />
+                    <Button Grid.Row="1"
+                            Grid.Column="1"
+                            Text="Soporte"
+                            BackgroundColor="#202A36"
+                            TextColor="White"
+                            CornerRadius="10" />
+                </Grid>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>
