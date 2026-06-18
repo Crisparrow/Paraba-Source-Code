@@ -2,245 +2,276 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Paraba.DriverApp.MainPage"
-             BackgroundColor="#07090D">
+             BackgroundColor="#07090D"
+             Shell.NavBarIsVisible="False">
 
-    <Grid RowDefinitions="Auto,*">
-        <Border Grid.Row="0"
-                BackgroundColor="#10151C"
-                StrokeThickness="0"
-                Padding="20,18">
-            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+    <Grid>
+        <Grid x:Name="SplashView"
+              BackgroundColor="#F23845">
+            <VerticalStackLayout HorizontalOptions="Center"
+                                 VerticalOptions="Center"
+                                 Spacing="8">
+                <Label Text="PARABA"
+                       TextColor="White"
+                       FontSize="44"
+                       FontAttributes="Bold"
+                       HorizontalTextAlignment="Center" />
+                <Label Text="CONDUCTOR"
+                       TextColor="White"
+                       FontSize="16"
+                       FontAttributes="Bold"
+                       HorizontalTextAlignment="Center" />
+            </VerticalStackLayout>
+        </Grid>
+
+        <Grid x:Name="LoginView"
+              IsVisible="False"
+              BackgroundColor="White"
+              Padding="24"
+              RowDefinitions="*,Auto,Auto,Auto">
+            <VerticalStackLayout Grid.Row="0"
+                                 VerticalOptions="Center"
+                                 Spacing="8">
                 <Label Text="PARABA"
                        TextColor="#F23845"
-                       FontSize="26"
-                       FontAttributes="Bold" />
-                <Border Grid.Column="1"
-                        BackgroundColor="#14271A"
-                        Stroke="#2DFF72"
-                        StrokeThickness="1"
-                        Padding="12,6">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="18" />
-                    </Border.StrokeShape>
-                    <Label x:Name="DriverStatusLabel"
-                           Text="Disponible"
-                           TextColor="#2DFF72"
-                           FontSize="13"
-                           FontAttributes="Bold" />
-                </Border>
-                <Label Grid.Row="1"
-                       Grid.ColumnSpan="2"
-                       Text="App del conductor"
-                       TextColor="#A8B0BA"
-                       FontSize="13" />
-            </Grid>
-        </Border>
+                       FontSize="42"
+                       FontAttributes="Bold"
+                       HorizontalTextAlignment="Center" />
+                <Label Text="Conductor"
+                       TextColor="#2D2F36"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       HorizontalTextAlignment="Center" />
+            </VerticalStackLayout>
 
-        <ScrollView Grid.Row="1">
-            <VerticalStackLayout Padding="18" Spacing="16">
-                <Border BackgroundColor="#121821"
-                        Stroke="#263241"
-                        StrokeThickness="1"
-                        Padding="16">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="14" />
-                    </Border.StrokeShape>
-                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
-                        <Label x:Name="DriverNameLabel"
-                               Text="Cargando conductor..."
-                               TextColor="White"
-                               FontSize="22"
-                               FontAttributes="Bold" />
-                        <Label Grid.Column="1"
-                               x:Name="DriverRatingLabel"
-                               Text="5.00"
-                               TextColor="#2DFF72"
-                               FontSize="20"
-                               FontAttributes="Bold" />
-                        <Label Grid.Row="1"
-                               x:Name="DriverVehicleLabel"
-                               Text="Taxi - Toyota Corolla 5482-ABC"
-                               TextColor="#C7CED8"
-                               FontSize="14" />
-                        <Label Grid.Row="1"
-                               Grid.Column="1"
-                               Text="/ 5"
-                               TextColor="#A8B0BA"
-                               FontSize="13"
-                               VerticalOptions="End" />
-                        <Button Grid.Row="2"
-                                Grid.ColumnSpan="2"
-                                x:Name="ToggleAvailabilityButton"
-                                Text="Cambiar a no disponible"
-                                BackgroundColor="#20C65A"
-                                TextColor="#071009"
-                                FontAttributes="Bold"
-                                CornerRadius="10"
-                                Margin="0,14,0,0"
-                                Clicked="OnToggleAvailabilityClicked" />
-                    </Grid>
-                </Border>
-
-                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                    <Border BackgroundColor="#121821" Stroke="#263241" Padding="14">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="12" />
-                        </Border.StrokeShape>
-                        <VerticalStackLayout Spacing="3">
-                            <Label Text="Hoy"
-                                   TextColor="#A8B0BA"
-                                   FontSize="12" />
-                            <Label x:Name="TodayAmountLabel"
-                                   Text="Bs 0.00"
-                                   TextColor="White"
-                                   FontSize="22"
-                                   FontAttributes="Bold" />
-                            <Label x:Name="TodayTripsLabel"
-                                   Text="0 viajes"
-                                   TextColor="#2DFF72"
-                                   FontSize="13" />
-                        </VerticalStackLayout>
-                    </Border>
-                    <Border Grid.Column="1" BackgroundColor="#121821" Stroke="#263241" Padding="14">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="12" />
-                        </Border.StrokeShape>
-                        <VerticalStackLayout Spacing="3">
-                            <Label Text="Pendiente"
-                                   TextColor="#A8B0BA"
-                                   FontSize="12" />
-                            <Label x:Name="PendingAmountLabel"
-                                   Text="Bs 0.00"
-                                   TextColor="White"
-                                   FontSize="22"
-                                   FontAttributes="Bold" />
-                            <Label Text="Por liquidar"
-                                   TextColor="#F23845"
-                                   FontSize="13" />
-                        </VerticalStackLayout>
-                    </Border>
+            <Border Grid.Row="1"
+                    Stroke="#20242B"
+                    StrokeThickness="2"
+                    Padding="16,4"
+                    Margin="0,0,0,14">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="26" />
+                </Border.StrokeShape>
+                <Grid ColumnDefinitions="Auto,*">
+                    <Label Text="+591"
+                           TextColor="#20242B"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center" />
+                    <Entry Grid.Column="1"
+                           x:Name="PhoneEntry"
+                           Placeholder="0 0000000"
+                           Keyboard="Telephone"
+                           TextColor="#20242B"
+                           PlaceholderColor="#9AA0A8"
+                           FontSize="18"
+                           BackgroundColor="Transparent"
+                           Margin="14,0,0,0" />
                 </Grid>
+            </Border>
 
-                <Border BackgroundColor="#161D27"
-                        Stroke="#F23845"
-                        StrokeThickness="1"
-                        Padding="16">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="14" />
-                    </Border.StrokeShape>
-                    <VerticalStackLayout Spacing="12">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <Label x:Name="ActiveTripTitleLabel"
-                                   Text="Viaje activo"
+            <Button Grid.Row="2"
+                    Text="Inicia sesion o registrate"
+                    BackgroundColor="#FFD600"
+                    TextColor="#20242B"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    CornerRadius="24"
+                    HeightRequest="58"
+                    Clicked="OnLoginClicked" />
+
+            <Label Grid.Row="3"
+                   Text="Al continuar aceptas los terminos de usuario y la politica de privacidad de PARABA."
+                   TextColor="#8A8F99"
+                   FontSize="13"
+                   LineBreakMode="WordWrap"
+                   Margin="0,18,0,0" />
+        </Grid>
+
+        <Grid x:Name="DashboardView"
+              IsVisible="False"
+              RowDefinitions="Auto,*">
+            <Border Grid.Row="0"
+                    BackgroundColor="#10151C"
+                    StrokeThickness="0"
+                    Padding="20,18">
+                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                    <Label Text="PARABA"
+                           TextColor="#F23845"
+                           FontSize="26"
+                           FontAttributes="Bold" />
+                    <Border Grid.Column="1"
+                            BackgroundColor="#14271A"
+                            Stroke="#2DFF72"
+                            StrokeThickness="1"
+                            Padding="12,6">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="18" />
+                        </Border.StrokeShape>
+                        <Label x:Name="DriverStatusLabel"
+                               Text="Disponible"
+                               TextColor="#2DFF72"
+                               FontSize="13"
+                               FontAttributes="Bold" />
+                    </Border>
+                    <Label Grid.Row="1"
+                           Grid.ColumnSpan="2"
+                           Text="App del conductor"
+                           TextColor="#A8B0BA"
+                           FontSize="13" />
+                </Grid>
+            </Border>
+
+            <ScrollView Grid.Row="1">
+                <VerticalStackLayout Padding="18" Spacing="16">
+                    <Border BackgroundColor="#121821"
+                            Stroke="#263241"
+                            StrokeThickness="1"
+                            Padding="16">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="14" />
+                        </Border.StrokeShape>
+                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                            <Label x:Name="DriverNameLabel"
+                                   Text="Cargando conductor..."
                                    TextColor="White"
+                                   FontSize="22"
+                                   FontAttributes="Bold" />
+                            <Label Grid.Column="1"
+                                   x:Name="DriverRatingLabel"
+                                   Text="5.00"
+                                   TextColor="#2DFF72"
                                    FontSize="20"
                                    FontAttributes="Bold" />
-                            <Label x:Name="ActiveTripStatusLabel"
-                                   Text="Cargando"
-                                   TextColor="#2DFF72"
-                                   FontAttributes="Bold" />
-                        </Grid>
-
-                        <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,*" ColumnSpacing="12">
-                            <Label Text="Origen"
-                                   TextColor="#A8B0BA"
-                                   FontSize="12" />
-                            <Label Grid.Column="1"
-                                   x:Name="OriginLabel"
-                                   Text="Feria Barrio Lindo"
-                                   TextColor="White"
-                                   FontAttributes="Bold" />
                             <Label Grid.Row="1"
-                                   Text="Destino"
-                                   TextColor="#A8B0BA"
-                                   FontSize="12" />
+                                   x:Name="DriverVehicleLabel"
+                                   Text="Taxi - Toyota Corolla 5482-ABC"
+                                   TextColor="#C7CED8"
+                                   FontSize="14" />
                             <Label Grid.Row="1"
                                    Grid.Column="1"
-                                   x:Name="DestinationLabel"
-                                   Text="Plan 3000"
-                                   TextColor="White"
-                                   FontAttributes="Bold" />
-                        </Grid>
-
-                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
-                            <VerticalStackLayout>
-                                <Label Text="Sugerida"
-                                       TextColor="#A8B0BA"
-                                       FontSize="12" />
-                                <Label x:Name="SuggestedFareLabel"
-                                       Text="Bs 0.00"
-                                       TextColor="White"
-                                       FontAttributes="Bold" />
-                            </VerticalStackLayout>
-                            <VerticalStackLayout Grid.Column="1">
-                                <Label Text="Pasajero"
-                                       TextColor="#A8B0BA"
-                                       FontSize="12" />
-                                <Label x:Name="OfferedFareLabel"
-                                       Text="Bs 0.00"
-                                       TextColor="White"
-                                       FontAttributes="Bold" />
-                            </VerticalStackLayout>
-                            <VerticalStackLayout Grid.Column="2">
-                                <Label Text="Aceptada"
-                                       TextColor="#A8B0BA"
-                                       FontSize="12" />
-                                <Label x:Name="AcceptedFareLabel"
-                                       Text="Bs 0.00"
-                                       TextColor="#2DFF72"
-                                       FontAttributes="Bold" />
-                            </VerticalStackLayout>
-                        </Grid>
-
-                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                            <Button x:Name="StartTripButton"
-                                    Text="Iniciar viaje"
+                                   Text="/ 5"
+                                   TextColor="#A8B0BA"
+                                   FontSize="13"
+                                   VerticalOptions="End" />
+                            <Button Grid.Row="2"
+                                    Grid.ColumnSpan="2"
+                                    x:Name="ToggleAvailabilityButton"
+                                    Text="Cambiar a no disponible"
                                     BackgroundColor="#20C65A"
                                     TextColor="#071009"
                                     FontAttributes="Bold"
                                     CornerRadius="10"
-                                    Clicked="OnStartTripClicked" />
-                            <Button Grid.Column="1"
-                                    x:Name="FinishTripButton"
-                                    Text="Finalizar"
-                                    BackgroundColor="#F23845"
-                                    TextColor="White"
-                                    FontAttributes="Bold"
-                                    CornerRadius="10"
-                                    Clicked="OnFinishTripClicked" />
+                                    Margin="0,14,0,0"
+                                    Clicked="OnToggleAvailabilityClicked" />
                         </Grid>
-                    </VerticalStackLayout>
-                </Border>
+                    </Border>
 
-                <Label Text="Operaciones"
-                       TextColor="White"
-                       FontSize="18"
-                       FontAttributes="Bold"
-                       Margin="0,4,0,0" />
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <Border BackgroundColor="#121821" Stroke="#263241" Padding="14">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12" />
+                            </Border.StrokeShape>
+                            <VerticalStackLayout Spacing="3">
+                                <Label Text="Hoy" TextColor="#A8B0BA" FontSize="12" />
+                                <Label x:Name="TodayAmountLabel" Text="Bs 0.00" TextColor="White" FontSize="22" FontAttributes="Bold" />
+                                <Label x:Name="TodayTripsLabel" Text="0 viajes" TextColor="#2DFF72" FontSize="13" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Column="1" BackgroundColor="#121821" Stroke="#263241" Padding="14">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12" />
+                            </Border.StrokeShape>
+                            <VerticalStackLayout Spacing="3">
+                                <Label Text="Pendiente" TextColor="#A8B0BA" FontSize="12" />
+                                <Label x:Name="PendingAmountLabel" Text="Bs 0.00" TextColor="White" FontSize="22" FontAttributes="Bold" />
+                                <Label Text="Por liquidar" TextColor="#F23845" FontSize="13" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
 
-                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="12">
-                    <Button Text="Contraofertas"
-                            BackgroundColor="#202A36"
-                            TextColor="White"
-                            CornerRadius="10" />
-                    <Button Grid.Column="1"
-                            Text="Documentos"
-                            BackgroundColor="#202A36"
-                            TextColor="White"
-                            CornerRadius="10" />
-                    <Button Grid.Row="1"
-                            Text="Ganancias"
-                            BackgroundColor="#202A36"
-                            TextColor="White"
-                            CornerRadius="10" />
-                    <Button Grid.Row="1"
-                            Grid.Column="1"
-                            Text="Soporte"
-                            BackgroundColor="#202A36"
-                            TextColor="White"
-                            CornerRadius="10" />
-                </Grid>
-            </VerticalStackLayout>
-        </ScrollView>
+                    <Border BackgroundColor="#161D27"
+                            Stroke="#F23845"
+                            StrokeThickness="1"
+                            Padding="16">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="14" />
+                        </Border.StrokeShape>
+                        <VerticalStackLayout Spacing="12">
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                                <Label x:Name="ActiveTripTitleLabel"
+                                       Text="Viaje activo"
+                                       TextColor="White"
+                                       FontSize="20"
+                                       FontAttributes="Bold" />
+                                <Label Grid.Column="1"
+                                       x:Name="ActiveTripStatusLabel"
+                                       Text="Cargando"
+                                       TextColor="#2DFF72"
+                                       FontAttributes="Bold" />
+                                <Label Grid.Row="1"
+                                       Grid.ColumnSpan="2"
+                                       Text="Solicitud asignada al conductor"
+                                       TextColor="#A8B0BA"
+                                       FontSize="12" />
+                            </Grid>
+
+                            <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                                <Label Text="Origen" TextColor="#A8B0BA" FontSize="12" />
+                                <Label Grid.Column="1" x:Name="OriginLabel" Text="Feria Barrio Lindo" TextColor="White" FontAttributes="Bold" />
+                                <Label Grid.Row="1" Text="Destino" TextColor="#A8B0BA" FontSize="12" />
+                                <Label Grid.Row="1" Grid.Column="1" x:Name="DestinationLabel" Text="Plan 3000" TextColor="White" FontAttributes="Bold" />
+                            </Grid>
+
+                            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                                <VerticalStackLayout>
+                                    <Label Text="Sugerida" TextColor="#A8B0BA" FontSize="12" />
+                                    <Label x:Name="SuggestedFareLabel" Text="Bs 0.00" TextColor="White" FontAttributes="Bold" />
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Column="1">
+                                    <Label Text="Pasajero" TextColor="#A8B0BA" FontSize="12" />
+                                    <Label x:Name="OfferedFareLabel" Text="Bs 0.00" TextColor="White" FontAttributes="Bold" />
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Column="2">
+                                    <Label Text="Aceptada" TextColor="#A8B0BA" FontSize="12" />
+                                    <Label x:Name="AcceptedFareLabel" Text="Bs 0.00" TextColor="#2DFF72" FontAttributes="Bold" />
+                                </VerticalStackLayout>
+                            </Grid>
+
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                                <Button x:Name="StartTripButton"
+                                        Text="Iniciar viaje"
+                                        BackgroundColor="#20C65A"
+                                        TextColor="#071009"
+                                        FontAttributes="Bold"
+                                        CornerRadius="10"
+                                        Clicked="OnStartTripClicked" />
+                                <Button Grid.Column="1"
+                                        x:Name="FinishTripButton"
+                                        Text="Finalizar"
+                                        BackgroundColor="#F23845"
+                                        TextColor="White"
+                                        FontAttributes="Bold"
+                                        CornerRadius="10"
+                                        Clicked="OnFinishTripClicked" />
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Label Text="Operaciones"
+                           TextColor="White"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           Margin="0,4,0,0" />
+
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="12">
+                        <Button Text="Contraofertas" BackgroundColor="#202A36" TextColor="White" CornerRadius="10" />
+                        <Button Grid.Column="1" Text="Documentos" BackgroundColor="#202A36" TextColor="White" CornerRadius="10" />
+                        <Button Grid.Row="1" Text="Ganancias" BackgroundColor="#202A36" TextColor="White" CornerRadius="10" />
+                        <Button Grid.Row="1" Grid.Column="1" Text="Soporte" BackgroundColor="#202A36" TextColor="White" CornerRadius="10" />
+                    </Grid>
+                </VerticalStackLayout>
+            </ScrollView>
+        </Grid>
     </Grid>
 </ContentPage>

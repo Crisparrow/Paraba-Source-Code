@@ -10,6 +10,7 @@ public partial class MainPage : ContentPage
     private readonly DriverApiService _driverApiService = new();
     private DriverTripResponse? _activeTrip;
     private bool _isAvailable = true;
+    private bool _initialized;
 
     public MainPage()
     {
@@ -19,6 +20,39 @@ public partial class MainPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+
+        if (_initialized)
+        {
+            return;
+        }
+
+        _initialized = true;
+        await ShowSplashAsync();
+    }
+
+    private async Task ShowSplashAsync()
+    {
+        SplashView.IsVisible = true;
+        LoginView.IsVisible = false;
+        DashboardView.IsVisible = false;
+
+        await Task.Delay(1200);
+
+        SplashView.IsVisible = false;
+        LoginView.IsVisible = true;
+        DashboardView.IsVisible = false;
+    }
+
+    private async void OnLoginClicked(object sender, EventArgs e)
+    {
+        if (string.IsNullOrWhiteSpace(PhoneEntry.Text))
+        {
+            await DisplayAlert("PARABA", "Ingresa tu numero de telefono para continuar.", "Aceptar");
+            return;
+        }
+
+        LoginView.IsVisible = false;
+        DashboardView.IsVisible = true;
         await LoadDriverDashboardAsync();
     }
 
