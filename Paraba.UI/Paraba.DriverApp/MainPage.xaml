@@ -46,16 +46,19 @@
                         <RoundRectangle CornerRadius="14" />
                     </Border.StrokeShape>
                     <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
-                        <Label Text="Carlos Mendoza"
+                        <Label x:Name="DriverNameLabel"
+                               Text="Cargando conductor..."
                                TextColor="White"
                                FontSize="22"
                                FontAttributes="Bold" />
                         <Label Grid.Column="1"
+                               x:Name="DriverRatingLabel"
                                Text="5.00"
                                TextColor="#2DFF72"
                                FontSize="20"
                                FontAttributes="Bold" />
                         <Label Grid.Row="1"
+                               x:Name="DriverVehicleLabel"
                                Text="Taxi - Toyota Corolla 5482-ABC"
                                TextColor="#C7CED8"
                                FontSize="14" />
@@ -87,11 +90,13 @@
                             <Label Text="Hoy"
                                    TextColor="#A8B0BA"
                                    FontSize="12" />
-                            <Label Text="Bs 86.50"
+                            <Label x:Name="TodayAmountLabel"
+                                   Text="Bs 0.00"
                                    TextColor="White"
                                    FontSize="22"
                                    FontAttributes="Bold" />
-                            <Label Text="6 viajes"
+                            <Label x:Name="TodayTripsLabel"
+                                   Text="0 viajes"
                                    TextColor="#2DFF72"
                                    FontSize="13" />
                         </VerticalStackLayout>
@@ -104,7 +109,8 @@
                             <Label Text="Pendiente"
                                    TextColor="#A8B0BA"
                                    FontSize="12" />
-                            <Label Text="Bs 13.50"
+                            <Label x:Name="PendingAmountLabel"
+                                   Text="Bs 0.00"
                                    TextColor="White"
                                    FontSize="22"
                                    FontAttributes="Bold" />
@@ -124,11 +130,13 @@
                     </Border.StrokeShape>
                     <VerticalStackLayout Spacing="12">
                         <Grid ColumnDefinitions="*,Auto">
-                            <Label Text="Viaje activo"
+                            <Label x:Name="ActiveTripTitleLabel"
+                                   Text="Viaje activo"
                                    TextColor="White"
                                    FontSize="20"
                                    FontAttributes="Bold" />
-                            <Label Text="Aceptado"
+                            <Label x:Name="ActiveTripStatusLabel"
+                                   Text="Cargando"
                                    TextColor="#2DFF72"
                                    FontAttributes="Bold" />
                         </Grid>
@@ -138,6 +146,7 @@
                                    TextColor="#A8B0BA"
                                    FontSize="12" />
                             <Label Grid.Column="1"
+                                   x:Name="OriginLabel"
                                    Text="Feria Barrio Lindo"
                                    TextColor="White"
                                    FontAttributes="Bold" />
@@ -147,6 +156,7 @@
                                    FontSize="12" />
                             <Label Grid.Row="1"
                                    Grid.Column="1"
+                                   x:Name="DestinationLabel"
                                    Text="Plan 3000"
                                    TextColor="White"
                                    FontAttributes="Bold" />
@@ -157,7 +167,8 @@
                                 <Label Text="Sugerida"
                                        TextColor="#A8B0BA"
                                        FontSize="12" />
-                                <Label Text="Bs 13.60"
+                                <Label x:Name="SuggestedFareLabel"
+                                       Text="Bs 0.00"
                                        TextColor="White"
                                        FontAttributes="Bold" />
                             </VerticalStackLayout>
@@ -165,7 +176,8 @@
                                 <Label Text="Pasajero"
                                        TextColor="#A8B0BA"
                                        FontSize="12" />
-                                <Label Text="Bs 13.00"
+                                <Label x:Name="OfferedFareLabel"
+                                       Text="Bs 0.00"
                                        TextColor="White"
                                        FontAttributes="Bold" />
                             </VerticalStackLayout>
@@ -173,20 +185,23 @@
                                 <Label Text="Aceptada"
                                        TextColor="#A8B0BA"
                                        FontSize="12" />
-                                <Label Text="Bs 13.50"
+                                <Label x:Name="AcceptedFareLabel"
+                                       Text="Bs 0.00"
                                        TextColor="#2DFF72"
                                        FontAttributes="Bold" />
                             </VerticalStackLayout>
                         </Grid>
 
                         <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                            <Button Text="Iniciar viaje"
+                            <Button x:Name="StartTripButton"
+                                    Text="Iniciar viaje"
                                     BackgroundColor="#20C65A"
                                     TextColor="#071009"
                                     FontAttributes="Bold"
                                     CornerRadius="10"
                                     Clicked="OnStartTripClicked" />
                             <Button Grid.Column="1"
+                                    x:Name="FinishTripButton"
                                     Text="Finalizar"
                                     BackgroundColor="#F23845"
                                     TextColor="White"
