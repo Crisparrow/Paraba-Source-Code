@@ -1,5 +1,6 @@
-using Paraba.DriverApp.Models;
+﻿using Paraba.DriverApp.Models;
 using Paraba.DriverApp.Services;
+using System.IO;
 
 namespace Paraba.DriverApp;
 
@@ -34,26 +35,183 @@ public partial class MainPage : ContentPage
     {
         SplashView.IsVisible = true;
         LoginView.IsVisible = false;
+        OtpView.IsVisible = false;
+        NameRegistrationView.IsVisible = false;
+        BiometricView.IsVisible = false;
         DashboardView.IsVisible = false;
+        await LoadSplashImageAsync();
 
-        await Task.Delay(1200);
+        await Task.Delay(5000);
 
         SplashView.IsVisible = false;
         LoginView.IsVisible = true;
+        OtpView.IsVisible = false;
+        NameRegistrationView.IsVisible = false;
+        BiometricView.IsVisible = false;
         DashboardView.IsVisible = false;
+    }
+
+    private async Task LoadSplashImageAsync()
+    {
+        if (SplashImage.Source != null)
+        {
+            return;
+        }
+
+        try
+        {
+            byte[] imageBytes;
+            string outputPath = Path.Combine(AppContext.BaseDirectory, "paraba_intro.png");
+
+            if (File.Exists(outputPath))
+            {
+                imageBytes = await File.ReadAllBytesAsync(outputPath);
+            }
+            else
+            {
+                await using Stream stream = await FileSystem.OpenAppPackageFileAsync("paraba_intro.png");
+                using var memoryStream = new MemoryStream();
+                await stream.CopyToAsync(memoryStream);
+                imageBytes = memoryStream.ToArray();
+            }
+
+            SplashImage.Source = ImageSource.FromStream(() => new MemoryStream(imageBytes));
+            SplashFallback.IsVisible = false;
+        }
+        catch (IOException)
+        {
+            SplashFallback.IsVisible = true;
+        }
     }
 
     private async void OnLoginClicked(object sender, EventArgs e)
     {
         if (string.IsNullOrWhiteSpace(PhoneEntry.Text))
         {
-            await DisplayAlert("PARABA", "Ingresa tu numero de telefono para continuar.", "Aceptar");
+            await DisplayAlert("PARABA", "Ingresa tu número de teléfono para continuar.", "Aceptar");
             return;
         }
 
+        OtpPhoneLabel.Text = $"Enviado al +591 {PhoneEntry.Text} por WhatsApp";
+        OtpCodeEntry.Text = string.Empty;
+        LoginView.IsVisible = false;
+        OtpView.IsVisible = true;
+        NameRegistrationView.IsVisible = false;
+        BiometricView.IsVisible = false;
+        DashboardView.IsVisible = false;
+        OtpCodeEntry.Focus();
+    }
+
+    private void OnBackToLoginClicked(object sender, EventArgs e)
+    {
+        OtpView.IsVisible = false;
+        LoginView.IsVisible = true;
+        NameRegistrationView.IsVisible = false;
+        BiometricView.IsVisible = false;
+        DashboardView.IsVisible = false;
+        PhoneEntry.Focus();
+    }
+
+    private async void OnResendCodeClicked(object sender, EventArgs e)
+    {
+        OtpCodeEntry.Text = string.Empty;
+        await DisplayAlert("PARABA", "Código reenviado por WhatsApp. Código demo: 123456", "Aceptar");
+        OtpCodeEntry.Focus();
+    }
+
+    private async void OnSendSmsClicked(object sender, EventArgs e)
+    {
+        OtpCodeEntry.Text = string.Empty;
+        await DisplayAlert("PARABA", "Código enviado por SMS. Código demo: 123456", "Aceptar");
+        OtpCodeEntry.Focus();
+    }
+
+    private async void OnVerifyCodeClicked(object sender, EventArgs e)
+    {
+        if (OtpCodeEntry.Text != "123456")
+        {
+            await DisplayAlert("PARABA", "Código incorrecto. Por ahora usa el código demo: 123456", "Aceptar");
+            OtpCodeEntry.Focus();
+            return;
+        }
+
+        OtpView.IsVisible = false;
+        LoginView.IsVisible = false;
+        NameRegistrationView.IsVisible = true;
+        BiometricView.IsVisible = false;
+        DashboardView.IsVisible = false;
+        FirstNameEntry.Focus();
+    }
+
+    private void OnBackToOtpClicked(object sender, EventArgs e)
+    {
+        NameRegistrationView.IsVisible = false;
+        OtpView.IsVisible = true;
+        LoginView.IsVisible = false;
+        BiometricView.IsVisible = false;
+        DashboardView.IsVisible = false;
+        OtpCodeEntry.Focus();
+    }
+
+    private async void OnNameNextClicked(object sender, EventArgs e)
+    {
+        if (string.IsNullOrWhiteSpace(FirstNameEntry.Text) || string.IsNullOrWhiteSpace(LastNameEntry.Text))
+        {
+            await DisplayAlert("PARABA", "Ingresa tu nombre y apellido para continuar.", "Aceptar");
+            return;
+        }
+
+        await DisplayAlert("PARABA", "Datos guardados. Ahora puedes activar el acceso por rostro o huella.", "Aceptar");
+        NameRegistrationView.IsVisible = false;
+        BiometricView.IsVisible = true;
+        DashboardView.IsVisible = false;
+    }
+
+    private void OnBackToNameClicked(object sender, EventArgs e)
+    {
+        BiometricView.IsVisible = false;
+        NameRegistrationView.IsVisible = true;
+        OtpView.IsVisible = false;
+        LoginView.IsVisible = false;
+        DashboardView.IsVisible = false;
+        FirstNameEntry.Focus();
+    }
+
+    private async void OnEnableBiometricClicked(object sender, EventArgs e)
+    {
+        await DisplayAlert("PARABA", "Biometría activada en modo demo. Luego conectaremos rostro/huella real del dispositivo.", "Aceptar");
+        await ContinueAfterBiometricAsync();
+    }
+
+    private async void OnSkipBiometricClicked(object sender, EventArgs e)
+    {
+        await ContinueAfterBiometricAsync();
+    }
+
+    private async Task ContinueAfterBiometricAsync()
+    {
+        BiometricView.IsVisible = false;
+        NameRegistrationView.IsVisible = false;
+        OtpView.IsVisible = false;
         LoginView.IsVisible = false;
         DashboardView.IsVisible = true;
         await LoadDriverDashboardAsync();
+    }
+
+    private async void OnUserAgreementTapped(object sender, TappedEventArgs e)
+    {
+        await DisplayAlert(
+            "Acuerdo de usuario",
+            "Aquí se mostrarán los términos de uso de PARABA: uso de la plataforma, responsabilidades del conductor, reglas de viajes, pagos, suspensiones y condiciones del servicio.",
+            "Aceptar");
+    }
+
+    private async void OnPrivacyPolicyTapped(object sender, TappedEventArgs e)
+    {
+        await DisplayAlert(
+            "Politica de privacidad",
+            "Aquí se mostrará cómo PARABA trata datos personales: teléfono, documentos, ubicación, viajes, pagos, seguridad y conservación de información.",
+            "Aceptar");
     }
 
     private async Task LoadDriverDashboardAsync()
@@ -67,7 +225,7 @@ public partial class MainPage : ContentPage
 
             if (profile == null)
             {
-                await DisplayAlert("PARABA", "No se encontro el perfil del conductor.", "Aceptar");
+                await DisplayAlert("PARABA", "No se encontró el perfil del conductor.", "Aceptar");
                 return;
             }
 
@@ -87,50 +245,16 @@ public partial class MainPage : ContentPage
     private void LoadProfile(DriverProfileResponse profile)
     {
         _isAvailable = profile.Disponible;
-        DriverNameLabel.Text = profile.NombreCompleto;
-        DriverRatingLabel.Text = profile.Verificado ? "5.00" : "Pend.";
-
-        DriverVehicleResponse? vehicle = profile.Vehiculos.FirstOrDefault(item => item.Activo);
-        DriverVehicleLabel.Text = vehicle == null
-            ? "Sin vehiculo activo"
-            : $"{GetServiceName(vehicle.IdTipoServicio)} - {vehicle.Marca} {vehicle.Modelo} {vehicle.Placa}";
-
-        TodayAmountLabel.Text = "Bs 0.00";
-        TodayTripsLabel.Text = "Viajes reales desde API";
-        PendingAmountLabel.Text = "Bs 0.00";
-
-        UpdateAvailabilityUi();
+        ProfileNameLabel.Text = string.IsNullOrWhiteSpace(profile.NombreCompleto)
+            ? "Conductor PARABA"
+            : profile.NombreCompleto;
+        ProfileRatingLabel.Text = profile.Verificado ? "5.0" : "Pend.";
+        DriverTopStatusLabel.Text = _isAvailable ? "Pedidos disponibles" : "Pedidos no disponibles";
     }
 
     private void LoadTrip(DriverTripResponse? trip)
     {
         _activeTrip = trip;
-
-        if (trip == null)
-        {
-            ActiveTripTitleLabel.Text = "Sin viaje activo";
-            ActiveTripStatusLabel.Text = "Disponible";
-            OriginLabel.Text = "Esperando solicitud";
-            DestinationLabel.Text = "Sin destino";
-            SuggestedFareLabel.Text = "Bs 0.00";
-            OfferedFareLabel.Text = "Bs 0.00";
-            AcceptedFareLabel.Text = "Bs 0.00";
-            StartTripButton.IsEnabled = false;
-            FinishTripButton.IsEnabled = false;
-            return;
-        }
-
-        ActiveTripTitleLabel.Text = $"Viaje #{trip.IdViaje}";
-        ActiveTripStatusLabel.Text = trip.EstadoViaje;
-        OriginLabel.Text = trip.Origen;
-        DestinationLabel.Text = trip.Destino;
-        SuggestedFareLabel.Text = FormatMoney(trip.TarifaSugerida);
-        OfferedFareLabel.Text = FormatMoney(trip.TarifaOfertada);
-        AcceptedFareLabel.Text = FormatMoney(trip.TarifaAceptada ?? trip.TarifaContraoferta ?? trip.TarifaFinal);
-        PendingAmountLabel.Text = FormatMoney(trip.TarifaAceptada ?? trip.TarifaFinal);
-
-        StartTripButton.IsEnabled = trip.EstadoViaje is "Aceptado" or "Solicitado";
-        FinishTripButton.IsEnabled = trip.EstadoViaje == "En curso";
     }
 
     private void OnToggleAvailabilityClicked(object sender, EventArgs e)
@@ -191,20 +315,46 @@ public partial class MainPage : ContentPage
 
     private void UpdateAvailabilityUi()
     {
-        DriverStatusLabel.Text = _isAvailable ? "Disponible" : "No disponible";
-        DriverStatusLabel.TextColor = _isAvailable ? Color.FromArgb("#2DFF72") : Color.FromArgb("#F23845");
-        ToggleAvailabilityButton.Text = _isAvailable ? "Cambiar a no disponible" : "Cambiar a disponible";
-        ToggleAvailabilityButton.BackgroundColor = _isAvailable ? Color.FromArgb("#20C65A") : Color.FromArgb("#F23845");
-        ToggleAvailabilityButton.TextColor = Colors.White;
+        DriverTopStatusLabel.Text = _isAvailable ? "Pedidos disponibles" : "Pedidos no disponibles";
     }
 
     private void SetBusyState(bool isBusy)
     {
-        StartTripButton.IsEnabled = !isBusy && _activeTrip != null && _activeTrip.EstadoViaje is "Aceptado" or "Solicitado";
-        FinishTripButton.IsEnabled = !isBusy && _activeTrip != null && _activeTrip.EstadoViaje == "En curso";
-        ToggleAvailabilityButton.IsEnabled = !isBusy;
     }
 
+    private void OnOrdersTabClicked(object sender, EventArgs e)
+    {
+        ShowDashboardTab(OrdersTabView, OrdersTabButton);
+    }
+
+    private void OnMoneyTabClicked(object sender, EventArgs e)
+    {
+        ShowDashboardTab(MoneyTabView, MoneyTabButton);
+    }
+
+    private void OnChatsTabClicked(object sender, EventArgs e)
+    {
+        ShowDashboardTab(ChatsTabView, ChatsTabButton);
+    }
+
+    private void OnProfileTabClicked(object sender, EventArgs e)
+    {
+        ShowDashboardTab(ProfileTabView, ProfileTabButton);
+    }
+
+    private void ShowDashboardTab(View activeView, Button activeButton)
+    {
+        OrdersTabView.IsVisible = activeView == OrdersTabView;
+        MoneyTabView.IsVisible = activeView == MoneyTabView;
+        ChatsTabView.IsVisible = activeView == ChatsTabView;
+        ProfileTabView.IsVisible = activeView == ProfileTabView;
+
+        OrdersTabButton.TextColor = Color.FromArgb("#9AA0A8");
+        MoneyTabButton.TextColor = Color.FromArgb("#9AA0A8");
+        ChatsTabButton.TextColor = Color.FromArgb("#9AA0A8");
+        ProfileTabButton.TextColor = Color.FromArgb("#9AA0A8");
+        activeButton.TextColor = Color.FromArgb("#111827");
+    }
     private static string FormatMoney(decimal amount)
     {
         return $"Bs {amount:0.00}";
@@ -215,3 +365,5 @@ public partial class MainPage : ContentPage
         return serviceTypeId == 2 ? "Moto taxi" : "Taxi";
     }
 }
+
+

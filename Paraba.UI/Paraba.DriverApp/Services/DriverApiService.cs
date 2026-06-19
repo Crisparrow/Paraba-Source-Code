@@ -1,4 +1,4 @@
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using Paraba.DriverApp.Models;
 
 namespace Paraba.DriverApp.Services;
@@ -41,9 +41,10 @@ public class DriverApiService
     {
         if (DeviceInfo.Platform == DevicePlatform.Android)
         {
-            return "http://10.0.2.2:5183/";
+            return "http://192.168.1.198:5183/";
         }
 
         return "http://localhost:5183/";
     }
 }
+

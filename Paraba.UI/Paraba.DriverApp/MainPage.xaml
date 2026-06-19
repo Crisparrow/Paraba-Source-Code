@@ -1,24 +1,28 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:Paraba.DriverApp.Controls"
              x:Class="Paraba.DriverApp.MainPage"
              BackgroundColor="#07090D"
              Shell.NavBarIsVisible="False">
 
     <Grid>
         <Grid x:Name="SplashView"
-              BackgroundColor="#F23845">
-            <VerticalStackLayout HorizontalOptions="Center"
+              BackgroundColor="#000000">
+            <Image x:Name="SplashImage"
+                   Aspect="AspectFill" />
+            <VerticalStackLayout x:Name="SplashFallback"
                                  VerticalOptions="Center"
+                                 HorizontalOptions="Center"
                                  Spacing="8">
                 <Label Text="PARABA"
-                       TextColor="White"
+                       TextColor="#F23845"
                        FontSize="44"
                        FontAttributes="Bold"
                        HorizontalTextAlignment="Center" />
                 <Label Text="CONDUCTOR"
-                       TextColor="White"
-                       FontSize="16"
+                       TextColor="#2DFF72"
+                       FontSize="18"
                        FontAttributes="Bold"
                        HorizontalTextAlignment="Center" />
             </VerticalStackLayout>
@@ -26,252 +30,779 @@
 
         <Grid x:Name="LoginView"
               IsVisible="False"
-              BackgroundColor="White"
-              Padding="24"
-              RowDefinitions="*,Auto,Auto,Auto">
-            <VerticalStackLayout Grid.Row="0"
-                                 VerticalOptions="Center"
-                                 Spacing="8">
-                <Label Text="PARABA"
-                       TextColor="#F23845"
-                       FontSize="42"
-                       FontAttributes="Bold"
-                       HorizontalTextAlignment="Center" />
-                <Label Text="Conductor"
-                       TextColor="#2D2F36"
-                       FontSize="18"
-                       FontAttributes="Bold"
-                       HorizontalTextAlignment="Center" />
-            </VerticalStackLayout>
+              BackgroundColor="#030507">
+            <Image Source="paraba_login.png"
+                   Aspect="AspectFill"
+                   InputTransparent="True" />
 
-            <Border Grid.Row="1"
-                    Stroke="#20242B"
-                    StrokeThickness="2"
-                    Padding="16,4"
-                    Margin="0,0,0,14">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="26" />
-                </Border.StrokeShape>
-                <Grid ColumnDefinitions="Auto,*">
-                    <Label Text="+591"
-                           TextColor="#20242B"
-                           FontSize="18"
-                           FontAttributes="Bold"
-                           VerticalOptions="Center" />
-                    <Entry Grid.Column="1"
-                           x:Name="PhoneEntry"
-                           Placeholder="0 0000000"
-                           Keyboard="Telephone"
-                           TextColor="#20242B"
-                           PlaceholderColor="#9AA0A8"
-                           FontSize="18"
-                           BackgroundColor="Transparent"
-                           Margin="14,0,0,0" />
+            <BoxView BackgroundColor="#030507"
+                     Opacity="0.18"
+                     InputTransparent="True" />
+
+            <BoxView BackgroundColor="#030507"
+                     Opacity="0.97"
+                     VerticalOptions="End"
+                     HeightRequest="300"
+                     InputTransparent="True" />
+
+            <ScrollView VerticalOptions="Fill"
+                        Padding="0"
+                        InputTransparent="False">
+                <Grid RowDefinitions="*,Auto"
+                      MinimumHeightRequest="780"
+                      Padding="24,0,24,24">
+                    <VerticalStackLayout Grid.Row="1"
+                                         Spacing="12">
+                        <Border BackgroundColor="#FFFFFF"
+                                Stroke="#FFFFFF"
+                                StrokeThickness="1"
+                                Padding="16,0"
+                                HeightRequest="64">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="20" />
+                            </Border.StrokeShape>
+                            <Grid ColumnDefinitions="58,64,*"
+                                  ColumnSpacing="8">
+                                <Border BackgroundColor="#F3F4F6"
+                                        StrokeThickness="0"
+                                        HeightRequest="38"
+                                        WidthRequest="48"
+                                        VerticalOptions="Center">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="10" />
+                                    </Border.StrokeShape>
+                                    <Label Text="BO"
+                                           TextColor="#138A16"
+                                           FontSize="15"
+                                           FontAttributes="Bold"
+                                           HorizontalTextAlignment="Center"
+                                           VerticalTextAlignment="Center" />
+                                </Border>
+
+                                <Label Grid.Column="1"
+                                       Text="+591"
+                                       TextColor="#111827"
+                                       FontSize="21"
+                                       FontAttributes="Bold"
+                                       VerticalTextAlignment="Center" />
+
+                                <controls:BorderlessEntry x:Name="PhoneEntry"
+                                                          Grid.Column="2"
+                                                          Keyboard="Telephone"
+                                                          MaxLength="8"
+                                                          Placeholder="0 0000000"
+                                                          TextColor="#111827"
+                                                          PlaceholderColor="#9CA3AF"
+                                                          FontSize="20"
+                                                          FontAttributes="Bold"
+                                                          BackgroundColor="Transparent"
+                                                          VerticalOptions="Center"
+                                                          HeightRequest="56" />
+                            </Grid>
+                        </Border>
+
+                        <Button Text="Inicia sesi&#243;n o reg&#237;strate"
+                                BackgroundColor="#E50918"
+                                TextColor="White"
+                                FontSize="20"
+                                FontAttributes="Bold"
+                                CornerRadius="20"
+                                HeightRequest="64"
+                                Clicked="OnLoginClicked" />
+
+                        <Label TextColor="#D1D5DB"
+                               FontSize="13"
+                               HorizontalTextAlignment="Center"
+                               LineBreakMode="WordWrap"
+                               Margin="4,2,4,0">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="Al continuar, acepto los t&#233;rminos del " />
+                                    <Span Text="Acuerdo de usuario"
+                                          TextColor="#F23845"
+                                          FontAttributes="Bold">
+                                        <Span.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnUserAgreementTapped" />
+                                        </Span.GestureRecognizers>
+                                    </Span>
+                                    <Span Text=" y doy mi consentimiento para el procesamiento de mi informaci&#243;n personal de conformidad con los t&#233;rminos de la " />
+                                    <Span Text="Pol&#237;tica de privacidad"
+                                          TextColor="#F23845"
+                                          FontAttributes="Bold">
+                                        <Span.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnPrivacyPolicyTapped" />
+                                        </Span.GestureRecognizers>
+                                    </Span>
+                                    <Span Text="." />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </VerticalStackLayout>
                 </Grid>
-            </Border>
-
-            <Button Grid.Row="2"
-                    Text="Inicia sesion o registrate"
-                    BackgroundColor="#FFD600"
-                    TextColor="#20242B"
-                    FontSize="18"
-                    FontAttributes="Bold"
-                    CornerRadius="24"
-                    HeightRequest="58"
-                    Clicked="OnLoginClicked" />
-
-            <Label Grid.Row="3"
-                   Text="Al continuar aceptas los terminos de usuario y la politica de privacidad de PARABA."
-                   TextColor="#8A8F99"
-                   FontSize="13"
-                   LineBreakMode="WordWrap"
-                   Margin="0,18,0,0" />
+            </ScrollView>
         </Grid>
-
-        <Grid x:Name="DashboardView"
+        <Grid x:Name="OtpView"
               IsVisible="False"
-              RowDefinitions="Auto,*">
-            <Border Grid.Row="0"
-                    BackgroundColor="#10151C"
-                    StrokeThickness="0"
-                    Padding="20,18">
-                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
-                    <Label Text="PARABA"
-                           TextColor="#F23845"
-                           FontSize="26"
-                           FontAttributes="Bold" />
-                    <Border Grid.Column="1"
-                            BackgroundColor="#14271A"
-                            Stroke="#2DFF72"
-                            StrokeThickness="1"
-                            Padding="12,6">
+              BackgroundColor="#030507"
+              Padding="24,22,24,28"
+              RowDefinitions="*,Auto">
+            <Grid Grid.RowSpan="2"
+                  InputTransparent="True">
+                <BoxView BackgroundColor="#180305"
+                         Opacity="0.68"
+                         WidthRequest="112"
+                         HorizontalOptions="Start" />
+                <BoxView BackgroundColor="#021407"
+                         Opacity="0.68"
+                         WidthRequest="112"
+                         HorizontalOptions="End" />
+                <BoxView BackgroundColor="#F23845"
+                         Opacity="0.16"
+                         WidthRequest="22"
+                         HorizontalOptions="Start"
+                         Margin="0,34,0,150" />
+                <BoxView BackgroundColor="#20C65A"
+                         Opacity="0.16"
+                         WidthRequest="22"
+                         HorizontalOptions="End"
+                         Margin="0,34,0,150" />
+
+                <Grid VerticalOptions="End"
+                      HeightRequest="126"
+                      Opacity="0.58"
+                      ColumnDefinitions="*,*">
+                    <HorizontalStackLayout VerticalOptions="End"
+                                           Spacing="3"
+                                           Padding="0,0,0,0">
+                        <BoxView BackgroundColor="#F23845" WidthRequest="8" HeightRequest="32" />
+                        <BoxView BackgroundColor="#F23845" WidthRequest="10" HeightRequest="58" />
+                        <BoxView BackgroundColor="#F23845" WidthRequest="12" HeightRequest="44" />
+                        <BoxView BackgroundColor="#F23845" WidthRequest="9" HeightRequest="78" />
+                        <BoxView BackgroundColor="#F23845" WidthRequest="14" HeightRequest="50" />
+                        <BoxView BackgroundColor="#F23845" WidthRequest="10" HeightRequest="92" />
+                        <BoxView BackgroundColor="#F23845" WidthRequest="16" HeightRequest="38" />
+                        <BoxView BackgroundColor="#F23845" WidthRequest="12" HeightRequest="70" />
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout Grid.Column="1"
+                                           VerticalOptions="End"
+                                           HorizontalOptions="End"
+                                           Spacing="3">
+                        <BoxView BackgroundColor="#20C65A" WidthRequest="12" HeightRequest="46" />
+                        <BoxView BackgroundColor="#20C65A" WidthRequest="15" HeightRequest="80" />
+                        <BoxView BackgroundColor="#20C65A" WidthRequest="10" HeightRequest="60" />
+                        <BoxView BackgroundColor="#20C65A" WidthRequest="13" HeightRequest="98" />
+                        <BoxView BackgroundColor="#20C65A" WidthRequest="16" HeightRequest="52" />
+                        <BoxView BackgroundColor="#20C65A" WidthRequest="10" HeightRequest="72" />
+                        <BoxView BackgroundColor="#20C65A" WidthRequest="14" HeightRequest="40" />
+                    </HorizontalStackLayout>
+                </Grid>
+            </Grid>
+
+            <ScrollView Grid.Row="0">
+                <VerticalStackLayout Spacing="22"
+                                     Padding="0,18,0,22">
+                    <Grid ColumnDefinitions="*,230,*"
+                          Margin="0,0,0,20">
+                        <BoxView BackgroundColor="#F23845"
+                                 HeightRequest="2"
+                                 WidthRequest="82"
+                                 Opacity="0.92"
+                                 HorizontalOptions="Start"
+                                 VerticalOptions="Center" />
+                        <Image Grid.Column="1"
+                               Source="paraba_header.png"
+                               HeightRequest="104"
+                               WidthRequest="230"
+                               Aspect="AspectFit"
+                               HorizontalOptions="Center" />
+                        <BoxView Grid.Column="2"
+                                 BackgroundColor="#20C65A"
+                                 HeightRequest="2"
+                                 WidthRequest="82"
+                                 Opacity="0.92"
+                                 HorizontalOptions="End"
+                                 VerticalOptions="Center" />
+                    </Grid>
+
+                    <Label Text="Código de mensaje&#10;de texto"
+                           TextColor="White"
+                           FontSize="40"
+                           FontAttributes="Bold"
+                           HorizontalTextAlignment="Center"
+                           LineHeight="0.95" />
+
+                    <Label x:Name="OtpPhoneLabel"
+                           Text="Enviado al +591 00000000 por WhatsApp"
+                           TextColor="#D1D5DB"
+                           FontSize="18"
+                           HorizontalTextAlignment="Center" />
+
+                    <Border BackgroundColor="#05080B"
+                            Stroke="#F2F4F7"
+                            StrokeThickness="2"
+                            Padding="16,0"
+                            HeightRequest="84"
+                            Margin="0,14,0,0">
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="18" />
                         </Border.StrokeShape>
-                        <Label x:Name="DriverStatusLabel"
-                               Text="Disponible"
-                               TextColor="#2DFF72"
-                               FontSize="13"
-                               FontAttributes="Bold" />
-                    </Border>
-                    <Label Grid.Row="1"
-                           Grid.ColumnSpan="2"
-                           Text="App del conductor"
-                           TextColor="#A8B0BA"
-                           FontSize="13" />
-                </Grid>
-            </Border>
-
-            <ScrollView Grid.Row="1">
-                <VerticalStackLayout Padding="18" Spacing="16">
-                    <Border BackgroundColor="#121821"
-                            Stroke="#263241"
-                            StrokeThickness="1"
-                            Padding="16">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="14" />
-                        </Border.StrokeShape>
-                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
-                            <Label x:Name="DriverNameLabel"
-                                   Text="Cargando conductor..."
-                                   TextColor="White"
-                                   FontSize="22"
-                                   FontAttributes="Bold" />
-                            <Label Grid.Column="1"
-                                   x:Name="DriverRatingLabel"
-                                   Text="5.00"
-                                   TextColor="#2DFF72"
-                                   FontSize="20"
-                                   FontAttributes="Bold" />
-                            <Label Grid.Row="1"
-                                   x:Name="DriverVehicleLabel"
-                                   Text="Taxi - Toyota Corolla 5482-ABC"
-                                   TextColor="#C7CED8"
-                                   FontSize="14" />
-                            <Label Grid.Row="1"
-                                   Grid.Column="1"
-                                   Text="/ 5"
-                                   TextColor="#A8B0BA"
-                                   FontSize="13"
-                                   VerticalOptions="End" />
-                            <Button Grid.Row="2"
-                                    Grid.ColumnSpan="2"
-                                    x:Name="ToggleAvailabilityButton"
-                                    Text="Cambiar a no disponible"
-                                    BackgroundColor="#20C65A"
-                                    TextColor="#071009"
-                                    FontAttributes="Bold"
-                                    CornerRadius="10"
-                                    Margin="0,14,0,0"
-                                    Clicked="OnToggleAvailabilityClicked" />
-                        </Grid>
+                        <controls:BorderlessEntry x:Name="OtpCodeEntry"
+                                                  Keyboard="Numeric"
+                                                  MaxLength="6"
+                                                  Placeholder="-  -  -  -  -  -"
+                                                  TextColor="White"
+                                                  PlaceholderColor="#AAB0BA"
+                                                  FontSize="34"
+                                                  FontAttributes="Bold"
+                                                  HorizontalTextAlignment="Center"
+                                                  BackgroundColor="Transparent"
+                                                  HeightRequest="78" />
                     </Border>
 
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                        <Border BackgroundColor="#121821" Stroke="#263241" Padding="14">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="12" />
-                            </Border.StrokeShape>
-                            <VerticalStackLayout Spacing="3">
-                                <Label Text="Hoy" TextColor="#A8B0BA" FontSize="12" />
-                                <Label x:Name="TodayAmountLabel" Text="Bs 0.00" TextColor="White" FontSize="22" FontAttributes="Bold" />
-                                <Label x:Name="TodayTripsLabel" Text="0 viajes" TextColor="#2DFF72" FontSize="13" />
-                            </VerticalStackLayout>
-                        </Border>
-                        <Border Grid.Column="1" BackgroundColor="#121821" Stroke="#263241" Padding="14">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="12" />
-                            </Border.StrokeShape>
-                            <VerticalStackLayout Spacing="3">
-                                <Label Text="Pendiente" TextColor="#A8B0BA" FontSize="12" />
-                                <Label x:Name="PendingAmountLabel" Text="Bs 0.00" TextColor="White" FontSize="22" FontAttributes="Bold" />
-                                <Label Text="Por liquidar" TextColor="#F23845" FontSize="13" />
-                            </VerticalStackLayout>
-                        </Border>
-                    </Grid>
+                    <Label Text="&#191;No lo recibiste?"
+                           TextColor="#D1D5DB"
+                           FontSize="22"
+                           HorizontalTextAlignment="Center"
+                           Margin="0,8,0,0" />
 
-                    <Border BackgroundColor="#161D27"
-                            Stroke="#F23845"
-                            StrokeThickness="1"
-                            Padding="16">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="14" />
-                        </Border.StrokeShape>
-                        <VerticalStackLayout Spacing="12">
-                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
-                                <Label x:Name="ActiveTripTitleLabel"
-                                       Text="Viaje activo"
-                                       TextColor="White"
-                                       FontSize="20"
-                                       FontAttributes="Bold" />
-                                <Label Grid.Column="1"
-                                       x:Name="ActiveTripStatusLabel"
-                                       Text="Cargando"
-                                       TextColor="#2DFF72"
-                                       FontAttributes="Bold" />
-                                <Label Grid.Row="1"
-                                       Grid.ColumnSpan="2"
-                                       Text="Solicitud asignada al conductor"
-                                       TextColor="#A8B0BA"
-                                       FontSize="12" />
-                            </Grid>
-
-                            <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,*" ColumnSpacing="12">
-                                <Label Text="Origen" TextColor="#A8B0BA" FontSize="12" />
-                                <Label Grid.Column="1" x:Name="OriginLabel" Text="Feria Barrio Lindo" TextColor="White" FontAttributes="Bold" />
-                                <Label Grid.Row="1" Text="Destino" TextColor="#A8B0BA" FontSize="12" />
-                                <Label Grid.Row="1" Grid.Column="1" x:Name="DestinationLabel" Text="Plan 3000" TextColor="White" FontAttributes="Bold" />
-                            </Grid>
-
-                            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
-                                <VerticalStackLayout>
-                                    <Label Text="Sugerida" TextColor="#A8B0BA" FontSize="12" />
-                                    <Label x:Name="SuggestedFareLabel" Text="Bs 0.00" TextColor="White" FontAttributes="Bold" />
-                                </VerticalStackLayout>
-                                <VerticalStackLayout Grid.Column="1">
-                                    <Label Text="Pasajero" TextColor="#A8B0BA" FontSize="12" />
-                                    <Label x:Name="OfferedFareLabel" Text="Bs 0.00" TextColor="White" FontAttributes="Bold" />
-                                </VerticalStackLayout>
-                                <VerticalStackLayout Grid.Column="2">
-                                    <Label Text="Aceptada" TextColor="#A8B0BA" FontSize="12" />
-                                    <Label x:Name="AcceptedFareLabel" Text="Bs 0.00" TextColor="#2DFF72" FontAttributes="Bold" />
-                                </VerticalStackLayout>
-                            </Grid>
-
-                            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                                <Button x:Name="StartTripButton"
-                                        Text="Iniciar viaje"
-                                        BackgroundColor="#20C65A"
-                                        TextColor="#071009"
-                                        FontAttributes="Bold"
-                                        CornerRadius="10"
-                                        Clicked="OnStartTripClicked" />
-                                <Button Grid.Column="1"
-                                        x:Name="FinishTripButton"
-                                        Text="Finalizar"
-                                        BackgroundColor="#F23845"
-                                        TextColor="White"
-                                        FontAttributes="Bold"
-                                        CornerRadius="10"
-                                        Clicked="OnFinishTripClicked" />
-                            </Grid>
-                        </VerticalStackLayout>
-                    </Border>
-
-                    <Label Text="Operaciones"
-                           TextColor="White"
-                           FontSize="18"
-                           FontAttributes="Bold"
-                           Margin="0,4,0,0" />
-
-                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="12">
-                        <Button Text="Contraofertas" BackgroundColor="#202A36" TextColor="White" CornerRadius="10" />
-                        <Button Grid.Column="1" Text="Documentos" BackgroundColor="#202A36" TextColor="White" CornerRadius="10" />
-                        <Button Grid.Row="1" Text="Ganancias" BackgroundColor="#202A36" TextColor="White" CornerRadius="10" />
-                        <Button Grid.Row="1" Grid.Column="1" Text="Soporte" BackgroundColor="#202A36" TextColor="White" CornerRadius="10" />
+                    <Grid ColumnDefinitions="*,*"
+                          ColumnSpacing="14">
+                        <Button Text="&#8635;  Reenviar código"
+                                BackgroundColor="#12080A"
+                                BorderColor="#F23845"
+                                BorderWidth="1"
+                                TextColor="White"
+                                FontSize="16"
+                                CornerRadius="16"
+                                HeightRequest="64"
+                                Clicked="OnResendCodeClicked" />
+                        <Button Grid.Column="1"
+                                Text="&#128172;  Enviar por SMS"
+                                BackgroundColor="#07120A"
+                                BorderColor="#20C65A"
+                                BorderWidth="1"
+                                TextColor="White"
+                                FontSize="16"
+                                CornerRadius="16"
+                                HeightRequest="64"
+                                Clicked="OnSendSmsClicked" />
                     </Grid>
                 </VerticalStackLayout>
             </ScrollView>
+
+            <Button Grid.Row="1"
+                    Text="Verificar"
+                    BackgroundColor="#20C65A"
+                    TextColor="#041006"
+                    FontSize="30"
+                    FontAttributes="Bold"
+                    CornerRadius="20"
+                    HeightRequest="74"
+                    Margin="0,10,0,0"
+                    Clicked="OnVerifyCodeClicked" />
+        </Grid>
+        <Grid x:Name="NameRegistrationView"
+              IsVisible="False"
+              BackgroundColor="#020405"
+              Padding="24,26,24,28"
+              RowDefinitions="*,Auto">
+            <Grid Grid.RowSpan="2"
+                  InputTransparent="True">
+                <BoxView BackgroundColor="#090304"
+                         Opacity="0.82"
+                         HorizontalOptions="Fill"
+                         VerticalOptions="Fill" />
+                <BoxView BackgroundColor="#F23845"
+                         Opacity="0.07"
+                         WidthRequest="230"
+                         HorizontalOptions="Start"
+                         VerticalOptions="Fill" />
+                <BoxView BackgroundColor="#20C65A"
+                         Opacity="0.07"
+                         WidthRequest="230"
+                         HorizontalOptions="End"
+                         VerticalOptions="Fill" />
+
+                <Grid VerticalOptions="End"
+                      HeightRequest="120"
+                      Opacity="0.55"
+                      ColumnDefinitions="*,*">
+                    <HorizontalStackLayout VerticalOptions="End" Spacing="3">
+                        <BoxView BackgroundColor="#F23845" WidthRequest="8" HeightRequest="32" />
+                        <BoxView BackgroundColor="#F23845" WidthRequest="12" HeightRequest="76" />
+                        <BoxView BackgroundColor="#F23845" WidthRequest="10" HeightRequest="48" />
+                        <BoxView BackgroundColor="#F23845" WidthRequest="14" HeightRequest="88" />
+                        <BoxView BackgroundColor="#F23845" WidthRequest="12" HeightRequest="58" />
+                        <BoxView BackgroundColor="#F23845" WidthRequest="16" HeightRequest="42" />
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout Grid.Column="1" VerticalOptions="End" HorizontalOptions="End" Spacing="3">
+                        <BoxView BackgroundColor="#20C65A" WidthRequest="14" HeightRequest="42" />
+                        <BoxView BackgroundColor="#20C65A" WidthRequest="10" HeightRequest="66" />
+                        <BoxView BackgroundColor="#20C65A" WidthRequest="16" HeightRequest="96" />
+                        <BoxView BackgroundColor="#20C65A" WidthRequest="11" HeightRequest="54" />
+                        <BoxView BackgroundColor="#20C65A" WidthRequest="13" HeightRequest="80" />
+                    </HorizontalStackLayout>
+                </Grid>
+            </Grid>
+
+            <ScrollView Grid.Row="0">
+                <VerticalStackLayout Spacing="22"
+                                     Padding="0,20,0,24">
+                    <Grid ColumnDefinitions="*,230,*"
+                          Margin="0,0,0,26">
+                        <BoxView BackgroundColor="#F23845"
+                                 HeightRequest="2"
+                                 WidthRequest="82"
+                                 Opacity="0.9"
+                                 HorizontalOptions="Start"
+                                 VerticalOptions="Center" />
+                        <Image Grid.Column="1"
+                               Source="paraba_header.png"
+                               HeightRequest="100"
+                               WidthRequest="230"
+                               Aspect="AspectFit" />
+                        <BoxView Grid.Column="2"
+                                 BackgroundColor="#20C65A"
+                                 HeightRequest="2"
+                                 WidthRequest="82"
+                                 Opacity="0.9"
+                                 HorizontalOptions="End"
+                                 VerticalOptions="Center" />
+                    </Grid>
+
+                    <Label Text="Ingresa tu nombre"
+                           TextColor="White"
+                           FontSize="42"
+                           FontAttributes="Bold"
+                           HorizontalTextAlignment="Center" />
+                    <Label Text="Completa tus datos para continuar."
+                           TextColor="#D4D7DE"
+                           FontSize="18"
+                           HorizontalTextAlignment="Center"
+                           Margin="0,-8,0,34" />
+
+                    <Border BackgroundColor="#05080B"
+                            Stroke="#F23845"
+                            StrokeThickness="2"
+                            Padding="16,0"
+                            HeightRequest="78">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="18" />
+                        </Border.StrokeShape>
+                        <Grid ColumnDefinitions="54,*">
+                            <Grid WidthRequest="40" HeightRequest="44" VerticalOptions="Center" HorizontalOptions="Center">
+                                <Border BackgroundColor="Transparent" Stroke="#FF5A64" StrokeThickness="2" WidthRequest="18" HeightRequest="18" HorizontalOptions="Center" VerticalOptions="Start">
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="9" /></Border.StrokeShape>
+                                </Border>
+                                <Border BackgroundColor="Transparent" Stroke="#FF5A64" StrokeThickness="2" WidthRequest="30" HeightRequest="18" HorizontalOptions="Center" VerticalOptions="End">
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="10" /></Border.StrokeShape>
+                                </Border>
+                            </Grid>
+                            <controls:BorderlessEntry Grid.Column="1"
+                                                      x:Name="FirstNameEntry"
+                                                      Placeholder="Nombre"
+                                                      TextColor="White"
+                                                      PlaceholderColor="#C8CBD3"
+                                                      FontSize="21"
+                                                      BackgroundColor="Transparent"
+                                                      HeightRequest="66"
+                                                      VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+
+                    <Border BackgroundColor="#05080B"
+                            Stroke="#20C65A"
+                            StrokeThickness="2"
+                            Padding="16,0"
+                            HeightRequest="78">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="18" />
+                        </Border.StrokeShape>
+                        <Grid ColumnDefinitions="54,*">
+                            <Grid WidthRequest="40" HeightRequest="44" VerticalOptions="Center" HorizontalOptions="Center">
+                                <Border BackgroundColor="Transparent" Stroke="#2DFF72" StrokeThickness="2" WidthRequest="18" HeightRequest="18" HorizontalOptions="Center" VerticalOptions="Start">
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="9" /></Border.StrokeShape>
+                                </Border>
+                                <Border BackgroundColor="Transparent" Stroke="#2DFF72" StrokeThickness="2" WidthRequest="30" HeightRequest="18" HorizontalOptions="Center" VerticalOptions="End">
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="10" /></Border.StrokeShape>
+                                </Border>
+                            </Grid>
+                            <controls:BorderlessEntry Grid.Column="1"
+                                                      x:Name="LastNameEntry"
+                                                      Placeholder="Apellido"
+                                                      TextColor="White"
+                                                      PlaceholderColor="#C8CBD3"
+                                                      FontSize="21"
+                                                      BackgroundColor="Transparent"
+                                                      HeightRequest="66"
+                                                      VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <Button Grid.Row="1"
+                    Text="Siguiente  &gt;"
+                    BackgroundColor="#20C65A"
+                    TextColor="#061008"
+                    FontSize="27"
+                    FontAttributes="Bold"
+                    CornerRadius="22"
+                    HeightRequest="76"
+                    Clicked="OnNameNextClicked" />
+        </Grid>
+        <Grid x:Name="BiometricView"
+              IsVisible="False"
+              BackgroundColor="#020405"
+              Padding="24,42,24,28"
+              RowDefinitions="Auto,*,Auto,Auto">
+            <BoxView Grid.RowSpan="4"
+                     BackgroundColor="#020405"
+                     Opacity="0.88" />
+            <BoxView Grid.RowSpan="4"
+                     BackgroundColor="#F23845"
+                     Opacity="0.07"
+                     WidthRequest="230"
+                     HorizontalOptions="Start"
+                     VerticalOptions="Fill" />
+            <BoxView Grid.RowSpan="4"
+                     BackgroundColor="#20C65A"
+                     Opacity="0.07"
+                     WidthRequest="230"
+                     HorizontalOptions="End"
+                     VerticalOptions="Fill" />
+
+            <Button Text="&lt;"
+                    BackgroundColor="Transparent"
+                    TextColor="White"
+                    FontSize="44"
+                    WidthRequest="54"
+                    HeightRequest="54"
+                    Padding="0"
+                    HorizontalOptions="Start"
+                    Clicked="OnBackToNameClicked" />
+
+            <VerticalStackLayout Grid.Row="1"
+                                 Spacing="22"
+                                 VerticalOptions="Center">
+                <Grid ColumnDefinitions="*,Auto,*"
+                      ColumnSpacing="14">
+                    <BoxView BackgroundColor="#F23845"
+                             HeightRequest="2"
+                             Opacity="0.85"
+                             VerticalOptions="Center" />
+                    <Image Grid.Column="1" Source="paraba_header.png" HeightRequest="58" WidthRequest="180" Aspect="AspectFit" />
+                    <BoxView Grid.Column="2"
+                             BackgroundColor="#20C65A"
+                             HeightRequest="2"
+                             Opacity="0.85"
+                             VerticalOptions="Center" />
+                </Grid>
+
+                <Border BackgroundColor="#20242B"
+                        Stroke="#E5E7EB"
+                        StrokeThickness="2"
+                        WidthRequest="132"
+                        HeightRequest="132"
+                        HorizontalOptions="Center"
+                        Margin="0,18,0,8">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="66" />
+                    </Border.StrokeShape>
+                    <Label Text="ID"
+                           TextColor="#F4F6F8"
+                           FontSize="38"
+                           FontAttributes="Bold"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center" />
+                </Border>
+
+                <Label Text="Ingresa con&#10;rostro o huella"
+                       TextColor="White"
+                       FontSize="39"
+                       FontAttributes="Bold"
+                       HorizontalTextAlignment="Center" />
+
+                <Grid RowDefinitions="Auto,Auto,Auto"
+                      ColumnDefinitions="54,*"
+                      RowSpacing="20"
+                      Margin="16,18,0,0">
+                    <Label Text="R"
+                           TextColor="#FF5A64"
+                           FontSize="25"
+                           FontAttributes="Bold"
+                           VerticalTextAlignment="Center" />
+                    <VerticalStackLayout Grid.Column="1">
+                        <Label Text="Rápido y fácil"
+                               TextColor="White"
+                               FontSize="20"
+                               FontAttributes="Bold" />
+                        <Label Text="Usa el desbloqueo de tu dispositivo."
+                               TextColor="#D1D5DB"
+                               FontSize="15" />
+                    </VerticalStackLayout>
+
+                    <Label Grid.Row="1"
+                           Text="S"
+                           TextColor="#FF5A64"
+                           FontSize="25"
+                           FontAttributes="Bold"
+                           VerticalTextAlignment="Center" />
+                    <VerticalStackLayout Grid.Row="1"
+                                         Grid.Column="1">
+                        <Label Text="Más seguro"
+                               TextColor="White"
+                               FontSize="20"
+                               FontAttributes="Bold" />
+                        <Label Text="Tu rostro o huella confirman que eres tú."
+                               TextColor="#D1D5DB"
+                               FontSize="15" />
+                    </VerticalStackLayout>
+
+                    <Label Grid.Row="2"
+                           Text="D"
+                           TextColor="#2DFF72"
+                           FontSize="25"
+                           FontAttributes="Bold"
+                           VerticalTextAlignment="Center" />
+                    <VerticalStackLayout Grid.Row="2"
+                                         Grid.Column="1">
+                        <Label Text="Sin transferencia de datos"
+                               TextColor="White"
+                               FontSize="20"
+                               FontAttributes="Bold" />
+                        <Label Text="Todo se procesa en tu dispositivo."
+                               TextColor="#D1D5DB"
+                               FontSize="15" />
+                    </VerticalStackLayout>
+                </Grid>
+            </VerticalStackLayout>
+
+            <Button Grid.Row="2"
+                    Text="Activar"
+                    BackgroundColor="#20C65A"
+                    TextColor="#061008"
+                    FontSize="25"
+                    FontAttributes="Bold"
+                    CornerRadius="20"
+                    HeightRequest="70"
+                    Clicked="OnEnableBiometricClicked" />
+
+            <Button Grid.Row="3"
+                    Text="Ahora no"
+                    BackgroundColor="#030507"
+                    BorderColor="#20C65A"
+                    BorderWidth="1"
+                    TextColor="White"
+                    FontSize="20"
+                    FontAttributes="Bold"
+                    CornerRadius="20"
+                    HeightRequest="62"
+                    Margin="0,12,0,0"
+                    Clicked="OnSkipBiometricClicked" />
+        </Grid>
+
+        <Grid x:Name="ObsoleteBiometricView"
+              IsVisible="False"
+              BackgroundColor="#030507">
+            <Button Text=""
+                    IsVisible="False"
+                    Clicked="OnNameNextClicked" />
+        </Grid>
+        <Grid x:Name="DashboardView"
+              IsVisible="False"
+              BackgroundColor="#F4F4F4"
+              RowDefinitions="Auto,*,Auto">
+
+            <Grid Grid.Row="0"
+                  BackgroundColor="#F23845"
+                  Padding="18,12"
+                  ColumnDefinitions="*,Auto">
+                <Label x:Name="DriverTopStatusLabel"
+                       Text="Pedidos no disponibles"
+                       TextColor="White"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       HorizontalTextAlignment="Center"
+                       VerticalTextAlignment="Center" />
+                <Label Grid.Column="1"
+                       Text="&gt;"
+                       TextColor="White"
+                       FontSize="28"
+                       FontAttributes="Bold" />
+            </Grid>
+
+            <Grid Grid.Row="1">
+                <ScrollView x:Name="OrdersTabView" BackgroundColor="White">
+                    <VerticalStackLayout Spacing="0">
+                        <Grid HeightRequest="470" BackgroundColor="#EEF2F7">
+                            <Grid RowDefinitions="*,*,*" ColumnDefinitions="*,*,*" Opacity="0.55">
+                                <BoxView Grid.Row="0" Grid.Column="1" BackgroundColor="#CBD5E1" WidthRequest="7" HorizontalOptions="Center" />
+                                <BoxView Grid.Row="1" Grid.Column="1" BackgroundColor="#CBD5E1" WidthRequest="7" HorizontalOptions="Center" />
+                                <BoxView Grid.Row="2" Grid.ColumnSpan="3" BackgroundColor="#CBD5E1" HeightRequest="7" VerticalOptions="Center" />
+                                <BoxView Grid.Row="0" Grid.ColumnSpan="3" BackgroundColor="#65D845" HeightRequest="7" VerticalOptions="Start" />
+                            </Grid>
+                            <Label Text="▲"
+                                   TextColor="#F23845"
+                                   FontSize="58"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                            <Frame BackgroundColor="White"
+                                   CornerRadius="28"
+                                   Padding="14"
+                                   HasShadow="True"
+                                   HorizontalOptions="Start"
+                                   VerticalOptions="End"
+                                   Margin="18,0,0,22">
+                                <Label Text="Buscar" TextColor="#111827" FontAttributes="Bold" />
+                            </Frame>
+                            <Frame BackgroundColor="White"
+                                   CornerRadius="28"
+                                   Padding="14"
+                                   HasShadow="True"
+                                   HorizontalOptions="End"
+                                   VerticalOptions="End"
+                                   Margin="0,0,18,22">
+                                <Label Text="Seguridad" TextColor="#111827" FontAttributes="Bold" />
+                            </Frame>
+                        </Grid>
+
+                        <Frame CornerRadius="24" Padding="20" HasShadow="True" Margin="0,-36,0,0" BackgroundColor="White">
+                            <VerticalStackLayout Spacing="16">
+                                <Grid ColumnDefinitions="*,*">
+                                    <VerticalStackLayout>
+                                        <Label Text="Prioridad" TextColor="#374151" FontSize="14" />
+                                        <Label Text="+91" TextColor="#111827" FontSize="28" FontAttributes="Bold" />
+                                    </VerticalStackLayout>
+                                    <VerticalStackLayout Grid.Column="1">
+                                        <Label Text="0 pedidos" TextColor="#374151" FontSize="14" HorizontalTextAlignment="End" />
+                                        <Label Text="0 BOB" TextColor="#111827" FontSize="28" FontAttributes="Bold" HorizontalTextAlignment="End" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                                <Frame CornerRadius="16" BackgroundColor="#F2F2F2" Padding="16,12" HasShadow="False">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <VerticalStackLayout>
+                                            <Label Text="En este momento no hay objetivos activos" TextColor="#111827" FontSize="17" FontAttributes="Bold" />
+                                            <Label Text="Conoce cómo obtener un objetivo nuevo" TextColor="#80868F" FontSize="13" />
+                                        </VerticalStackLayout>
+                                        <Label Grid.Column="1" Text="&gt;" TextColor="#111827" FontSize="24" VerticalTextAlignment="Center" />
+                                    </Grid>
+                                </Frame>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </VerticalStackLayout>
+                </ScrollView>
+
+                <ScrollView x:Name="MoneyTabView" IsVisible="False" BackgroundColor="White">
+                    <VerticalStackLayout Padding="24,28" Spacing="18">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="Dinero" TextColor="#111827" FontSize="40" FontAttributes="Bold" />
+                            <Frame Grid.Column="1" BackgroundColor="#0E9F5A" CornerRadius="20" Padding="14,8" HasShadow="False">
+                                <Label Text="Servicio de Asistencia" TextColor="White" FontSize="14" FontAttributes="Bold" />
+                            </Frame>
+                        </Grid>
+                        <Frame BackgroundColor="#F3F3F3" CornerRadius="24" Padding="18" HeightRequest="120" HasShadow="False">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <VerticalStackLayout Spacing="14">
+                                    <BoxView BackgroundColor="#E5E5E5" HeightRequest="42" WidthRequest="180" HorizontalOptions="Start" />
+                                    <BoxView BackgroundColor="#E5E5E5" HeightRequest="20" WidthRequest="250" HorizontalOptions="Start" />
+                                </VerticalStackLayout>
+                                <Label Grid.Column="1" Text="PARABA" TextColor="#F23845" FontSize="20" FontAttributes="Bold" VerticalTextAlignment="Center" />
+                            </Grid>
+                        </Frame>
+                        <Frame BackgroundColor="#F3F3F3" CornerRadius="24" Padding="18" HasShadow="False">
+                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                <Label Text="▣" TextColor="#111827" FontSize="34" VerticalTextAlignment="Center" />
+                                <VerticalStackLayout Grid.Column="1" Margin="14,0,0,0">
+                                    <Label Text="Límite del saldo" TextColor="#111827" FontSize="22" FontAttributes="Bold" />
+                                    <Label Text="Todo en orden" TextColor="#111827" FontSize="18" />
+                                </VerticalStackLayout>
+                                <Label Grid.Column="2" Text="-5 BOB" TextColor="#111827" FontSize="24" FontAttributes="Bold" VerticalTextAlignment="Center" />
+                            </Grid>
+                        </Frame>
+                        <Frame BackgroundColor="#F3F3F3" CornerRadius="24" Padding="22" HeightRequest="180" HasShadow="False">
+                            <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="*,Auto">
+                                <Label Text="Saldo" TextColor="#111827" FontSize="26" FontAttributes="Bold" />
+                                <Label Grid.Column="1" Text="0 BOB" TextColor="#111827" FontSize="26" FontAttributes="Bold" />
+                                <VerticalStackLayout Grid.Row="2" Grid.ColumnSpan="2">
+                                    <Label Text="Empresa asociada" TextColor="#111827" FontSize="17" />
+                                    <Label Text="PARABA" TextColor="#111827" FontSize="20" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Frame>
+                    </VerticalStackLayout>
+                </ScrollView>
+
+                <ScrollView x:Name="ChatsTabView" IsVisible="False" BackgroundColor="White">
+                    <VerticalStackLayout Padding="22,28" Spacing="14">
+                        <Label Text="Mensajes" TextColor="#111827" FontSize="36" FontAttributes="Bold" Margin="0,0,0,12" />
+                        <Grid ColumnDefinitions="62,*,Auto" Padding="0,8">
+                            <Frame BackgroundColor="#0E9F5A" CornerRadius="28" WidthRequest="56" HeightRequest="56" Padding="0" HasShadow="False"><Label Text="A" TextColor="White" FontSize="24" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /></Frame>
+                            <Label Grid.Column="1" Text="Servicio de Asistencia" TextColor="#111827" FontSize="20" FontAttributes="Bold" VerticalTextAlignment="Center" />
+                            <Label Grid.Column="2" Text="&gt;" TextColor="#111827" FontSize="28" VerticalTextAlignment="Center" />
+                        </Grid>
+                        <Grid ColumnDefinitions="62,*,Auto" Padding="0,8">
+                            <Frame BackgroundColor="#FEF14D" CornerRadius="28" WidthRequest="56" HeightRequest="56" Padding="0" HasShadow="False"><Label Text="P" TextColor="#111827" FontSize="24" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /></Frame>
+                            <VerticalStackLayout Grid.Column="1"><Label Text="De PARABA" TextColor="#111827" FontSize="19" FontAttributes="Bold" /><Label Text="Gana más manteniéndote alerta" TextColor="#9AA0A8" FontSize="14" /></VerticalStackLayout>
+                            <Frame Grid.Column="2" BackgroundColor="#F23845" CornerRadius="15" WidthRequest="30" HeightRequest="30" Padding="0" HasShadow="False"><Label Text="5" TextColor="White" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /></Frame>
+                        </Grid>
+                        <Label Text="Novedades de Pro        &gt;" TextColor="#111827" FontSize="20" FontAttributes="Bold" />
+                        <Label Text="Saldo        &gt;" TextColor="#111827" FontSize="20" FontAttributes="Bold" />
+                        <Label Text="Notificaciones de soporte        &gt;" TextColor="#111827" FontSize="20" FontAttributes="Bold" />
+                        <Label Text="Advertencias        &gt;" TextColor="#111827" FontSize="20" FontAttributes="Bold" />
+                    </VerticalStackLayout>
+                </ScrollView>
+
+                <ScrollView x:Name="ProfileTabView" IsVisible="False" BackgroundColor="#F4F4F4">
+                    <VerticalStackLayout Padding="20,18" Spacing="14">
+                        <Grid ColumnDefinitions="72,*,Auto">
+                            <Frame BackgroundColor="#E5E5E5" CornerRadius="32" WidthRequest="64" HeightRequest="64" Padding="0" HasShadow="False"><Label Text="C" TextColor="White" FontSize="28" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /></Frame>
+                            <Label Grid.Column="1" x:Name="ProfileNameLabel" Text="Conductor PARABA" TextColor="#111827" FontSize="27" FontAttributes="Bold" VerticalTextAlignment="Center" />
+                            <Label Grid.Column="2" Text="+" TextColor="#2D5BFF" FontSize="34" FontAttributes="Bold" VerticalTextAlignment="Center" />
+                        </Grid>
+                        <Frame BackgroundColor="White" CornerRadius="22" Padding="18" HasShadow="False">
+                            <VerticalStackLayout Spacing="14">
+                                <Grid ColumnDefinitions="*,Auto"><Label Text="Conductor" TextColor="#111827" FontSize="22" FontAttributes="Bold" /><Label Grid.Column="1" Text="Cambiar socio" TextColor="#111827" FontSize="13" /></Grid>
+                                <Grid ColumnDefinitions="*,*" ColumnSpacing="10"><Frame BackgroundColor="#F1F1F1" CornerRadius="14" Padding="14" HasShadow="False"><VerticalStackLayout><Label Text="+91" FontSize="20" FontAttributes="Bold"/><Label Text="Prioridad" FontSize="13"/></VerticalStackLayout></Frame><Frame Grid.Column="1" BackgroundColor="#F1F1F1" CornerRadius="14" Padding="14" HasShadow="False"><VerticalStackLayout><Label x:Name="ProfileRatingLabel" Text="5.0" FontSize="20" FontAttributes="Bold"/><Label Text="Calificación" FontSize="13"/></VerticalStackLayout></Frame></Grid>
+                                <Label Text="Socio                                           PARABA &gt;" FontSize="17" />
+                                <Label Text="Modo de ganancias                 Flexible &gt;" FontSize="17" />
+                                <Label Text="Tipos de servicios                  Taxi y moto taxi &gt;" FontSize="17" />
+                                <Label Text="Pago                                             Efectivo &gt;" FontSize="17" />
+                            </VerticalStackLayout>
+                        </Frame>
+                        <Label Text="Mis vehículos" TextColor="#111827" FontSize="24" FontAttributes="Bold" />
+                        <Frame BackgroundColor="White" CornerRadius="20" Padding="18" HeightRequest="128" HasShadow="False"><Label Text="+  Agrega un vehículo" TextColor="#111827" FontSize="18" FontAttributes="Bold" /></Frame>
+                        <Frame BackgroundColor="White" CornerRadius="20" Padding="18" HasShadow="False"><VerticalStackLayout Spacing="18"><Label Text="Solución de problemas        4   &gt;" FontSize="18"/><Label Text="Verificación por foto           &gt;" FontSize="18"/></VerticalStackLayout></Frame>
+                    </VerticalStackLayout>
+                </ScrollView>
+            </Grid>
+
+            <Grid Grid.Row="2"
+                  BackgroundColor="White"
+                  Padding="4,6"
+                  ColumnDefinitions="*,*,*,*">
+                <Button x:Name="OrdersTabButton" Text="Pedidos" BackgroundColor="Transparent" TextColor="#111827" Clicked="OnOrdersTabClicked" />
+                <Button x:Name="MoneyTabButton" Grid.Column="1" Text="Dinero" BackgroundColor="Transparent" TextColor="#9AA0A8" Clicked="OnMoneyTabClicked" />
+                <Button x:Name="ChatsTabButton" Grid.Column="2" Text="Chats" BackgroundColor="Transparent" TextColor="#9AA0A8" Clicked="OnChatsTabClicked" />
+                <Button x:Name="ProfileTabButton" Grid.Column="3" Text="Perfil" BackgroundColor="Transparent" TextColor="#9AA0A8" Clicked="OnProfileTabClicked" />
+            </Grid>
         </Grid>
     </Grid>
 </ContentPage>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
