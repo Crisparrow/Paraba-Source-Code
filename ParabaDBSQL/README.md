@@ -1,10 +1,12 @@
 # Scripts de base de datos PARABA
 
-Para instalar la base completa desde cero, ejecutar solo:
+Para instalar la base actual desde cero, ejecutar:
 
 1. `00_Create_ParabaDB_Complete.sql`
+2. `09_Create_Driver_Registration_Identity.sql`
 
-Ese script crea la base `ParabaDB`, crea todas las tablas actuales del panel administrativo y carga datos iniciales.
+El primer script crea la base `ParabaDB`, crea las tablas actuales del panel administrativo y carga datos iniciales.
+El script `09` agrega el modulo de identidad y registro de conductores para la app movil.
 
 Usuario inicial del panel:
 
