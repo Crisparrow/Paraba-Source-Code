@@ -6,6 +6,7 @@ namespace Paraba.DriverApp.Services;
 public class DriverApiService
 {
     private readonly HttpClient _httpClient;
+    private string _sessionToken = string.Empty;
 
     public DriverApiService()
     {
@@ -18,6 +19,46 @@ public class DriverApiService
     public async Task<DriverProfileResponse?> GetProfileAsync(int driverId)
     {
         return await _httpClient.GetFromJsonAsync<DriverProfileResponse>($"api/conductores/{driverId}/perfil");
+    }
+
+    public async Task<DriverRequestCodeResponse?> RequestCodeAsync(string phone)
+    {
+        HttpResponseMessage response = await _httpClient.PostAsJsonAsync(
+            "api/conductores/auth/solicitar-codigo",
+            new DriverRequestCodeRequest { Telefono = phone });
+
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadFromJsonAsync<DriverRequestCodeResponse>();
+    }
+
+    public async Task<DriverVerifyCodeResponse?> VerifyCodeAsync(string phone, string code)
+    {
+        HttpResponseMessage response = await _httpClient.PostAsJsonAsync(
+            "api/conductores/auth/verificar-codigo",
+            new DriverVerifyCodeRequest { Telefono = phone, Codigo = code });
+
+        response.EnsureSuccessStatusCode();
+
+        DriverVerifyCodeResponse? result = await response.Content.ReadFromJsonAsync<DriverVerifyCodeResponse>();
+        _sessionToken = result?.Token ?? string.Empty;
+
+        return result;
+    }
+
+    public async Task<DriverRegistrationResponse?> SaveRegistrationDraftAsync(DriverRegistrationDraftRequest request)
+    {
+        using HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Put, "api/conductores/auth/solicitud/borrador")
+        {
+            Content = JsonContent.Create(request)
+        };
+
+        AddAuthorization(message);
+
+        HttpResponseMessage response = await _httpClient.SendAsync(message);
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadFromJsonAsync<DriverRegistrationResponse>();
     }
 
     public async Task<List<DriverTripResponse>> GetActiveTripsAsync(int driverId)
@@ -41,10 +82,18 @@ public class DriverApiService
     {
         if (DeviceInfo.Platform == DevicePlatform.Android)
         {
-            return "http://192.168.1.198:5183/";
+            return "http://127.0.0.1:5183/";
         }
 
         return "http://localhost:5183/";
+    }
+
+    private void AddAuthorization(HttpRequestMessage message)
+    {
+        if (!string.IsNullOrWhiteSpace(_sessionToken))
+        {
+            message.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _sessionToken);
+        }
     }
 }
 

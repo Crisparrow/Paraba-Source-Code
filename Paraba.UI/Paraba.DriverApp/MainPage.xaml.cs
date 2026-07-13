@@ -6,10 +6,10 @@ namespace Paraba.DriverApp;
 
 public partial class MainPage : ContentPage
 {
-    private const int DemoDriverId = 1;
-
     private readonly DriverApiService _driverApiService = new();
     private DriverTripResponse? _activeTrip;
+    private DriverRegistrationResponse? _registration;
+    private string _phone = string.Empty;
     private bool _isAvailable = true;
     private bool _initialized;
 
@@ -92,14 +92,36 @@ public partial class MainPage : ContentPage
             return;
         }
 
-        OtpPhoneLabel.Text = $"Enviado al +591 {PhoneEntry.Text} por WhatsApp";
-        OtpCodeEntry.Text = string.Empty;
-        LoginView.IsVisible = false;
-        OtpView.IsVisible = true;
-        NameRegistrationView.IsVisible = false;
-        BiometricView.IsVisible = false;
-        DashboardView.IsVisible = false;
-        OtpCodeEntry.Focus();
+        try
+        {
+            SetBusyState(true);
+            _phone = PhoneEntry.Text.Trim();
+            DriverRequestCodeResponse? response = await _driverApiService.RequestCodeAsync(_phone);
+            _registration = response?.Solicitud;
+
+            OtpPhoneLabel.Text = $"Enviado al +591 {_phone} por WhatsApp o SMS";
+            OtpCodeEntry.Text = string.Empty;
+            LoginView.IsVisible = false;
+            OtpView.IsVisible = true;
+            NameRegistrationView.IsVisible = false;
+            BiometricView.IsVisible = false;
+            DashboardView.IsVisible = false;
+
+            if (!string.IsNullOrWhiteSpace(response?.CodigoDemo))
+            {
+                await DisplayAlert("PARABA beta", $"Código demo generado por la API: {response.CodigoDemo}", "Aceptar");
+            }
+
+            OtpCodeEntry.Focus();
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("PARABA", $"No se pudo solicitar el código. Detalle: {ex.Message}", "Aceptar");
+        }
+        finally
+        {
+            SetBusyState(false);
+        }
     }
 
     private void OnBackToLoginClicked(object sender, EventArgs e)
@@ -114,33 +136,51 @@ public partial class MainPage : ContentPage
 
     private async void OnResendCodeClicked(object sender, EventArgs e)
     {
-        OtpCodeEntry.Text = string.Empty;
-        await DisplayAlert("PARABA", "Código reenviado por WhatsApp. Código demo: 123456", "Aceptar");
-        OtpCodeEntry.Focus();
+        await RequestNewCodeAsync("WhatsApp");
     }
 
     private async void OnSendSmsClicked(object sender, EventArgs e)
     {
-        OtpCodeEntry.Text = string.Empty;
-        await DisplayAlert("PARABA", "Código enviado por SMS. Código demo: 123456", "Aceptar");
-        OtpCodeEntry.Focus();
+        await RequestNewCodeAsync("SMS");
     }
 
     private async void OnVerifyCodeClicked(object sender, EventArgs e)
     {
-        if (OtpCodeEntry.Text != "123456")
+        if (string.IsNullOrWhiteSpace(OtpCodeEntry.Text))
         {
-            await DisplayAlert("PARABA", "Código incorrecto. Por ahora usa el código demo: 123456", "Aceptar");
+            await DisplayAlert("PARABA", "Ingresa el código de verificación.", "Aceptar");
             OtpCodeEntry.Focus();
             return;
         }
 
-        OtpView.IsVisible = false;
-        LoginView.IsVisible = false;
-        NameRegistrationView.IsVisible = true;
-        BiometricView.IsVisible = false;
-        DashboardView.IsVisible = false;
-        FirstNameEntry.Focus();
+        try
+        {
+            SetBusyState(true);
+            DriverVerifyCodeResponse? response = await _driverApiService.VerifyCodeAsync(_phone, OtpCodeEntry.Text);
+            _registration = response?.Solicitud;
+
+            if (_registration != null && !string.IsNullOrWhiteSpace(_registration.NombreCompleto))
+            {
+                await ContinueAfterBiometricAsync();
+                return;
+            }
+
+            OtpView.IsVisible = false;
+            LoginView.IsVisible = false;
+            NameRegistrationView.IsVisible = true;
+            BiometricView.IsVisible = false;
+            DashboardView.IsVisible = false;
+            FirstNameEntry.Focus();
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("PARABA", $"Código inválido o expirado. Detalle: {ex.Message}", "Aceptar");
+            OtpCodeEntry.Focus();
+        }
+        finally
+        {
+            SetBusyState(false);
+        }
     }
 
     private void OnBackToOtpClicked(object sender, EventArgs e)
@@ -161,10 +201,29 @@ public partial class MainPage : ContentPage
             return;
         }
 
-        await DisplayAlert("PARABA", "Datos guardados. Ahora puedes activar el acceso por rostro o huella.", "Aceptar");
-        NameRegistrationView.IsVisible = false;
-        BiometricView.IsVisible = true;
-        DashboardView.IsVisible = false;
+        try
+        {
+            SetBusyState(true);
+            string fullName = $"{FirstNameEntry.Text.Trim()} {LastNameEntry.Text.Trim()}";
+            _registration = await _driverApiService.SaveRegistrationDraftAsync(new DriverRegistrationDraftRequest
+            {
+                Telefono = _phone,
+                NombreCompleto = fullName
+            });
+
+            await DisplayAlert("PARABA", "Datos guardados. Podrás completar tus documentos y vehículo más adelante.", "Aceptar");
+            NameRegistrationView.IsVisible = false;
+            BiometricView.IsVisible = true;
+            DashboardView.IsVisible = false;
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("PARABA", $"No se pudo guardar tu registro. Detalle: {ex.Message}", "Aceptar");
+        }
+        finally
+        {
+            SetBusyState(false);
+        }
     }
 
     private void OnBackToNameClicked(object sender, EventArgs e)
@@ -220,8 +279,15 @@ public partial class MainPage : ContentPage
         {
             SetBusyState(true);
 
-            DriverProfileResponse? profile = await _driverApiService.GetProfileAsync(DemoDriverId);
-            List<DriverTripResponse> trips = await _driverApiService.GetActiveTripsAsync(DemoDriverId);
+            if (_registration?.IdConductor == null || !_registration.PuedeOperar)
+            {
+                LoadRegistrationPreview();
+                return;
+            }
+
+            int driverId = _registration.IdConductor.Value;
+            DriverProfileResponse? profile = await _driverApiService.GetProfileAsync(driverId);
+            List<DriverTripResponse> trips = await _driverApiService.GetActiveTripsAsync(driverId);
 
             if (profile == null)
             {
@@ -250,11 +316,24 @@ public partial class MainPage : ContentPage
             : profile.NombreCompleto;
         ProfileRatingLabel.Text = profile.Verificado ? "5.0" : "Pend.";
         DriverTopStatusLabel.Text = _isAvailable ? "Pedidos disponibles" : "Pedidos no disponibles";
+        UpdateRegistrationStatusUi();
     }
 
     private void LoadTrip(DriverTripResponse? trip)
     {
         _activeTrip = trip;
+    }
+
+    private void LoadRegistrationPreview()
+    {
+        _activeTrip = null;
+        _isAvailable = false;
+        ProfileNameLabel.Text = string.IsNullOrWhiteSpace(_registration?.NombreCompleto)
+            ? "Conductor PARABA"
+            : _registration.NombreCompleto;
+        ProfileRatingLabel.Text = _registration?.EstadoSolicitud ?? "Borrador";
+        DriverTopStatusLabel.Text = "Completa tu registro para operar";
+        UpdateRegistrationStatusUi();
     }
 
     private void OnToggleAvailabilityClicked(object sender, EventArgs e)
@@ -274,7 +353,15 @@ public partial class MainPage : ContentPage
         try
         {
             SetBusyState(true);
-            await _driverApiService.StartTripAsync(DemoDriverId, _activeTrip.IdViaje);
+            int? driverId = _registration?.IdConductor;
+
+            if (driverId == null)
+            {
+                await DisplayAlert("PARABA", "Completa y espera la aprobación de tu registro para iniciar viajes.", "Aceptar");
+                return;
+            }
+
+            await _driverApiService.StartTripAsync(driverId.Value, _activeTrip.IdViaje);
             await LoadDriverDashboardAsync();
             await DisplayAlert("PARABA", "Viaje iniciado correctamente.", "Aceptar");
         }
@@ -299,7 +386,15 @@ public partial class MainPage : ContentPage
         try
         {
             SetBusyState(true);
-            await _driverApiService.FinishTripAsync(DemoDriverId, _activeTrip.IdViaje);
+            int? driverId = _registration?.IdConductor;
+
+            if (driverId == null)
+            {
+                await DisplayAlert("PARABA", "Completa y espera la aprobación de tu registro para finalizar viajes.", "Aceptar");
+                return;
+            }
+
+            await _driverApiService.FinishTripAsync(driverId.Value, _activeTrip.IdViaje);
             await LoadDriverDashboardAsync();
             await DisplayAlert("PARABA", "Viaje finalizado correctamente.", "Aceptar");
         }
@@ -320,6 +415,50 @@ public partial class MainPage : ContentPage
 
     private void SetBusyState(bool isBusy)
     {
+    }
+
+    private async void OnCompleteRegistrationClicked(object sender, EventArgs e)
+    {
+        await DisplayAlert(
+            "Completar registro",
+            "Beta actual: ya puedes guardar teléfono y nombre. El siguiente paso conectará las pantallas para datos del conductor, vehículo y carga de documentos.",
+            "Aceptar");
+    }
+
+    private void UpdateRegistrationStatusUi()
+    {
+        SetStatusLabel(DriverDataStatusLabel, "Datos conductor", _registration?.DatosConductorCompletos == true);
+        SetStatusLabel(VehicleDataStatusLabel, "Datos vehículo", _registration?.DatosVehiculoCompletos == true);
+        SetStatusLabel(DocumentsStatusLabel, "Documentos", _registration?.DocumentosCompletos == true);
+    }
+
+    private static void SetStatusLabel(Label label, string title, bool complete)
+    {
+        label.Text = complete ? $"{title}: completo" : $"{title}: falta completar";
+        label.TextColor = complete
+            ? Color.FromArgb("#16A34A")
+            : Color.FromArgb("#DC2626");
+    }
+
+    private async Task RequestNewCodeAsync(string channel)
+    {
+        try
+        {
+            SetBusyState(true);
+            OtpCodeEntry.Text = string.Empty;
+            DriverRequestCodeResponse? response = await _driverApiService.RequestCodeAsync(_phone);
+
+            await DisplayAlert("PARABA beta", $"Código reenviado por {channel}. Código demo: {response?.CodigoDemo}", "Aceptar");
+            OtpCodeEntry.Focus();
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("PARABA", $"No se pudo reenviar el código. Detalle: {ex.Message}", "Aceptar");
+        }
+        finally
+        {
+            SetBusyState(false);
+        }
     }
 
     private void OnOrdersTabClicked(object sender, EventArgs e)

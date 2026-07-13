@@ -764,6 +764,32 @@
                             <VerticalStackLayout Spacing="14">
                                 <Grid ColumnDefinitions="*,Auto"><Label Text="Conductor" TextColor="#111827" FontSize="22" FontAttributes="Bold" /><Label Grid.Column="1" Text="Cambiar socio" TextColor="#111827" FontSize="13" /></Grid>
                                 <Grid ColumnDefinitions="*,*" ColumnSpacing="10"><Frame BackgroundColor="#F1F1F1" CornerRadius="14" Padding="14" HasShadow="False"><VerticalStackLayout><Label Text="+91" FontSize="20" FontAttributes="Bold"/><Label Text="Prioridad" FontSize="13"/></VerticalStackLayout></Frame><Frame Grid.Column="1" BackgroundColor="#F1F1F1" CornerRadius="14" Padding="14" HasShadow="False"><VerticalStackLayout><Label x:Name="ProfileRatingLabel" Text="5.0" FontSize="20" FontAttributes="Bold"/><Label Text="Calificación" FontSize="13"/></VerticalStackLayout></Frame></Grid>
+                                <Button Text="Completar registro"
+                                        BackgroundColor="#111827"
+                                        TextColor="White"
+                                        CornerRadius="12"
+                                        HeightRequest="46"
+                                        Clicked="OnCompleteRegistrationClicked" />
+                                <Grid RowDefinitions="Auto,Auto,Auto"
+                                      RowSpacing="8">
+                                    <Label x:Name="DriverDataStatusLabel"
+                                           Text="Datos conductor: falta completar"
+                                           TextColor="#DC2626"
+                                           FontSize="15"
+                                           FontAttributes="Bold" />
+                                    <Label x:Name="VehicleDataStatusLabel"
+                                           Grid.Row="1"
+                                           Text="Datos vehículo: falta completar"
+                                           TextColor="#DC2626"
+                                           FontSize="15"
+                                           FontAttributes="Bold" />
+                                    <Label x:Name="DocumentsStatusLabel"
+                                           Grid.Row="2"
+                                           Text="Documentos: falta completar"
+                                           TextColor="#DC2626"
+                                           FontSize="15"
+                                           FontAttributes="Bold" />
+                                </Grid>
                                 <Label Text="Socio                                           PARABA &gt;" FontSize="17" />
                                 <Label Text="Modo de ganancias                 Flexible &gt;" FontSize="17" />
                                 <Label Text="Tipos de servicios                  Taxi y moto taxi &gt;" FontSize="17" />

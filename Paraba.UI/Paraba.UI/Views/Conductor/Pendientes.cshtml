@@ -1,63 +1,117 @@
-@model List<Paraba.UI.ViewModels.ConductorPendienteViewModel>
+@model List<Paraba.UI.ViewModels.SolicitudConductorViewModel>
 
 @{
-    ViewData["Title"] = "Conductores pendientes";
+    ViewData["Title"] = "Solicitudes conductores";
+
+    string Completo(bool completo) => completo ? "status-success" : "status-danger";
+    string TextoCompleto(bool completo) => completo ? "Completo" : "Falta completar";
 }
 
 <div class="d-flex align-items-center justify-content-between mb-3">
     <div>
-        <h1 class="h3 mb-1">Conductores pendientes</h1>
-        <p class="text-muted mb-0">Conductores registrados que aun no estan verificados.</p>
+        <h1 class="h3 mb-1">Solicitudes conductores</h1>
+        <p class="text-muted mb-0">Revision por partes: conductor, vehiculo y documentos.</p>
     </div>
-    <a asp-controller="DocumentoConductor" asp-action="Index" class="btn btn-primary">Revisar documentos</a>
+    <a asp-controller="DocumentoConductor" asp-action="Index" class="btn btn-outline-secondary">Documentos antiguos</a>
 </div>
 
-<table class="table table-bordered table-hover align-middle">
-    <thead class="table-dark">
-        <tr>
-            <th>ID</th>
-            <th>Conductor</th>
-            <th>Telefono</th>
-            <th>Documentos</th>
-            <th>Pendientes</th>
-            <th>Aprobados</th>
-            <th>Rechazados</th>
-            <th>Disponible</th>
-            <th>Estado</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var conductor in Model)
-        {
-            <tr>
-                <td>@conductor.IdConductor</td>
-                <td>
-                    <strong>@conductor.NombreCompleto</strong>
-                    <div class="text-muted small">@conductor.Correo</div>
-                </td>
-                <td>@conductor.Telefono</td>
-                <td>@conductor.TotalDocumentos</td>
-                <td><span class="status-badge status-warning">@conductor.DocumentosPendientes</span></td>
-                <td><span class="status-badge status-success">@conductor.DocumentosAprobados</span></td>
-                <td><span class="status-badge status-danger">@conductor.DocumentosRechazados</span></td>
-                <td>
-                    <span class="status-badge @(conductor.Disponible ? "status-success" : "status-muted")">
-                        @(conductor.Disponible ? "Disponible" : "No disponible")
-                    </span>
-                </td>
-                <td>
-                    <span class="status-badge @(conductor.Estado ? "status-success" : "status-danger")">
-                        @(conductor.Estado ? "Activo" : "Suspendido")
-                    </span>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+@foreach (var item in Model)
+{
+    <div class="admin-card mb-3">
+        <div class="d-flex justify-content-between gap-3">
+            <div>
+                <h2 class="h5 mb-1">@(!string.IsNullOrWhiteSpace(item.Solicitud.NombreCompleto) ? item.Solicitud.NombreCompleto : "Conductor sin nombre")</h2>
+                <div class="text-muted">@item.Solicitud.Telefono</div>
+                <div class="small text-muted">Estado general: @item.Solicitud.EstadoSolicitud</div>
+            </div>
+            <div class="text-end">
+                <span class="status-badge @Completo(item.DatosConductorCompletos)">Conductor: @TextoCompleto(item.DatosConductorCompletos)</span>
+                <span class="status-badge @Completo(item.DatosVehiculoCompletos)">Vehiculo: @TextoCompleto(item.DatosVehiculoCompletos)</span>
+                <span class="status-badge @Completo(item.DocumentosCompletos)">Documentos: @TextoCompleto(item.DocumentosCompletos)</span>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <h3 class="h6">Datos conductor</h3>
+                <div>CI: @(item.Solicitud.DocumentoIdentidad == "" ? "-" : item.Solicitud.DocumentoIdentidad)</div>
+                <div>Correo: @(item.Solicitud.Correo == "" ? "-" : item.Solicitud.Correo)</div>
+                <div>Licencia: @(item.Solicitud.LicenciaConducir == "" ? "-" : item.Solicitud.LicenciaConducir)</div>
+                <div>Vence: @(item.Solicitud.FechaVencimientoLicencia?.ToString("dd/MM/yyyy") ?? "-")</div>
+                <div class="mt-2">Revision: <strong>@item.Solicitud.EstadoDatosConductor</strong></div>
+                <form asp-controller="Conductor" asp-action="RevisarSolicitudCategoria" method="post" class="mt-2">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="idSolicitudRegistroConductor" value="@item.Solicitud.IdSolicitudRegistroConductor" />
+                    <input type="hidden" name="categoria" value="Conductor" />
+                    <input class="form-control form-control-sm mb-2" name="observacion" placeholder="Observacion" />
+                    <button class="btn btn-sm btn-success" name="estado" value="Aprobado">Aprobar</button>
+                    <button class="btn btn-sm btn-warning" name="estado" value="Observado">Observar</button>
+                    <button class="btn btn-sm btn-outline-danger" name="estado" value="Rechazado">Rechazar</button>
+                </form>
+            </div>
+
+            <div class="col-md-4">
+                <h3 class="h6">Datos vehiculo</h3>
+                <div>Tipo servicio: @(item.Solicitud.IdTipoServicio?.ToString() ?? "-")</div>
+                <div>Placa: @(item.Solicitud.Placa == "" ? "-" : item.Solicitud.Placa)</div>
+                <div>Marca/modelo: @($"{item.Solicitud.Marca} {item.Solicitud.Modelo}".Trim())</div>
+                <div>Color/anio: @($"{item.Solicitud.Color} {item.Solicitud.Anio}".Trim())</div>
+                <div class="mt-2">Revision: <strong>@item.Solicitud.EstadoDatosVehiculo</strong></div>
+                <form asp-controller="Conductor" asp-action="RevisarSolicitudCategoria" method="post" class="mt-2">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="idSolicitudRegistroConductor" value="@item.Solicitud.IdSolicitudRegistroConductor" />
+                    <input type="hidden" name="categoria" value="Vehiculo" />
+                    <input class="form-control form-control-sm mb-2" name="observacion" placeholder="Observacion" />
+                    <button class="btn btn-sm btn-success" name="estado" value="Aprobado">Aprobar</button>
+                    <button class="btn btn-sm btn-warning" name="estado" value="Observado">Observar</button>
+                    <button class="btn btn-sm btn-outline-danger" name="estado" value="Rechazado">Rechazar</button>
+                </form>
+            </div>
+
+            <div class="col-md-4">
+                <h3 class="h6">Documentos</h3>
+                @if (item.Documentos.Any())
+                {
+                    <ul class="list-unstyled small">
+                        @foreach (var documento in item.Documentos)
+                        {
+                            <li>
+                                <strong>@documento.TipoDocumento</strong>
+                                <span class="text-muted">(@documento.EstadoVerificacion)</span>
+                                <a href="@documento.UrlArchivo" target="_blank">Ver</a>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <div class="text-muted small">Sin documentos cargados.</div>
+                }
+                <div class="mt-2">Revision: <strong>@item.Solicitud.EstadoDocumentos</strong></div>
+                <form asp-controller="Conductor" asp-action="RevisarSolicitudCategoria" method="post" class="mt-2">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="idSolicitudRegistroConductor" value="@item.Solicitud.IdSolicitudRegistroConductor" />
+                    <input type="hidden" name="categoria" value="Documentos" />
+                    <input class="form-control form-control-sm mb-2" name="observacion" placeholder="Observacion" />
+                    <button class="btn btn-sm btn-success" name="estado" value="Aprobado">Aprobar</button>
+                    <button class="btn btn-sm btn-warning" name="estado" value="Observado">Observar</button>
+                    <button class="btn btn-sm btn-outline-danger" name="estado" value="Rechazado">Rechazar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+}
 
 @if (!Model.Any())
 {
     <div class="alert alert-success">
-        No hay conductores pendientes de verificacion.
+        No hay solicitudes de conductores.
     </div>
 }

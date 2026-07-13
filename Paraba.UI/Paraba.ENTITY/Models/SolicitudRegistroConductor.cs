@@ -32,7 +32,19 @@ namespace Paraba.ENTITY.Models
 
         public string EstadoSolicitud { get; set; } = string.Empty;
 
+        public string EstadoDatosConductor { get; set; } = string.Empty;
+
+        public string EstadoDatosVehiculo { get; set; } = string.Empty;
+
+        public string EstadoDocumentos { get; set; } = string.Empty;
+
         public string ObservacionRevision { get; set; } = string.Empty;
+
+        public string ObservacionDatosConductor { get; set; } = string.Empty;
+
+        public string ObservacionDatosVehiculo { get; set; } = string.Empty;
+
+        public string ObservacionDocumentos { get; set; } = string.Empty;
 
         public DateTime FechaCreacion { get; set; }
 

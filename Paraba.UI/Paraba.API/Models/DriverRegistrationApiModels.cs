@@ -1,4 +1,5 @@
 using Paraba.ENTITY.Models;
+using Paraba.BLL.Services;
 
 namespace Paraba.API.Models
 {
@@ -41,6 +42,19 @@ namespace Paraba.API.Models
         public int? Anio { get; set; }
     }
 
+    public class DriverRegistrationDocumentUploadRequest
+    {
+        public string Telefono { get; set; } = string.Empty;
+
+        public string TipoDocumento { get; set; } = string.Empty;
+
+        public string NumeroDocumento { get; set; } = string.Empty;
+
+        public DateTime? FechaVencimiento { get; set; }
+
+        public IFormFile? Archivo { get; set; }
+    }
+
     public class DriverRegistrationResponse
     {
         public int IdSolicitudRegistroConductor { get; set; }
@@ -75,14 +89,38 @@ namespace Paraba.API.Models
 
         public string ObservacionRevision { get; set; } = string.Empty;
 
+        public string EstadoDatosConductor { get; set; } = string.Empty;
+
+        public string EstadoDatosVehiculo { get; set; } = string.Empty;
+
+        public string EstadoDocumentos { get; set; } = string.Empty;
+
+        public string ObservacionDatosConductor { get; set; } = string.Empty;
+
+        public string ObservacionDatosVehiculo { get; set; } = string.Empty;
+
+        public string ObservacionDocumentos { get; set; } = string.Empty;
+
         public DateTime FechaActualizacion { get; set; }
 
         public DateTime? FechaEnvio { get; set; }
 
         public bool PuedeOperar => EstadoSolicitud == "Aprobado" && IdConductor != null;
 
-        public static DriverRegistrationResponse FromEntity(SolicitudRegistroConductor solicitud)
+        public bool DatosConductorCompletos { get; set; }
+
+        public bool DatosVehiculoCompletos { get; set; }
+
+        public bool DocumentosCompletos { get; set; }
+
+        public List<DriverRegistrationDocumentResponse> Documentos { get; set; } = new();
+
+        public static DriverRegistrationResponse FromEntity(
+            SolicitudRegistroConductor solicitud,
+            List<SolicitudRegistroConductorDocumento>? documentos = null)
         {
+            documentos ??= new List<SolicitudRegistroConductorDocumento>();
+
             return new DriverRegistrationResponse
             {
                 IdSolicitudRegistroConductor = solicitud.IdSolicitudRegistroConductor,
@@ -101,8 +139,52 @@ namespace Paraba.API.Models
                 Anio = solicitud.Anio,
                 EstadoSolicitud = solicitud.EstadoSolicitud,
                 ObservacionRevision = solicitud.ObservacionRevision,
+                EstadoDatosConductor = solicitud.EstadoDatosConductor,
+                EstadoDatosVehiculo = solicitud.EstadoDatosVehiculo,
+                EstadoDocumentos = solicitud.EstadoDocumentos,
+                ObservacionDatosConductor = solicitud.ObservacionDatosConductor,
+                ObservacionDatosVehiculo = solicitud.ObservacionDatosVehiculo,
+                ObservacionDocumentos = solicitud.ObservacionDocumentos,
                 FechaActualizacion = solicitud.FechaActualizacion,
-                FechaEnvio = solicitud.FechaEnvio
+                FechaEnvio = solicitud.FechaEnvio,
+                DatosConductorCompletos = RegistroConductorService.DatosConductorCompletos(solicitud),
+                DatosVehiculoCompletos = RegistroConductorService.DatosVehiculoCompletos(solicitud),
+                DocumentosCompletos = RegistroConductorService.DocumentosCompletos(documentos),
+                Documentos = documentos.Select(DriverRegistrationDocumentResponse.FromEntity).ToList()
+            };
+        }
+    }
+
+    public class DriverRegistrationDocumentResponse
+    {
+        public int IdSolicitudRegistroConductorDocumento { get; set; }
+
+        public string TipoDocumento { get; set; } = string.Empty;
+
+        public string NumeroDocumento { get; set; } = string.Empty;
+
+        public string UrlArchivo { get; set; } = string.Empty;
+
+        public DateTime? FechaVencimiento { get; set; }
+
+        public bool EsOpcional { get; set; }
+
+        public string EstadoVerificacion { get; set; } = string.Empty;
+
+        public string Observacion { get; set; } = string.Empty;
+
+        public static DriverRegistrationDocumentResponse FromEntity(SolicitudRegistroConductorDocumento documento)
+        {
+            return new DriverRegistrationDocumentResponse
+            {
+                IdSolicitudRegistroConductorDocumento = documento.IdSolicitudRegistroConductorDocumento,
+                TipoDocumento = documento.TipoDocumento,
+                NumeroDocumento = documento.NumeroDocumento,
+                UrlArchivo = documento.UrlArchivo,
+                FechaVencimiento = documento.FechaVencimiento,
+                EsOpcional = documento.EsOpcional,
+                EstadoVerificacion = documento.EstadoVerificacion,
+                Observacion = documento.Observacion
             };
         }
     }

@@ -7,6 +7,15 @@ namespace Paraba.BLL.Services
     public class RegistroConductorService
     {
         private readonly RegistroConductorRepository registroConductorRepository = new RegistroConductorRepository();
+        private static readonly HashSet<string> DocumentosObligatorios = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "CarnetFrontal",
+            "CarnetReverso",
+            "Licencia",
+            "FotoConductor",
+            "FotoVehiculo",
+            "DocumentoVehiculo"
+        };
 
         public (SolicitudRegistroConductor Solicitud, string CodigoDemo) SolicitarCodigo(string telefono)
         {
@@ -73,52 +82,141 @@ namespace Paraba.BLL.Services
             return registroConductorRepository.GuardarBorrador(solicitud);
         }
 
+        public List<SolicitudRegistroConductor> ListarSolicitudes()
+        {
+            return registroConductorRepository.ListarSolicitudes();
+        }
+
+        public List<SolicitudRegistroConductorDocumento> ListarDocumentos(int idSolicitudRegistroConductor)
+        {
+            if (idSolicitudRegistroConductor <= 0)
+            {
+                throw new ArgumentException("Debe seleccionar una solicitud valida.");
+            }
+
+            return registroConductorRepository.ListarDocumentos(idSolicitudRegistroConductor);
+        }
+
+        public List<SolicitudRegistroConductorDocumento> GuardarDocumento(
+            string telefono,
+            string token,
+            string tipoDocumento,
+            string numeroDocumento,
+            string urlArchivo,
+            DateTime? fechaVencimiento)
+        {
+            telefono = NormalizarTelefono(telefono);
+            ValidarSesion(telefono, token);
+
+            SolicitudRegistroConductor solicitud = registroConductorRepository.CrearOBuscarSolicitud(telefono);
+            tipoDocumento = Limpiar(tipoDocumento);
+
+            if (!EsTipoDocumentoPermitido(tipoDocumento))
+            {
+                throw new ArgumentException("El tipo de documento no es valido.");
+            }
+
+            if (string.IsNullOrWhiteSpace(urlArchivo))
+            {
+                throw new ArgumentException("Debe adjuntar un archivo.");
+            }
+
+            bool esOpcional = string.Equals(tipoDocumento, "RUAT", StringComparison.OrdinalIgnoreCase);
+
+            return registroConductorRepository.GuardarDocumento(new SolicitudRegistroConductorDocumento
+            {
+                IdSolicitudRegistroConductor = solicitud.IdSolicitudRegistroConductor,
+                TipoDocumento = tipoDocumento,
+                NumeroDocumento = Limpiar(numeroDocumento),
+                UrlArchivo = urlArchivo,
+                FechaVencimiento = fechaVencimiento,
+                EsOpcional = esOpcional
+            });
+        }
+
+        public bool RevisarCategoria(int idSolicitudRegistroConductor, string categoria, string estado, string observacion)
+        {
+            if (idSolicitudRegistroConductor <= 0)
+            {
+                throw new ArgumentException("Debe seleccionar una solicitud valida.");
+            }
+
+            categoria = Limpiar(categoria);
+            estado = Limpiar(estado);
+
+            if (categoria != "Conductor" && categoria != "Vehiculo" && categoria != "Documentos")
+            {
+                throw new ArgumentException("La categoria de revision no es valida.");
+            }
+
+            if (estado != "Pendiente" && estado != "Aprobado" && estado != "Observado" && estado != "Rechazado")
+            {
+                throw new ArgumentException("El estado de revision no es valido.");
+            }
+
+            return registroConductorRepository.RevisarCategoria(idSolicitudRegistroConductor, categoria, estado, Limpiar(observacion));
+        }
+
         public SolicitudRegistroConductor EnviarRevision(string telefono, string token)
         {
             telefono = NormalizarTelefono(telefono);
             ValidarSesion(telefono, token);
             SolicitudRegistroConductor solicitud = registroConductorRepository.CrearOBuscarSolicitud(telefono);
+            List<SolicitudRegistroConductorDocumento> documentos = registroConductorRepository.ListarDocumentos(solicitud.IdSolicitudRegistroConductor);
 
-            ValidarSolicitudCompleta(solicitud);
+            ValidarSolicitudCompleta(solicitud, documentos);
 
             return registroConductorRepository.EnviarRevision(telefono);
         }
 
-        private static void ValidarSolicitudCompleta(SolicitudRegistroConductor solicitud)
+        private static void ValidarSolicitudCompleta(
+            SolicitudRegistroConductor solicitud,
+            IEnumerable<SolicitudRegistroConductorDocumento> documentos)
         {
-            if (string.IsNullOrWhiteSpace(solicitud.NombreCompleto))
+            if (!DatosConductorCompletos(solicitud))
             {
-                throw new ArgumentException("Debe ingresar el nombre completo.");
+                throw new ArgumentException("Debe completar los datos del conductor.");
             }
 
-            if (string.IsNullOrWhiteSpace(solicitud.DocumentoIdentidad))
-            {
-                throw new ArgumentException("Debe ingresar el documento de identidad.");
-            }
-
-            if (string.IsNullOrWhiteSpace(solicitud.LicenciaConducir))
-            {
-                throw new ArgumentException("Debe ingresar la licencia de conducir.");
-            }
-
-            if (solicitud.FechaVencimientoLicencia == null || solicitud.FechaVencimientoLicencia.Value.Date <= DateTime.Today)
-            {
-                throw new ArgumentException("Debe ingresar una fecha de vencimiento de licencia vigente.");
-            }
-
-            if (solicitud.IdTipoServicio == null || solicitud.IdTipoServicio <= 0)
-            {
-                throw new ArgumentException("Debe seleccionar el tipo de servicio.");
-            }
-
-            if (string.IsNullOrWhiteSpace(solicitud.Placa) ||
-                string.IsNullOrWhiteSpace(solicitud.Marca) ||
-                string.IsNullOrWhiteSpace(solicitud.Modelo) ||
-                string.IsNullOrWhiteSpace(solicitud.Color) ||
-                solicitud.Anio == null)
+            if (!DatosVehiculoCompletos(solicitud))
             {
                 throw new ArgumentException("Debe completar los datos del vehiculo.");
             }
+
+            if (!DocumentosCompletos(documentos))
+            {
+                throw new ArgumentException("Debe cargar todos los documentos obligatorios.");
+            }
+        }
+
+        public static bool DatosConductorCompletos(SolicitudRegistroConductor solicitud)
+        {
+            return !string.IsNullOrWhiteSpace(solicitud.NombreCompleto) &&
+                !string.IsNullOrWhiteSpace(solicitud.DocumentoIdentidad) &&
+                !string.IsNullOrWhiteSpace(solicitud.LicenciaConducir) &&
+                solicitud.FechaVencimientoLicencia != null &&
+                solicitud.FechaVencimientoLicencia.Value.Date > DateTime.Today;
+        }
+
+        public static bool DatosVehiculoCompletos(SolicitudRegistroConductor solicitud)
+        {
+            return solicitud.IdTipoServicio != null &&
+                solicitud.IdTipoServicio > 0 &&
+                !string.IsNullOrWhiteSpace(solicitud.Placa) &&
+                !string.IsNullOrWhiteSpace(solicitud.Marca) &&
+                !string.IsNullOrWhiteSpace(solicitud.Modelo) &&
+                !string.IsNullOrWhiteSpace(solicitud.Color) &&
+                solicitud.Anio != null;
+        }
+
+        public static bool DocumentosCompletos(IEnumerable<SolicitudRegistroConductorDocumento> documentos)
+        {
+            HashSet<string> tiposCargados = documentos
+                .Where(item => !item.EsOpcional && !string.IsNullOrWhiteSpace(item.UrlArchivo))
+                .Select(item => item.TipoDocumento)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            return DocumentosObligatorios.All(tiposCargados.Contains);
         }
 
         private static string NormalizarTelefono(string telefono)
@@ -167,6 +265,12 @@ namespace Paraba.BLL.Services
                 .Replace("+", "-")
                 .Replace("/", "_")
                 .Replace("=", string.Empty);
+        }
+
+        private static bool EsTipoDocumentoPermitido(string tipoDocumento)
+        {
+            return DocumentosObligatorios.Contains(tipoDocumento) ||
+                string.Equals(tipoDocumento, "RUAT", StringComparison.OrdinalIgnoreCase);
         }
     }
 }

@@ -16,6 +16,7 @@ namespace Paraba.UI.Controllers
         private readonly PasajeroService pasajeroService = new PasajeroService();
         private readonly AuditoriaConductorService auditoriaConductorService = new AuditoriaConductorService();
         private readonly AuditoriaAdministrativaService auditoriaAdministrativaService = new AuditoriaAdministrativaService();
+        private readonly RegistroConductorService registroConductorService = new RegistroConductorService();
 
         public IActionResult Index()
         {
@@ -117,34 +118,41 @@ namespace Paraba.UI.Controllers
 
         public IActionResult Pendientes()
         {
-            var documentos = documentoConductorService.ListarDocumentos();
-
-            var conductoresPendientes = conductorService.ListarConductores()
-                .Where(conductor => conductor.Estado && !conductor.Verificado)
-                .Select(conductor =>
+            var solicitudes = registroConductorService.ListarSolicitudes()
+                .Select(solicitud =>
                 {
-                    var documentosConductor = documentos
-                        .Where(documento => documento.IdConductor == conductor.IdConductor)
-                        .ToList();
+                    var documentos = registroConductorService.ListarDocumentos(solicitud.IdSolicitudRegistroConductor);
 
-                    return new ConductorPendienteViewModel
+                    return new SolicitudConductorViewModel
                     {
-                        IdConductor = conductor.IdConductor,
-                        NombreCompleto = conductor.NombreCompleto,
-                        Telefono = conductor.Telefono,
-                        Correo = conductor.Correo,
-                        Disponible = conductor.Disponible,
-                        Verificado = conductor.Verificado,
-                        Estado = conductor.Estado,
-                        DocumentosPendientes = documentosConductor.Count(documento => documento.EstadoVerificacion == "Pendiente"),
-                        DocumentosAprobados = documentosConductor.Count(documento => documento.EstadoVerificacion == "Aprobado"),
-                        DocumentosRechazados = documentosConductor.Count(documento => documento.EstadoVerificacion == "Rechazado"),
-                        TotalDocumentos = documentosConductor.Count
+                        Solicitud = solicitud,
+                        Documentos = documentos,
+                        DatosConductorCompletos = RegistroConductorService.DatosConductorCompletos(solicitud),
+                        DatosVehiculoCompletos = RegistroConductorService.DatosVehiculoCompletos(solicitud),
+                        DocumentosCompletos = RegistroConductorService.DocumentosCompletos(documentos)
                     };
                 })
                 .ToList();
 
-            return View(conductoresPendientes);
+            return View(solicitudes);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin,Verificador")]
+        public IActionResult RevisarSolicitudCategoria(int idSolicitudRegistroConductor, string categoria, string estado, string observacion)
+        {
+            try
+            {
+                registroConductorService.RevisarCategoria(idSolicitudRegistroConductor, categoria, estado, observacion ?? string.Empty);
+                auditoriaAdministrativaService.Registrar("Solicitudes conductores", $"Revision {categoria}", "SolicitudRegistroConductor", idSolicitudRegistroConductor, ObtenerUsuario(), $"{estado}: {observacion}");
+            }
+            catch (ArgumentException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToAction(nameof(Pendientes));
         }
 
         [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin,Verificador")]

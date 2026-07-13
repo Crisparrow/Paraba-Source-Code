@@ -81,6 +81,69 @@ BEGIN
 END;
 GO
 
+IF COL_LENGTH('dbo.SolicitudesRegistroConductor', 'EstadoDatosConductor') IS NULL
+BEGIN
+    ALTER TABLE SolicitudesRegistroConductor
+    ADD EstadoDatosConductor VARCHAR(30) NOT NULL CONSTRAINT DF_SolicitudesRegistroConductor_EstadoDatosConductor DEFAULT 'Pendiente';
+END;
+GO
+
+IF COL_LENGTH('dbo.SolicitudesRegistroConductor', 'EstadoDatosVehiculo') IS NULL
+BEGIN
+    ALTER TABLE SolicitudesRegistroConductor
+    ADD EstadoDatosVehiculo VARCHAR(30) NOT NULL CONSTRAINT DF_SolicitudesRegistroConductor_EstadoDatosVehiculo DEFAULT 'Pendiente';
+END;
+GO
+
+IF COL_LENGTH('dbo.SolicitudesRegistroConductor', 'EstadoDocumentos') IS NULL
+BEGIN
+    ALTER TABLE SolicitudesRegistroConductor
+    ADD EstadoDocumentos VARCHAR(30) NOT NULL CONSTRAINT DF_SolicitudesRegistroConductor_EstadoDocumentos DEFAULT 'Pendiente';
+END;
+GO
+
+IF COL_LENGTH('dbo.SolicitudesRegistroConductor', 'ObservacionDatosConductor') IS NULL
+BEGIN
+    ALTER TABLE SolicitudesRegistroConductor
+    ADD ObservacionDatosConductor VARCHAR(300) NOT NULL CONSTRAINT DF_SolicitudesRegistroConductor_ObservacionDatosConductor DEFAULT '';
+END;
+GO
+
+IF COL_LENGTH('dbo.SolicitudesRegistroConductor', 'ObservacionDatosVehiculo') IS NULL
+BEGIN
+    ALTER TABLE SolicitudesRegistroConductor
+    ADD ObservacionDatosVehiculo VARCHAR(300) NOT NULL CONSTRAINT DF_SolicitudesRegistroConductor_ObservacionDatosVehiculo DEFAULT '';
+END;
+GO
+
+IF COL_LENGTH('dbo.SolicitudesRegistroConductor', 'ObservacionDocumentos') IS NULL
+BEGIN
+    ALTER TABLE SolicitudesRegistroConductor
+    ADD ObservacionDocumentos VARCHAR(300) NOT NULL CONSTRAINT DF_SolicitudesRegistroConductor_ObservacionDocumentos DEFAULT '';
+END;
+GO
+
+IF OBJECT_ID('dbo.SolicitudesRegistroConductorDocumentos', 'U') IS NULL
+BEGIN
+    CREATE TABLE SolicitudesRegistroConductorDocumentos
+    (
+        IdSolicitudRegistroConductorDocumento INT IDENTITY(1,1) PRIMARY KEY,
+        IdSolicitudRegistroConductor INT NOT NULL,
+        TipoDocumento VARCHAR(50) NOT NULL,
+        NumeroDocumento VARCHAR(50) NOT NULL,
+        UrlArchivo VARCHAR(300) NOT NULL,
+        FechaVencimiento DATE NULL,
+        EsOpcional BIT NOT NULL,
+        EstadoVerificacion VARCHAR(30) NOT NULL,
+        Observacion VARCHAR(300) NOT NULL,
+        FechaRegistro DATETIME NOT NULL,
+        FechaRevision DATETIME NULL,
+        CONSTRAINT FK_SolicitudesRegistroConductorDocumentos_Solicitudes FOREIGN KEY (IdSolicitudRegistroConductor) REFERENCES SolicitudesRegistroConductor(IdSolicitudRegistroConductor),
+        CONSTRAINT CK_SolicitudesRegistroConductorDocumentos_Estado CHECK (EstadoVerificacion IN ('Pendiente', 'Aprobado', 'Observado', 'Rechazado'))
+    );
+END;
+GO
+
 CREATE OR ALTER PROCEDURE dbo.sp_RegistroConductor_ObtenerPorTelefono
     @Telefono VARCHAR(30)
 AS
@@ -103,7 +166,13 @@ BEGIN
         Color,
         Anio,
         EstadoSolicitud,
+        EstadoDatosConductor,
+        EstadoDatosVehiculo,
+        EstadoDocumentos,
         ObservacionRevision,
+        ObservacionDatosConductor,
+        ObservacionDatosVehiculo,
+        ObservacionDocumentos,
         FechaCreacion,
         FechaActualizacion,
         FechaEnvio,
@@ -132,7 +201,13 @@ BEGIN
             IdConductor,
             Telefono,
             EstadoSolicitud,
+            EstadoDatosConductor,
+            EstadoDatosVehiculo,
+            EstadoDocumentos,
             ObservacionRevision,
+            ObservacionDatosConductor,
+            ObservacionDatosVehiculo,
+            ObservacionDocumentos,
             FechaCreacion,
             FechaActualizacion
         )
@@ -141,6 +216,12 @@ BEGIN
             @IdConductor,
             @Telefono,
             CASE WHEN @IdConductor IS NULL THEN 'Borrador' ELSE 'Aprobado' END,
+            CASE WHEN @IdConductor IS NULL THEN 'Pendiente' ELSE 'Aprobado' END,
+            CASE WHEN @IdConductor IS NULL THEN 'Pendiente' ELSE 'Aprobado' END,
+            CASE WHEN @IdConductor IS NULL THEN 'Pendiente' ELSE 'Aprobado' END,
+            '',
+            '',
+            '',
             '',
             GETDATE(),
             GETDATE()
@@ -337,5 +418,421 @@ BEGIN
             AND FechaExpiracion >= GETDATE()
     )
     THEN 1 ELSE 0 END AS BIT) AS SesionValida;
+END;
+GO
+
+CREATE OR ALTER PROCEDURE dbo.sp_RegistroConductor_ListarSolicitudes
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        IdSolicitudRegistroConductor,
+        IdConductor,
+        Telefono,
+        NombreCompleto,
+        DocumentoIdentidad,
+        Correo,
+        LicenciaConducir,
+        FechaVencimientoLicencia,
+        IdTipoServicio,
+        Placa,
+        Marca,
+        Modelo,
+        Color,
+        Anio,
+        EstadoSolicitud,
+        EstadoDatosConductor,
+        EstadoDatosVehiculo,
+        EstadoDocumentos,
+        ObservacionRevision,
+        ObservacionDatosConductor,
+        ObservacionDatosVehiculo,
+        ObservacionDocumentos,
+        FechaCreacion,
+        FechaActualizacion,
+        FechaEnvio,
+        FechaRevision
+    FROM SolicitudesRegistroConductor
+    ORDER BY FechaActualizacion DESC, IdSolicitudRegistroConductor DESC;
+END;
+GO
+
+CREATE OR ALTER PROCEDURE dbo.sp_RegistroConductorDocumentos_Listar
+    @IdSolicitudRegistroConductor INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        IdSolicitudRegistroConductorDocumento,
+        IdSolicitudRegistroConductor,
+        TipoDocumento,
+        NumeroDocumento,
+        UrlArchivo,
+        FechaVencimiento,
+        EsOpcional,
+        EstadoVerificacion,
+        Observacion,
+        FechaRegistro,
+        FechaRevision
+    FROM SolicitudesRegistroConductorDocumentos
+    WHERE IdSolicitudRegistroConductor = @IdSolicitudRegistroConductor
+    ORDER BY EsOpcional, TipoDocumento;
+END;
+GO
+
+CREATE OR ALTER PROCEDURE dbo.sp_RegistroConductorDocumentos_Guardar
+    @IdSolicitudRegistroConductor INT,
+    @TipoDocumento VARCHAR(50),
+    @NumeroDocumento VARCHAR(50),
+    @UrlArchivo VARCHAR(300),
+    @FechaVencimiento DATE,
+    @EsOpcional BIT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF EXISTS
+    (
+        SELECT 1
+        FROM SolicitudesRegistroConductorDocumentos
+        WHERE IdSolicitudRegistroConductor = @IdSolicitudRegistroConductor
+            AND TipoDocumento = @TipoDocumento
+    )
+    BEGIN
+        UPDATE SolicitudesRegistroConductorDocumentos
+        SET
+            NumeroDocumento = @NumeroDocumento,
+            UrlArchivo = @UrlArchivo,
+            FechaVencimiento = @FechaVencimiento,
+            EsOpcional = @EsOpcional,
+            EstadoVerificacion = 'Pendiente',
+            Observacion = '',
+            FechaRegistro = GETDATE(),
+            FechaRevision = NULL
+        WHERE IdSolicitudRegistroConductor = @IdSolicitudRegistroConductor
+            AND TipoDocumento = @TipoDocumento;
+    END
+    ELSE
+    BEGIN
+        INSERT INTO SolicitudesRegistroConductorDocumentos
+        (
+            IdSolicitudRegistroConductor,
+            TipoDocumento,
+            NumeroDocumento,
+            UrlArchivo,
+            FechaVencimiento,
+            EsOpcional,
+            EstadoVerificacion,
+            Observacion,
+            FechaRegistro
+        )
+        VALUES
+        (
+            @IdSolicitudRegistroConductor,
+            @TipoDocumento,
+            @NumeroDocumento,
+            @UrlArchivo,
+            @FechaVencimiento,
+            @EsOpcional,
+            'Pendiente',
+            '',
+            GETDATE()
+        );
+    END
+
+    UPDATE SolicitudesRegistroConductor
+    SET
+        EstadoDocumentos = CASE WHEN EstadoDocumentos = 'Aprobado' THEN 'Pendiente' ELSE EstadoDocumentos END,
+        FechaActualizacion = GETDATE()
+    WHERE IdSolicitudRegistroConductor = @IdSolicitudRegistroConductor;
+
+    EXEC dbo.sp_RegistroConductorDocumentos_Listar @IdSolicitudRegistroConductor;
+END;
+GO
+
+CREATE OR ALTER PROCEDURE dbo.sp_RegistroConductor_ActivarSiAprobado
+    @IdSolicitudRegistroConductor INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @IdConductor INT = NULL;
+    DECLARE @Telefono VARCHAR(30);
+    DECLARE @NombreCompleto VARCHAR(150);
+    DECLARE @DocumentoIdentidad VARCHAR(30);
+    DECLARE @Correo VARCHAR(150);
+    DECLARE @LicenciaConducir VARCHAR(50);
+    DECLARE @FechaVencimientoLicencia DATE;
+    DECLARE @IdTipoServicio INT;
+    DECLARE @Placa VARCHAR(30);
+    DECLARE @Marca VARCHAR(80);
+    DECLARE @Modelo VARCHAR(80);
+    DECLARE @Color VARCHAR(50);
+    DECLARE @Anio INT;
+
+    SELECT
+        @IdConductor = IdConductor,
+        @Telefono = Telefono,
+        @NombreCompleto = NombreCompleto,
+        @DocumentoIdentidad = DocumentoIdentidad,
+        @Correo = Correo,
+        @LicenciaConducir = LicenciaConducir,
+        @FechaVencimientoLicencia = FechaVencimientoLicencia,
+        @IdTipoServicio = IdTipoServicio,
+        @Placa = Placa,
+        @Marca = Marca,
+        @Modelo = Modelo,
+        @Color = Color,
+        @Anio = Anio
+    FROM SolicitudesRegistroConductor
+    WHERE
+        IdSolicitudRegistroConductor = @IdSolicitudRegistroConductor
+        AND EstadoSolicitud = 'Aprobado'
+        AND EstadoDatosConductor = 'Aprobado'
+        AND EstadoDatosVehiculo = 'Aprobado'
+        AND EstadoDocumentos = 'Aprobado';
+
+    IF @Telefono IS NULL
+    BEGIN
+        RETURN;
+    END
+
+    IF @NombreCompleto IS NULL
+        OR @DocumentoIdentidad IS NULL
+        OR @LicenciaConducir IS NULL
+        OR @FechaVencimientoLicencia IS NULL
+        OR @IdTipoServicio IS NULL
+        OR @Placa IS NULL
+        OR @Marca IS NULL
+        OR @Modelo IS NULL
+        OR @Color IS NULL
+        OR @Anio IS NULL
+    BEGIN
+        THROW 51000, 'La solicitud aprobada no tiene todos los datos obligatorios.', 1;
+    END
+
+    IF NOT EXISTS
+    (
+        SELECT 1
+        FROM SolicitudesRegistroConductorDocumentos
+        WHERE IdSolicitudRegistroConductor = @IdSolicitudRegistroConductor
+            AND TipoDocumento IN ('CarnetFrontal', 'CarnetReverso', 'Licencia', 'FotoConductor', 'FotoVehiculo', 'DocumentoVehiculo')
+            AND UrlArchivo <> ''
+        GROUP BY IdSolicitudRegistroConductor
+        HAVING COUNT(DISTINCT TipoDocumento) = 6
+    )
+    BEGIN
+        THROW 51001, 'La solicitud aprobada no tiene todos los documentos obligatorios.', 1;
+    END
+
+    IF @IdConductor IS NULL
+    BEGIN
+        SELECT TOP 1 @IdConductor = IdConductor
+        FROM Conductores
+        WHERE Telefono = @Telefono
+        ORDER BY IdConductor DESC;
+    END
+
+    IF @IdConductor IS NULL
+    BEGIN
+        INSERT INTO Conductores
+        (
+            NombreCompleto,
+            DocumentoIdentidad,
+            Telefono,
+            Correo,
+            LicenciaConducir,
+            FechaVencimientoLicencia,
+            Disponible,
+            Verificado,
+            Estado,
+            FechaRegistro
+        )
+        VALUES
+        (
+            @NombreCompleto,
+            @DocumentoIdentidad,
+            @Telefono,
+            ISNULL(@Correo, ''),
+            @LicenciaConducir,
+            @FechaVencimientoLicencia,
+            1,
+            1,
+            1,
+            GETDATE()
+        );
+
+        SET @IdConductor = SCOPE_IDENTITY();
+    END
+    ELSE
+    BEGIN
+        UPDATE Conductores
+        SET
+            NombreCompleto = @NombreCompleto,
+            DocumentoIdentidad = @DocumentoIdentidad,
+            Correo = ISNULL(@Correo, ''),
+            LicenciaConducir = @LicenciaConducir,
+            FechaVencimientoLicencia = @FechaVencimientoLicencia,
+            Verificado = 1,
+            Estado = 1
+        WHERE IdConductor = @IdConductor;
+    END
+
+    UPDATE SolicitudesRegistroConductor
+    SET IdConductor = @IdConductor,
+        FechaActualizacion = GETDATE()
+    WHERE IdSolicitudRegistroConductor = @IdSolicitudRegistroConductor;
+
+    IF EXISTS
+    (
+        SELECT 1
+        FROM Vehiculos
+        WHERE IdConductor = @IdConductor AND Placa = @Placa
+    )
+    BEGIN
+        UPDATE Vehiculos
+        SET
+            IdTipoServicio = @IdTipoServicio,
+            Marca = @Marca,
+            Modelo = @Modelo,
+            Color = @Color,
+            Anio = @Anio,
+            Verificado = 1,
+            Estado = 1
+        WHERE IdConductor = @IdConductor AND Placa = @Placa;
+    END
+    ELSE
+    BEGIN
+        INSERT INTO Vehiculos
+        (
+            IdConductor,
+            IdTipoServicio,
+            Placa,
+            Marca,
+            Modelo,
+            Color,
+            Anio,
+            Verificado,
+            Estado,
+            FechaRegistro
+        )
+        VALUES
+        (
+            @IdConductor,
+            @IdTipoServicio,
+            @Placa,
+            @Marca,
+            @Modelo,
+            @Color,
+            @Anio,
+            1,
+            1,
+            GETDATE()
+        );
+    END
+
+    DELETE dc
+    FROM DocumentosConductor dc
+    INNER JOIN SolicitudesRegistroConductorDocumentos srd
+        ON srd.TipoDocumento = dc.TipoDocumento
+    WHERE dc.IdConductor = @IdConductor
+        AND srd.IdSolicitudRegistroConductor = @IdSolicitudRegistroConductor;
+
+    INSERT INTO DocumentosConductor
+    (
+        IdConductor,
+        TipoDocumento,
+        NumeroDocumento,
+        UrlArchivo,
+        FechaVencimiento,
+        EstadoVerificacion,
+        Observacion,
+        FechaRegistro
+    )
+    SELECT
+        @IdConductor,
+        TipoDocumento,
+        NumeroDocumento,
+        UrlArchivo,
+        FechaVencimiento,
+        'Aprobado',
+        Observacion,
+        GETDATE()
+    FROM SolicitudesRegistroConductorDocumentos
+    WHERE IdSolicitudRegistroConductor = @IdSolicitudRegistroConductor
+        AND UrlArchivo <> '';
+END;
+GO
+
+CREATE OR ALTER PROCEDURE dbo.sp_RegistroConductor_RevisarCategoria
+    @IdSolicitudRegistroConductor INT,
+    @Categoria VARCHAR(30),
+    @Estado VARCHAR(30),
+    @Observacion VARCHAR(300)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        IF @Categoria = 'Conductor'
+        BEGIN
+            UPDATE SolicitudesRegistroConductor
+            SET EstadoDatosConductor = @Estado,
+                ObservacionDatosConductor = @Observacion,
+                FechaRevision = GETDATE(),
+                FechaActualizacion = GETDATE()
+            WHERE IdSolicitudRegistroConductor = @IdSolicitudRegistroConductor;
+        END
+        ELSE IF @Categoria = 'Vehiculo'
+        BEGIN
+            UPDATE SolicitudesRegistroConductor
+            SET EstadoDatosVehiculo = @Estado,
+                ObservacionDatosVehiculo = @Observacion,
+                FechaRevision = GETDATE(),
+                FechaActualizacion = GETDATE()
+            WHERE IdSolicitudRegistroConductor = @IdSolicitudRegistroConductor;
+        END
+        ELSE IF @Categoria = 'Documentos'
+        BEGIN
+            UPDATE SolicitudesRegistroConductor
+            SET EstadoDocumentos = @Estado,
+                ObservacionDocumentos = @Observacion,
+                FechaRevision = GETDATE(),
+                FechaActualizacion = GETDATE()
+            WHERE IdSolicitudRegistroConductor = @IdSolicitudRegistroConductor;
+        END
+
+        UPDATE SolicitudesRegistroConductor
+        SET EstadoSolicitud = CASE
+            WHEN EstadoDatosConductor = 'Aprobado'
+                AND EstadoDatosVehiculo = 'Aprobado'
+                AND EstadoDocumentos = 'Aprobado'
+            THEN 'Aprobado'
+            WHEN EstadoDatosConductor IN ('Observado', 'Rechazado')
+                OR EstadoDatosVehiculo IN ('Observado', 'Rechazado')
+                OR EstadoDocumentos IN ('Observado', 'Rechazado')
+            THEN 'Observado'
+            ELSE EstadoSolicitud
+        END
+        WHERE IdSolicitudRegistroConductor = @IdSolicitudRegistroConductor;
+
+        EXEC dbo.sp_RegistroConductor_ActivarSiAprobado @IdSolicitudRegistroConductor;
+
+        COMMIT TRANSACTION;
+
+        SELECT CAST(1 AS INT) AS FilasAfectadas;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+        BEGIN
+            ROLLBACK TRANSACTION;
+        END
+
+        ;THROW;
+    END CATCH
 END;
 GO

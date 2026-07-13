@@ -65,7 +65,7 @@
                     <div class="admin-nav-section">
                         <span class="admin-nav-title">Conductores</span>
                         <a class="@IsActive("Conductor", "Index")" asp-controller="Conductor" asp-action="Index">Conductores</a>
-                        <a class="@IsActive("Conductor", "Pendientes")" asp-controller="Conductor" asp-action="Pendientes">Pendientes</a>
+                        <a class="@IsActive("Conductor", "Pendientes")" asp-controller="Conductor" asp-action="Pendientes">Solicitudes conductores</a>
                         <a class="@IsActive("Vehiculo")" asp-controller="Vehiculo" asp-action="Index">Vehiculos</a>
                         @if (User.IsInRole("SuperAdmin") || User.IsInRole("Verificador"))
                         {

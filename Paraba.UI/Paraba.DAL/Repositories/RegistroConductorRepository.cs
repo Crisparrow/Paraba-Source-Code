@@ -42,6 +42,26 @@ namespace Paraba.DAL.Repositories
             return MapSolicitud(dr);
         }
 
+        public List<SolicitudRegistroConductor> ListarSolicitudes()
+        {
+            List<SolicitudRegistroConductor> lista = new List<SolicitudRegistroConductor>();
+
+            using SqlConnection cn = conexion.ObtenerConexion();
+            using SqlCommand cmd = new SqlCommand("dbo.sp_RegistroConductor_ListarSolicitudes", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cn.Open();
+
+            using SqlDataReader dr = cmd.ExecuteReader();
+
+            while (dr.Read())
+            {
+                lista.Add(MapSolicitud(dr));
+            }
+
+            return lista;
+        }
+
         public SolicitudRegistroConductor GuardarBorrador(SolicitudRegistroConductor solicitud)
         {
             using SqlConnection cn = conexion.ObtenerConexion();
@@ -146,6 +166,69 @@ namespace Paraba.DAL.Repositories
             return result != null && Convert.ToBoolean(result);
         }
 
+        public List<SolicitudRegistroConductorDocumento> ListarDocumentos(int idSolicitudRegistroConductor)
+        {
+            List<SolicitudRegistroConductorDocumento> lista = new List<SolicitudRegistroConductorDocumento>();
+
+            using SqlConnection cn = conexion.ObtenerConexion();
+            using SqlCommand cmd = new SqlCommand("dbo.sp_RegistroConductorDocumentos_Listar", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@IdSolicitudRegistroConductor", idSolicitudRegistroConductor);
+
+            cn.Open();
+
+            using SqlDataReader dr = cmd.ExecuteReader();
+
+            while (dr.Read())
+            {
+                lista.Add(MapDocumento(dr));
+            }
+
+            return lista;
+        }
+
+        public List<SolicitudRegistroConductorDocumento> GuardarDocumento(SolicitudRegistroConductorDocumento documento)
+        {
+            using SqlConnection cn = conexion.ObtenerConexion();
+            using SqlCommand cmd = new SqlCommand("dbo.sp_RegistroConductorDocumentos_Guardar", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@IdSolicitudRegistroConductor", documento.IdSolicitudRegistroConductor);
+            cmd.Parameters.AddWithValue("@TipoDocumento", documento.TipoDocumento);
+            cmd.Parameters.AddWithValue("@NumeroDocumento", documento.NumeroDocumento);
+            cmd.Parameters.AddWithValue("@UrlArchivo", documento.UrlArchivo);
+            cmd.Parameters.AddWithValue("@FechaVencimiento", documento.FechaVencimiento ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@EsOpcional", documento.EsOpcional);
+
+            cn.Open();
+
+            List<SolicitudRegistroConductorDocumento> lista = new List<SolicitudRegistroConductorDocumento>();
+            using SqlDataReader dr = cmd.ExecuteReader();
+
+            while (dr.Read())
+            {
+                lista.Add(MapDocumento(dr));
+            }
+
+            return lista;
+        }
+
+        public bool RevisarCategoria(int idSolicitudRegistroConductor, string categoria, string estado, string observacion)
+        {
+            using SqlConnection cn = conexion.ObtenerConexion();
+            using SqlCommand cmd = new SqlCommand("dbo.sp_RegistroConductor_RevisarCategoria", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@IdSolicitudRegistroConductor", idSolicitudRegistroConductor);
+            cmd.Parameters.AddWithValue("@Categoria", categoria);
+            cmd.Parameters.AddWithValue("@Estado", estado);
+            cmd.Parameters.AddWithValue("@Observacion", observacion);
+
+            cn.Open();
+
+            object? result = cmd.ExecuteScalar();
+
+            return result != null && Convert.ToInt32(result) > 0;
+        }
+
         private static SolicitudRegistroConductor MapSolicitud(SqlDataReader dr)
         {
             return new SolicitudRegistroConductor
@@ -165,10 +248,34 @@ namespace Paraba.DAL.Repositories
                 Color = dr["Color"].ToString() ?? string.Empty,
                 Anio = dr["Anio"] == DBNull.Value ? null : Convert.ToInt32(dr["Anio"]),
                 EstadoSolicitud = dr["EstadoSolicitud"].ToString() ?? string.Empty,
+                EstadoDatosConductor = dr["EstadoDatosConductor"].ToString() ?? string.Empty,
+                EstadoDatosVehiculo = dr["EstadoDatosVehiculo"].ToString() ?? string.Empty,
+                EstadoDocumentos = dr["EstadoDocumentos"].ToString() ?? string.Empty,
                 ObservacionRevision = dr["ObservacionRevision"].ToString() ?? string.Empty,
+                ObservacionDatosConductor = dr["ObservacionDatosConductor"].ToString() ?? string.Empty,
+                ObservacionDatosVehiculo = dr["ObservacionDatosVehiculo"].ToString() ?? string.Empty,
+                ObservacionDocumentos = dr["ObservacionDocumentos"].ToString() ?? string.Empty,
                 FechaCreacion = Convert.ToDateTime(dr["FechaCreacion"]),
                 FechaActualizacion = Convert.ToDateTime(dr["FechaActualizacion"]),
                 FechaEnvio = dr["FechaEnvio"] == DBNull.Value ? null : Convert.ToDateTime(dr["FechaEnvio"]),
+                FechaRevision = dr["FechaRevision"] == DBNull.Value ? null : Convert.ToDateTime(dr["FechaRevision"])
+            };
+        }
+
+        private static SolicitudRegistroConductorDocumento MapDocumento(SqlDataReader dr)
+        {
+            return new SolicitudRegistroConductorDocumento
+            {
+                IdSolicitudRegistroConductorDocumento = Convert.ToInt32(dr["IdSolicitudRegistroConductorDocumento"]),
+                IdSolicitudRegistroConductor = Convert.ToInt32(dr["IdSolicitudRegistroConductor"]),
+                TipoDocumento = dr["TipoDocumento"].ToString() ?? string.Empty,
+                NumeroDocumento = dr["NumeroDocumento"].ToString() ?? string.Empty,
+                UrlArchivo = dr["UrlArchivo"].ToString() ?? string.Empty,
+                FechaVencimiento = dr["FechaVencimiento"] == DBNull.Value ? null : Convert.ToDateTime(dr["FechaVencimiento"]),
+                EsOpcional = Convert.ToBoolean(dr["EsOpcional"]),
+                EstadoVerificacion = dr["EstadoVerificacion"].ToString() ?? string.Empty,
+                Observacion = dr["Observacion"].ToString() ?? string.Empty,
+                FechaRegistro = Convert.ToDateTime(dr["FechaRegistro"]),
                 FechaRevision = dr["FechaRevision"] == DBNull.Value ? null : Convert.ToDateTime(dr["FechaRevision"])
             };
         }

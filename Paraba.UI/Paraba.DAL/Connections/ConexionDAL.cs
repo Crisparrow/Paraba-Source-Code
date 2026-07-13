@@ -6,7 +6,7 @@ namespace Paraba.DAL.Connections
     {
         private readonly string cadenaConexion =
             "Server=DESKTOP-CCSKIIN\\SQLEXPRESS01;Database=ParabaDB;Trusted_Connection=True;TrustServerCertificate=True;";
-
+        
         public SqlConnection ObtenerConexion()
         {
             return new SqlConnection(cadenaConexion);
