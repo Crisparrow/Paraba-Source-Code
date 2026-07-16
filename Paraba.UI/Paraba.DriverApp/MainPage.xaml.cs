@@ -7,7 +7,6 @@ namespace Paraba.DriverApp;
 public partial class MainPage : ContentPage
 {
     private readonly DriverApiService _driverApiService = new();
-    private DriverTripResponse? _activeTrip;
     private DriverRegistrationResponse? _registration;
     private string _phone = string.Empty;
     private bool _isAvailable = true;
@@ -279,7 +278,7 @@ public partial class MainPage : ContentPage
         {
             SetBusyState(true);
 
-            if (_registration?.IdConductor == null || !_registration.PuedeOperar)
+            if (_registration?.IdConductor == null)
             {
                 LoadRegistrationPreview();
                 return;
@@ -287,7 +286,6 @@ public partial class MainPage : ContentPage
 
             int driverId = _registration.IdConductor.Value;
             DriverProfileResponse? profile = await _driverApiService.GetProfileAsync(driverId);
-            List<DriverTripResponse> trips = await _driverApiService.GetActiveTripsAsync(driverId);
 
             if (profile == null)
             {
@@ -296,7 +294,7 @@ public partial class MainPage : ContentPage
             }
 
             LoadProfile(profile);
-            LoadTrip(trips.FirstOrDefault());
+            await OrdersTabView.LoadAsync(driverId);
         }
         catch (Exception ex)
         {
@@ -319,14 +317,8 @@ public partial class MainPage : ContentPage
         UpdateRegistrationStatusUi();
     }
 
-    private void LoadTrip(DriverTripResponse? trip)
-    {
-        _activeTrip = trip;
-    }
-
     private void LoadRegistrationPreview()
     {
-        _activeTrip = null;
         _isAvailable = false;
         ProfileNameLabel.Text = string.IsNullOrWhiteSpace(_registration?.NombreCompleto)
             ? "Conductor PARABA"
@@ -334,78 +326,13 @@ public partial class MainPage : ContentPage
         ProfileRatingLabel.Text = _registration?.EstadoSolicitud ?? "Borrador";
         DriverTopStatusLabel.Text = "Completa tu registro para operar";
         UpdateRegistrationStatusUi();
+        _ = OrdersTabView.LoadAsync(null);
     }
 
     private void OnToggleAvailabilityClicked(object sender, EventArgs e)
     {
         _isAvailable = !_isAvailable;
         UpdateAvailabilityUi();
-    }
-
-    private async void OnStartTripClicked(object sender, EventArgs e)
-    {
-        if (_activeTrip == null)
-        {
-            await DisplayAlert("PARABA", "No hay viaje activo para iniciar.", "Aceptar");
-            return;
-        }
-
-        try
-        {
-            SetBusyState(true);
-            int? driverId = _registration?.IdConductor;
-
-            if (driverId == null)
-            {
-                await DisplayAlert("PARABA", "Completa y espera la aprobación de tu registro para iniciar viajes.", "Aceptar");
-                return;
-            }
-
-            await _driverApiService.StartTripAsync(driverId.Value, _activeTrip.IdViaje);
-            await LoadDriverDashboardAsync();
-            await DisplayAlert("PARABA", "Viaje iniciado correctamente.", "Aceptar");
-        }
-        catch (Exception ex)
-        {
-            await DisplayAlert("PARABA", $"No se pudo iniciar el viaje. Detalle: {ex.Message}", "Aceptar");
-        }
-        finally
-        {
-            SetBusyState(false);
-        }
-    }
-
-    private async void OnFinishTripClicked(object sender, EventArgs e)
-    {
-        if (_activeTrip == null)
-        {
-            await DisplayAlert("PARABA", "No hay viaje activo para finalizar.", "Aceptar");
-            return;
-        }
-
-        try
-        {
-            SetBusyState(true);
-            int? driverId = _registration?.IdConductor;
-
-            if (driverId == null)
-            {
-                await DisplayAlert("PARABA", "Completa y espera la aprobación de tu registro para finalizar viajes.", "Aceptar");
-                return;
-            }
-
-            await _driverApiService.FinishTripAsync(driverId.Value, _activeTrip.IdViaje);
-            await LoadDriverDashboardAsync();
-            await DisplayAlert("PARABA", "Viaje finalizado correctamente.", "Aceptar");
-        }
-        catch (Exception ex)
-        {
-            await DisplayAlert("PARABA", $"No se pudo finalizar el viaje. Detalle: {ex.Message}", "Aceptar");
-        }
-        finally
-        {
-            SetBusyState(false);
-        }
     }
 
     private void UpdateAvailabilityUi()
@@ -493,15 +420,6 @@ public partial class MainPage : ContentPage
         ChatsTabButton.TextColor = Color.FromArgb("#9AA0A8");
         ProfileTabButton.TextColor = Color.FromArgb("#9AA0A8");
         activeButton.TextColor = Color.FromArgb("#111827");
-    }
-    private static string FormatMoney(decimal amount)
-    {
-        return $"Bs {amount:0.00}";
-    }
-
-    private static string GetServiceName(int serviceTypeId)
-    {
-        return serviceTypeId == 2 ? "Moto taxi" : "Taxi";
     }
 }
 

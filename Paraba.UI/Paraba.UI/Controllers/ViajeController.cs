@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Paraba.BLL.Services;
 using Paraba.UI.ViewModels;
 using System.Security.Claims;
@@ -16,29 +17,57 @@ namespace Paraba.UI.Controllers
         private readonly AuditoriaViajeService auditoriaViajeService = new AuditoriaViajeService();
         private readonly AuditoriaAdministrativaService auditoriaAdministrativaService = new AuditoriaAdministrativaService();
 
-        public IActionResult Index()
+        public IActionResult Index(ViajeHistorialViewModel filtros)
         {
-            var viajes = viajeAdminService.ListarViajes();
-            var viajesViewModel = viajes.Select(viaje => new ViajeViewModel
-            {
-                IdViaje = viaje.IdViaje,
-                Pasajero = ObtenerNombrePasajero(viaje.IdPasajero),
-                Conductor = ObtenerNombreConductor(viaje.IdConductor),
-                Vehiculo = ObtenerDescripcionVehiculo(viaje.IdVehiculo),
-                TipoServicio = ObtenerTipoServicio(viaje.IdTipoServicio),
-                Origen = viaje.Origen,
-                Destino = viaje.Destino,
-                TarifaEstimada = viaje.TarifaEstimada,
-                TarifaFinal = viaje.TarifaFinal,
-                TarifaSugerida = viaje.TarifaSugerida,
-                TarifaOfertada = viaje.TarifaOfertada,
-                TarifaContraoferta = viaje.TarifaContraoferta,
-                TarifaAceptada = viaje.TarifaAceptada,
-                EstadoViaje = ObtenerEstadoViaje(viaje.IdEstadoViaje),
-                FechaSolicitud = viaje.FechaSolicitud
-            }).ToList();
+            var viajes = viajeAdminService.ListarViajes()
+                .Select(MapViajeViewModel)
+                .AsEnumerable();
 
-            return View(viajesViewModel);
+            if (filtros.FechaDesde.HasValue)
+            {
+                DateTime fechaDesde = filtros.FechaDesde.Value.Date;
+                viajes = viajes.Where(viaje => viaje.FechaSolicitud.Date >= fechaDesde);
+            }
+
+            if (filtros.FechaHasta.HasValue)
+            {
+                DateTime fechaHasta = filtros.FechaHasta.Value.Date;
+                viajes = viajes.Where(viaje => viaje.FechaSolicitud.Date <= fechaHasta);
+            }
+
+            if (filtros.IdEstadoViaje.HasValue)
+            {
+                viajes = viajes.Where(viaje => viaje.IdEstadoViaje == filtros.IdEstadoViaje.Value);
+            }
+
+            if (filtros.IdTipoServicio.HasValue)
+            {
+                viajes = viajes.Where(viaje => viaje.IdTipoServicio == filtros.IdTipoServicio.Value);
+            }
+
+            if (filtros.IdConductor.HasValue)
+            {
+                viajes = viajes.Where(viaje => viaje.IdConductor == filtros.IdConductor.Value);
+            }
+
+            List<ViajeViewModel> viajesFiltrados = viajes
+                .OrderByDescending(viaje => viaje.FechaSolicitud)
+                .ToList();
+
+            filtros.Viajes = viajesFiltrados;
+            filtros.TotalViajes = viajesFiltrados.Count;
+            filtros.ViajesActivos = viajesFiltrados.Count(viaje => viaje.IdEstadoViaje is 1 or 2 or 3 or 6 or 7);
+            filtros.ViajesFinalizados = viajesFiltrados.Count(viaje => viaje.IdEstadoViaje == 4);
+            filtros.ViajesCancelados = viajesFiltrados.Count(viaje => viaje.IdEstadoViaje == 5);
+            filtros.ViajesContraofertados = viajesFiltrados.Count(viaje => viaje.IdEstadoViaje == 6 || viaje.TarifaContraoferta.HasValue);
+            filtros.IngresosFinalizados = viajesFiltrados
+                .Where(viaje => viaje.IdEstadoViaje == 4)
+                .Sum(viaje => viaje.TarifaFinal);
+            filtros.EstadosViaje = CrearEstadosViajeSelectList(filtros.IdEstadoViaje);
+            filtros.TiposServicio = CrearTiposServicioSelectList(filtros.IdTipoServicio);
+            filtros.Conductores = CrearConductoresSelectList(filtros.IdConductor);
+
+            return View(filtros);
         }
 
         public IActionResult Detalle(int id)
@@ -86,6 +115,8 @@ namespace Paraba.UI.Controllers
                 FechaSolicitud = viaje.FechaSolicitud,
                 FechaInicio = viaje.FechaInicio,
                 FechaFin = viaje.FechaFin,
+                FechaCancelacion = viaje.FechaCancelacion,
+                MotivoCancelacion = viaje.MotivoCancelacion,
                 Pasajero = pasajero?.NombreCompleto ?? "Pasajero no identificado",
                 DocumentoPasajero = pasajero?.DocumentoIdentidad ?? "-",
                 TelefonoPasajero = pasajero?.Telefono ?? "-",
@@ -209,6 +240,76 @@ namespace Paraba.UI.Controllers
             return User.FindFirstValue(ClaimTypes.Email) ?? User.Identity?.Name ?? "Admin PARABA";
         }
 
+        private ViajeViewModel MapViajeViewModel(Paraba.ENTITY.Models.Viaje viaje)
+        {
+            return new ViajeViewModel
+            {
+                IdViaje = viaje.IdViaje,
+                IdPasajero = viaje.IdPasajero,
+                IdConductor = viaje.IdConductor,
+                IdVehiculo = viaje.IdVehiculo,
+                IdTipoServicio = viaje.IdTipoServicio,
+                IdEstadoViaje = viaje.IdEstadoViaje,
+                Pasajero = ObtenerNombrePasajero(viaje.IdPasajero),
+                Conductor = ObtenerNombreConductor(viaje.IdConductor),
+                Vehiculo = ObtenerDescripcionVehiculo(viaje.IdVehiculo),
+                TipoServicio = ObtenerTipoServicio(viaje.IdTipoServicio),
+                Origen = viaje.Origen,
+                Destino = viaje.Destino,
+                TarifaEstimada = viaje.TarifaEstimada,
+                TarifaFinal = viaje.TarifaFinal,
+                TarifaSugerida = viaje.TarifaSugerida,
+                TarifaOfertada = viaje.TarifaOfertada,
+                TarifaContraoferta = viaje.TarifaContraoferta,
+                TarifaAceptada = viaje.TarifaAceptada,
+                EstadoViaje = ObtenerEstadoViaje(viaje.IdEstadoViaje),
+                FechaSolicitud = viaje.FechaSolicitud,
+                FechaInicio = viaje.FechaInicio,
+                FechaFin = viaje.FechaFin,
+                FechaCancelacion = viaje.FechaCancelacion,
+                MotivoCancelacion = viaje.MotivoCancelacion
+            };
+        }
+
+        private List<SelectListItem> CrearEstadosViajeSelectList(int? selected)
+        {
+            List<SelectListItem> estados = new List<SelectListItem>
+            {
+                new SelectListItem("Todos", string.Empty, selected == null),
+                new SelectListItem("Solicitado", "1", selected == 1),
+                new SelectListItem("Aceptado", "2", selected == 2),
+                new SelectListItem("En curso", "3", selected == 3),
+                new SelectListItem("Finalizado", "4", selected == 4),
+                new SelectListItem("Cancelado", "5", selected == 5),
+                new SelectListItem("Contraofertado", "6", selected == 6),
+                new SelectListItem("En camino al pasajero", "7", selected == 7)
+            };
+
+            return estados;
+        }
+
+        private List<SelectListItem> CrearTiposServicioSelectList(int? selected)
+        {
+            List<SelectListItem> items = tipoServicioService.ListarTiposServicio()
+                .OrderBy(item => item.Nombre)
+                .Select(item => new SelectListItem(item.Nombre, item.IdTipoServicio.ToString(), selected == item.IdTipoServicio))
+                .ToList();
+
+            items.Insert(0, new SelectListItem("Todos", string.Empty, selected == null));
+            return items;
+        }
+
+        private List<SelectListItem> CrearConductoresSelectList(int? selected)
+        {
+            List<SelectListItem> items = conductorService.ListarConductores()
+                .OrderBy(item => item.NombreCompleto)
+                .Select(item => new SelectListItem(item.NombreCompleto, item.IdConductor.ToString(), selected == item.IdConductor))
+                .ToList();
+
+            items.Insert(0, new SelectListItem("Todos", string.Empty, selected == null));
+            return items;
+        }
+
         private static string ObtenerEstadoViaje(int idEstadoViaje)
         {
             return idEstadoViaje switch
@@ -218,6 +319,8 @@ namespace Paraba.UI.Controllers
                 3 => "En curso",
                 4 => "Finalizado",
                 5 => "Cancelado",
+                6 => "Contraofertado",
+                7 => "En camino al pasajero",
                 _ => "Estado no identificado"
             };
         }

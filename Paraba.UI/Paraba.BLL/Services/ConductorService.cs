@@ -57,6 +57,23 @@ namespace Paraba.BLL.Services
             return actualizado;
         }
 
+        public bool ActualizarDisponibilidadApp(int idConductor, bool disponible)
+        {
+            if (idConductor <= 0)
+            {
+                throw new ArgumentException("Debe seleccionar un conductor valido.");
+            }
+
+            try
+            {
+                return conductorRepository.ActualizarDisponibleApp(idConductor, disponible);
+            }
+            catch (Exception ex) when (ex.GetType().Name == "SqlException")
+            {
+                throw new ArgumentException(ex.Message, ex);
+            }
+        }
+
         private void RegistrarAuditoria(int idConductor, string accion, string estadoAnterior, string estadoNuevo, string observacion)
         {
             auditoriaConductorService.RegistrarAuditoria(new AuditoriaConductor

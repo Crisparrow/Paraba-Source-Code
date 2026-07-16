@@ -12,6 +12,8 @@ namespace Paraba.ENTITY.Models
 
         public int IdTipoServicio { get; set; }
 
+        public string TipoServicio { get; set; } = string.Empty;
+
         public string Origen { get; set; } = string.Empty;
 
         public string Destino { get; set; } = string.Empty;
@@ -30,10 +32,18 @@ namespace Paraba.ENTITY.Models
 
         public int IdEstadoViaje { get; set; }
 
+        public string EstadoViaje { get; set; } = string.Empty;
+
         public DateTime FechaSolicitud { get; set; }
+
+        public DateTime? FechaAceptacion { get; set; }
 
         public DateTime? FechaInicio { get; set; }
 
         public DateTime? FechaFin { get; set; }
+
+        public DateTime? FechaCancelacion { get; set; }
+
+        public string MotivoCancelacion { get; set; } = string.Empty;
     }
 }

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="Paraba.DriverApp.Views.Orders.TripDetailView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Frame x:Name="RootFrame"
+           CornerRadius="16"
+           BackgroundColor="#F2F2F2"
+           Padding="16,12"
+           HasShadow="False"
+           IsVisible="False">
+        <VerticalStackLayout Spacing="12">
+            <Grid ColumnDefinitions="*,Auto">
+                <VerticalStackLayout Spacing="4">
+                    <Label x:Name="StepTitleLabel"
+                           Text="Viaje activo"
+                           TextColor="#111827"
+                           FontSize="17"
+                           FontAttributes="Bold" />
+                    <Label x:Name="StatusLabel"
+                           TextColor="#6B7280"
+                           FontSize="13" />
+                </VerticalStackLayout>
+
+                <Label x:Name="FareLabel"
+                       Grid.Column="1"
+                       TextColor="#111827"
+                       FontSize="22"
+                       FontAttributes="Bold"
+                       HorizontalTextAlignment="End" />
+            </Grid>
+
+            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="8">
+                <Label Text="Origen"
+                       TextColor="#6B7280"
+                       FontSize="13" />
+                <Label x:Name="OriginLabel"
+                       Grid.Column="1"
+                       TextColor="#111827"
+                       FontSize="14"
+                       FontAttributes="Bold" />
+
+                <Label Grid.Row="1"
+                       Text="Destino"
+                       TextColor="#6B7280"
+                       FontSize="13" />
+                <Label x:Name="DestinationLabel"
+                       Grid.Row="1"
+                       Grid.Column="1"
+                       TextColor="#111827"
+                       FontSize="14"
+                       FontAttributes="Bold" />
+            </Grid>
+
+            <VerticalStackLayout Spacing="10">
+                <Button x:Name="PassengerAcceptButton"
+                        Text="Pasajero acepta"
+                        BackgroundColor="#111827"
+                        TextColor="White"
+                        CornerRadius="14"
+                        HeightRequest="46"
+                        Clicked="OnPassengerAcceptClicked" />
+                <Button x:Name="StartTripButton"
+                        Text="Llegue al pasajero"
+                        BackgroundColor="#20C65A"
+                        TextColor="#061008"
+                        CornerRadius="14"
+                        HeightRequest="46"
+                        Clicked="OnStartClicked" />
+                <Button x:Name="FinishTripButton"
+                        Text="Finalizar"
+                        BackgroundColor="#F23845"
+                        TextColor="White"
+                        CornerRadius="14"
+                        HeightRequest="46"
+                        Clicked="OnFinishClicked" />
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </Frame>
+</ContentView>

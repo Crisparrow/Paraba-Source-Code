@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="Paraba.DriverApp.Views.Orders.OrdersView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:orders="clr-namespace:Paraba.DriverApp.Views.Orders">
+
+    <Grid BackgroundColor="#EEF2F7" RowDefinitions="Auto,*,Auto">
+        <Grid x:Name="TopStatusBar"
+              Grid.Row="0"
+              Padding="16,12"
+              BackgroundColor="#F23845"
+              ColumnDefinitions="Auto,*,Auto"
+              ColumnSpacing="12">
+            <Border x:Name="ConnectionIndicator"
+                    WidthRequest="14"
+                    HeightRequest="14"
+                    BackgroundColor="#9CA3AF"
+                    VerticalOptions="Center">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="7" />
+                </Border.StrokeShape>
+            </Border>
+
+            <VerticalStackLayout Grid.Column="1" Spacing="1">
+                <Label x:Name="ConnectionStatusLabel"
+                       Text="No conectado"
+                       TextColor="White"
+                       FontSize="18"
+                       FontAttributes="Bold" />
+                <Label x:Name="WorkStatusLabel"
+                       Text="Actualiza para revisar pedidos"
+                       TextColor="#FEE2E2"
+                       FontSize="12" />
+            </VerticalStackLayout>
+
+            <Button x:Name="TopRefreshButton"
+                    Grid.Column="2"
+                    Text="Conectar"
+                    BackgroundColor="White"
+                    TextColor="#111827"
+                    CornerRadius="18"
+                    HeightRequest="38"
+                    Padding="16,0"
+                    Clicked="OnToggleAvailabilityClicked" />
+        </Grid>
+
+        <Grid x:Name="SimulatedMap"
+              Grid.Row="1"
+              BackgroundColor="#E7EEF5">
+            <Grid RowDefinitions="*,*,*,*" ColumnDefinitions="*,*,*,*" Opacity="0.65">
+                <BoxView Grid.Row="0" Grid.ColumnSpan="4" BackgroundColor="#CAD5E1" HeightRequest="5" VerticalOptions="End" />
+                <BoxView Grid.Row="1" Grid.ColumnSpan="4" BackgroundColor="#CAD5E1" HeightRequest="5" VerticalOptions="Center" />
+                <BoxView Grid.Row="2" Grid.ColumnSpan="4" BackgroundColor="#CAD5E1" HeightRequest="5" VerticalOptions="Center" />
+                <BoxView Grid.Row="3" Grid.ColumnSpan="4" BackgroundColor="#CAD5E1" HeightRequest="5" VerticalOptions="Start" />
+                <BoxView Grid.Column="0" Grid.RowSpan="4" BackgroundColor="#CAD5E1" WidthRequest="5" HorizontalOptions="End" />
+                <BoxView Grid.Column="1" Grid.RowSpan="4" BackgroundColor="#CAD5E1" WidthRequest="5" HorizontalOptions="Center" />
+                <BoxView Grid.Column="2" Grid.RowSpan="4" BackgroundColor="#CAD5E1" WidthRequest="5" HorizontalOptions="Center" />
+                <BoxView Grid.Column="3" Grid.RowSpan="4" BackgroundColor="#CAD5E1" WidthRequest="5" HorizontalOptions="Start" />
+            </Grid>
+
+            <BoxView x:Name="RouteToPickupLine"
+                     BackgroundColor="#20C65A"
+                     WidthRequest="210"
+                     HeightRequest="6"
+                     Rotation="-28"
+                     HorizontalOptions="Center"
+                     VerticalOptions="Center"
+                     Margin="0,-20,0,0" />
+            <BoxView x:Name="RouteToDestinationLine"
+                     BackgroundColor="#F23845"
+                     WidthRequest="150"
+                     HeightRequest="6"
+                     Rotation="38"
+                     HorizontalOptions="Center"
+                     VerticalOptions="Center"
+                     Margin="36,92,0,0" />
+
+            <Border x:Name="DriverMarker"
+                    BackgroundColor="#111827"
+                    WidthRequest="54"
+                    HeightRequest="54"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="27" />
+                </Border.StrokeShape>
+                <Label Text="P"
+                       TextColor="White"
+                       FontSize="26"
+                       FontAttributes="Bold"
+                       HorizontalTextAlignment="Center"
+                       VerticalTextAlignment="Center" />
+            </Border>
+
+            <Border x:Name="OriginPin"
+                    BackgroundColor="#20C65A"
+                    WidthRequest="34"
+                    HeightRequest="34"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    Margin="-156,-118,0,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="17" />
+                </Border.StrokeShape>
+                <Label Text="O"
+                       TextColor="#061008"
+                       FontSize="15"
+                       FontAttributes="Bold"
+                       HorizontalTextAlignment="Center"
+                       VerticalTextAlignment="Center" />
+            </Border>
+
+            <Border x:Name="DestinationPin"
+                    BackgroundColor="#F23845"
+                    WidthRequest="34"
+                    HeightRequest="34"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    Margin="136,118,0,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="17" />
+                </Border.StrokeShape>
+                <Label Text="D"
+                       TextColor="White"
+                       FontSize="15"
+                       FontAttributes="Bold"
+                       HorizontalTextAlignment="Center"
+                       VerticalTextAlignment="Center" />
+            </Border>
+
+            <Border BackgroundColor="White"
+                    Stroke="#E5E7EB"
+                    StrokeThickness="1"
+                    Padding="12,8"
+                    HorizontalOptions="Start"
+                    VerticalOptions="Start"
+                    Margin="16">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="18" />
+                </Border.StrokeShape>
+                <Label x:Name="MapHintLabel"
+                       Text="Mapa simulado"
+                       TextColor="#374151"
+                       FontSize="13"
+                       FontAttributes="Bold" />
+            </Border>
+
+            <Border BackgroundColor="White"
+                    Stroke="#E5E7EB"
+                    StrokeThickness="1"
+                    Padding="14,10"
+                    HorizontalOptions="End"
+                    VerticalOptions="Start"
+                    Margin="16">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="18" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="2">
+                    <Label x:Name="MapStateLabel"
+                           Text="Esperando"
+                           TextColor="#111827"
+                           FontSize="14"
+                           FontAttributes="Bold" />
+                    <Label x:Name="MapEtaLabel"
+                           Text="Sin ruta activa"
+                           TextColor="#6B7280"
+                           FontSize="12" />
+                    <Label x:Name="MapDistanceLabel"
+                           Text="0.0 km"
+                           TextColor="#6B7280"
+                           FontSize="12" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Button x:Name="MapRefreshButton"
+                    Text="Actualizar"
+                    BackgroundColor="White"
+                    TextColor="#111827"
+                    CornerRadius="24"
+                    WidthRequest="104"
+                    HeightRequest="44"
+                    Padding="8,0"
+                    HorizontalOptions="Start"
+                    VerticalOptions="Start"
+                    Margin="16,64,0,0"
+                    Clicked="OnRefreshTripsClicked" />
+
+            <Button Text="SOS"
+                    IsVisible="False"
+                    BackgroundColor="White"
+                    TextColor="#111827"
+                    CornerRadius="24"
+                    WidthRequest="58"
+                    HeightRequest="48"
+                    Padding="6,0"
+                    HorizontalOptions="End"
+                    VerticalOptions="End"
+                    Margin="0,0,18,18" />
+
+            <Button x:Name="CreateDemoTripButton"
+                    Text="+"
+                    BackgroundColor="#111827"
+                    TextColor="White"
+                    CornerRadius="24"
+                    WidthRequest="44"
+                    HeightRequest="44"
+                    Padding="8,0"
+                    HorizontalOptions="End"
+                    VerticalOptions="Start"
+                    Margin="0,64,16,0"
+                    Clicked="OnCreateDemoTripClicked" />
+        </Grid>
+
+        <Border Grid.Row="2"
+                BackgroundColor="White"
+                Padding="18,16"
+                Stroke="#E5E7EB"
+                StrokeThickness="1">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="26,26,0,0" />
+            </Border.StrokeShape>
+
+            <VerticalStackLayout Spacing="14">
+                <Grid ColumnDefinitions="*,Auto">
+                    <VerticalStackLayout Spacing="2">
+                        <Label x:Name="PanelTitleLabel"
+                               Text="Esperando pedidos"
+                               TextColor="#111827"
+                               FontSize="22"
+                               FontAttributes="Bold" />
+                        <Label x:Name="PanelSubtitleLabel"
+                               Text="Mantente conectado para recibir solicitudes"
+                               TextColor="#6B7280"
+                               FontSize="13" />
+                    </VerticalStackLayout>
+
+                    <Border Grid.Column="1"
+                            BackgroundColor="#F3F4F6"
+                            Padding="12,7">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="16" />
+                        </Border.StrokeShape>
+                        <Label x:Name="AvailableTripsCountLabel"
+                               Text="0"
+                               TextColor="#111827"
+                               FontSize="14"
+                               FontAttributes="Bold" />
+                    </Border>
+                </Grid>
+
+                <orders:TripDetailView x:Name="ActiveTripDetail" />
+
+                <Border x:Name="TripCompletedSummary"
+                        BackgroundColor="#ECFDF3"
+                        Stroke="#BBF7D0"
+                        StrokeThickness="1"
+                        Padding="16"
+                        IsVisible="False">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="18" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="12">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Viaje finalizado"
+                                       TextColor="#14532D"
+                                       FontSize="18"
+                                       FontAttributes="Bold" />
+                                <Label x:Name="CompletedRouteLabel"
+                                       TextColor="#166534"
+                                       FontSize="13" />
+                            </VerticalStackLayout>
+
+                            <Label x:Name="CompletedFareLabel"
+                                   Grid.Column="1"
+                                   TextColor="#14532D"
+                                   FontSize="24"
+                                   FontAttributes="Bold"
+                                   HorizontalTextAlignment="End" />
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                            <Border BackgroundColor="White" Padding="12,9">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="14" />
+                                </Border.StrokeShape>
+                                <VerticalStackLayout Spacing="2">
+                                    <Label Text="Duracion"
+                                           TextColor="#6B7280"
+                                           FontSize="12" />
+                                    <Label x:Name="CompletedDurationLabel"
+                                           TextColor="#111827"
+                                           FontSize="14"
+                                           FontAttributes="Bold" />
+                                </VerticalStackLayout>
+                            </Border>
+
+                            <Border Grid.Column="1" BackgroundColor="White" Padding="12,9">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="14" />
+                                </Border.StrokeShape>
+                                <VerticalStackLayout Spacing="2">
+                                    <Label Text="Distancia"
+                                           TextColor="#6B7280"
+                                           FontSize="12" />
+                                    <Label x:Name="CompletedDistanceLabel"
+                                           TextColor="#111827"
+                                           FontSize="14"
+                                           FontAttributes="Bold" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </Grid>
+
+                        <Button Text="Buscar otro pedido"
+                                BackgroundColor="#111827"
+                                TextColor="White"
+                                CornerRadius="16"
+                                HeightRequest="48"
+                                Clicked="OnCreateDemoTripClicked" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <VerticalStackLayout x:Name="OrdersList" Spacing="12" />
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</ContentView>

@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:controls="clr-namespace:Paraba.DriverApp.Controls"
+             xmlns:orders="clr-namespace:Paraba.DriverApp.Views.Orders"
              x:Class="Paraba.DriverApp.MainPage"
              BackgroundColor="#07090D"
              Shell.NavBarIsVisible="False">
@@ -148,52 +149,52 @@
               RowDefinitions="*,Auto">
             <Grid Grid.RowSpan="2"
                   InputTransparent="True">
-                <BoxView BackgroundColor="#180305"
-                         Opacity="0.68"
-                         WidthRequest="112"
-                         HorizontalOptions="Start" />
-                <BoxView BackgroundColor="#021407"
-                         Opacity="0.68"
-                         WidthRequest="112"
-                         HorizontalOptions="End" />
+                <BoxView BackgroundColor="#020405" Opacity="0.96" />
+
                 <BoxView BackgroundColor="#F23845"
                          Opacity="0.16"
-                         WidthRequest="22"
+                         WidthRequest="72"
+                         HeightRequest="620"
                          HorizontalOptions="Start"
-                         Margin="0,34,0,150" />
+                         VerticalOptions="Center"
+                         Margin="-42,0,0,0">
+                    <BoxView.Shadow>
+                        <Shadow Brush="#F23845" Offset="0,0" Radius="150" Opacity="0.95" />
+                    </BoxView.Shadow>
+                </BoxView>
+
                 <BoxView BackgroundColor="#20C65A"
-                         Opacity="0.16"
-                         WidthRequest="22"
+                         Opacity="0.15"
+                         WidthRequest="72"
+                         HeightRequest="620"
                          HorizontalOptions="End"
-                         Margin="0,34,0,150" />
+                         VerticalOptions="Center"
+                         Margin="0,0,-42,0">
+                    <BoxView.Shadow>
+                        <Shadow Brush="#20C65A" Offset="0,0" Radius="150" Opacity="0.95" />
+                    </BoxView.Shadow>
+                </BoxView>
 
                 <Grid VerticalOptions="End"
                       HeightRequest="126"
-                      Opacity="0.58"
+                      Opacity="0.48"
                       ColumnDefinitions="*,*">
-                    <HorizontalStackLayout VerticalOptions="End"
-                                           Spacing="3"
-                                           Padding="0,0,0,0">
-                        <BoxView BackgroundColor="#F23845" WidthRequest="8" HeightRequest="32" />
-                        <BoxView BackgroundColor="#F23845" WidthRequest="10" HeightRequest="58" />
-                        <BoxView BackgroundColor="#F23845" WidthRequest="12" HeightRequest="44" />
-                        <BoxView BackgroundColor="#F23845" WidthRequest="9" HeightRequest="78" />
-                        <BoxView BackgroundColor="#F23845" WidthRequest="14" HeightRequest="50" />
-                        <BoxView BackgroundColor="#F23845" WidthRequest="10" HeightRequest="92" />
-                        <BoxView BackgroundColor="#F23845" WidthRequest="16" HeightRequest="38" />
-                        <BoxView BackgroundColor="#F23845" WidthRequest="12" HeightRequest="70" />
+                    <HorizontalStackLayout VerticalOptions="End" Spacing="5">
+                        <BoxView BackgroundColor="#F23845" WidthRequest="2" HeightRequest="70" />
+                        <BoxView BackgroundColor="#F23845" WidthRequest="30" HeightRequest="2" VerticalOptions="End" />
+                        <BoxView BackgroundColor="#F23845" WidthRequest="2" HeightRequest="38" />
+                        <BoxView BackgroundColor="#F23845" WidthRequest="26" HeightRequest="2" VerticalOptions="End" />
+                        <BoxView BackgroundColor="#F23845" WidthRequest="2" HeightRequest="88" />
+                        <BoxView BackgroundColor="#F23845" WidthRequest="38" HeightRequest="2" VerticalOptions="End" />
+                        <BoxView BackgroundColor="#F23845" WidthRequest="2" HeightRequest="52" />
                     </HorizontalStackLayout>
-                    <HorizontalStackLayout Grid.Column="1"
-                                           VerticalOptions="End"
-                                           HorizontalOptions="End"
-                                           Spacing="3">
-                        <BoxView BackgroundColor="#20C65A" WidthRequest="12" HeightRequest="46" />
-                        <BoxView BackgroundColor="#20C65A" WidthRequest="15" HeightRequest="80" />
-                        <BoxView BackgroundColor="#20C65A" WidthRequest="10" HeightRequest="60" />
-                        <BoxView BackgroundColor="#20C65A" WidthRequest="13" HeightRequest="98" />
-                        <BoxView BackgroundColor="#20C65A" WidthRequest="16" HeightRequest="52" />
-                        <BoxView BackgroundColor="#20C65A" WidthRequest="10" HeightRequest="72" />
-                        <BoxView BackgroundColor="#20C65A" WidthRequest="14" HeightRequest="40" />
+                    <HorizontalStackLayout Grid.Column="1" VerticalOptions="End" HorizontalOptions="End" Spacing="5">
+                        <BoxView BackgroundColor="#20C65A" WidthRequest="2" HeightRequest="48" />
+                        <BoxView BackgroundColor="#20C65A" WidthRequest="34" HeightRequest="2" VerticalOptions="End" />
+                        <BoxView BackgroundColor="#20C65A" WidthRequest="2" HeightRequest="96" />
+                        <BoxView BackgroundColor="#20C65A" WidthRequest="30" HeightRequest="2" VerticalOptions="End" />
+                        <BoxView BackgroundColor="#20C65A" WidthRequest="2" HeightRequest="66" />
+                        <BoxView BackgroundColor="#20C65A" WidthRequest="28" HeightRequest="2" VerticalOptions="End" />
                     </HorizontalStackLayout>
                 </Grid>
             </Grid>
@@ -201,11 +202,11 @@
             <ScrollView Grid.Row="0">
                 <VerticalStackLayout Spacing="22"
                                      Padding="0,18,0,22">
-                    <Grid ColumnDefinitions="*,230,*"
+                    <Grid ColumnDefinitions="*,Auto,*"
                           Margin="0,0,0,20">
                         <BoxView BackgroundColor="#F23845"
                                  HeightRequest="2"
-                                 WidthRequest="82"
+                                 WidthRequest="72"
                                  Opacity="0.92"
                                  HorizontalOptions="Start"
                                  VerticalOptions="Center" />
@@ -218,7 +219,7 @@
                         <BoxView Grid.Column="2"
                                  BackgroundColor="#20C65A"
                                  HeightRequest="2"
-                                 WidthRequest="82"
+                                 WidthRequest="72"
                                  Opacity="0.92"
                                  HorizontalOptions="End"
                                  VerticalOptions="Center" />
@@ -308,39 +309,52 @@
               RowDefinitions="*,Auto">
             <Grid Grid.RowSpan="2"
                   InputTransparent="True">
-                <BoxView BackgroundColor="#090304"
-                         Opacity="0.82"
-                         HorizontalOptions="Fill"
-                         VerticalOptions="Fill" />
+                <BoxView BackgroundColor="#020405" Opacity="0.96" />
+
                 <BoxView BackgroundColor="#F23845"
-                         Opacity="0.07"
-                         WidthRequest="230"
+                         Opacity="0.16"
+                         WidthRequest="72"
+                         HeightRequest="620"
                          HorizontalOptions="Start"
-                         VerticalOptions="Fill" />
+                         VerticalOptions="Center"
+                         Margin="-42,0,0,0">
+                    <BoxView.Shadow>
+                        <Shadow Brush="#F23845" Offset="0,0" Radius="150" Opacity="0.95" />
+                    </BoxView.Shadow>
+                </BoxView>
+
                 <BoxView BackgroundColor="#20C65A"
-                         Opacity="0.07"
-                         WidthRequest="230"
+                         Opacity="0.15"
+                         WidthRequest="72"
+                         HeightRequest="620"
                          HorizontalOptions="End"
-                         VerticalOptions="Fill" />
+                         VerticalOptions="Center"
+                         Margin="0,0,-42,0">
+                    <BoxView.Shadow>
+                        <Shadow Brush="#20C65A" Offset="0,0" Radius="150" Opacity="0.95" />
+                    </BoxView.Shadow>
+                </BoxView>
 
                 <Grid VerticalOptions="End"
-                      HeightRequest="120"
-                      Opacity="0.55"
+                      HeightRequest="126"
+                      Opacity="0.48"
                       ColumnDefinitions="*,*">
-                    <HorizontalStackLayout VerticalOptions="End" Spacing="3">
-                        <BoxView BackgroundColor="#F23845" WidthRequest="8" HeightRequest="32" />
-                        <BoxView BackgroundColor="#F23845" WidthRequest="12" HeightRequest="76" />
-                        <BoxView BackgroundColor="#F23845" WidthRequest="10" HeightRequest="48" />
-                        <BoxView BackgroundColor="#F23845" WidthRequest="14" HeightRequest="88" />
-                        <BoxView BackgroundColor="#F23845" WidthRequest="12" HeightRequest="58" />
-                        <BoxView BackgroundColor="#F23845" WidthRequest="16" HeightRequest="42" />
+                    <HorizontalStackLayout VerticalOptions="End" Spacing="5">
+                        <BoxView BackgroundColor="#F23845" WidthRequest="2" HeightRequest="70" />
+                        <BoxView BackgroundColor="#F23845" WidthRequest="30" HeightRequest="2" VerticalOptions="End" />
+                        <BoxView BackgroundColor="#F23845" WidthRequest="2" HeightRequest="38" />
+                        <BoxView BackgroundColor="#F23845" WidthRequest="26" HeightRequest="2" VerticalOptions="End" />
+                        <BoxView BackgroundColor="#F23845" WidthRequest="2" HeightRequest="88" />
+                        <BoxView BackgroundColor="#F23845" WidthRequest="38" HeightRequest="2" VerticalOptions="End" />
+                        <BoxView BackgroundColor="#F23845" WidthRequest="2" HeightRequest="52" />
                     </HorizontalStackLayout>
-                    <HorizontalStackLayout Grid.Column="1" VerticalOptions="End" HorizontalOptions="End" Spacing="3">
-                        <BoxView BackgroundColor="#20C65A" WidthRequest="14" HeightRequest="42" />
-                        <BoxView BackgroundColor="#20C65A" WidthRequest="10" HeightRequest="66" />
-                        <BoxView BackgroundColor="#20C65A" WidthRequest="16" HeightRequest="96" />
-                        <BoxView BackgroundColor="#20C65A" WidthRequest="11" HeightRequest="54" />
-                        <BoxView BackgroundColor="#20C65A" WidthRequest="13" HeightRequest="80" />
+                    <HorizontalStackLayout Grid.Column="1" VerticalOptions="End" HorizontalOptions="End" Spacing="5">
+                        <BoxView BackgroundColor="#20C65A" WidthRequest="2" HeightRequest="48" />
+                        <BoxView BackgroundColor="#20C65A" WidthRequest="34" HeightRequest="2" VerticalOptions="End" />
+                        <BoxView BackgroundColor="#20C65A" WidthRequest="2" HeightRequest="96" />
+                        <BoxView BackgroundColor="#20C65A" WidthRequest="30" HeightRequest="2" VerticalOptions="End" />
+                        <BoxView BackgroundColor="#20C65A" WidthRequest="2" HeightRequest="66" />
+                        <BoxView BackgroundColor="#20C65A" WidthRequest="28" HeightRequest="2" VerticalOptions="End" />
                     </HorizontalStackLayout>
                 </Grid>
             </Grid>
@@ -348,11 +362,11 @@
             <ScrollView Grid.Row="0">
                 <VerticalStackLayout Spacing="22"
                                      Padding="0,20,0,24">
-                    <Grid ColumnDefinitions="*,230,*"
+                    <Grid ColumnDefinitions="*,Auto,*"
                           Margin="0,0,0,26">
                         <BoxView BackgroundColor="#F23845"
                                  HeightRequest="2"
-                                 WidthRequest="82"
+                                 WidthRequest="72"
                                  Opacity="0.9"
                                  HorizontalOptions="Start"
                                  VerticalOptions="Center" />
@@ -364,7 +378,7 @@
                         <BoxView Grid.Column="2"
                                  BackgroundColor="#20C65A"
                                  HeightRequest="2"
-                                 WidthRequest="82"
+                                 WidthRequest="72"
                                  Opacity="0.9"
                                  HorizontalOptions="End"
                                  VerticalOptions="Center" />
@@ -456,21 +470,53 @@
               BackgroundColor="#020405"
               Padding="24,42,24,28"
               RowDefinitions="Auto,*,Auto,Auto">
-            <BoxView Grid.RowSpan="4"
-                     BackgroundColor="#020405"
-                     Opacity="0.88" />
+            <BoxView Grid.RowSpan="4" BackgroundColor="#020405" Opacity="0.96" />
+
             <BoxView Grid.RowSpan="4"
                      BackgroundColor="#F23845"
-                     Opacity="0.07"
-                     WidthRequest="230"
+                     Opacity="0.15"
+                     WidthRequest="72"
+                     HeightRequest="620"
                      HorizontalOptions="Start"
-                     VerticalOptions="Fill" />
+                     VerticalOptions="Center"
+                     Margin="-42,0,0,0">
+                <BoxView.Shadow>
+                    <Shadow Brush="#F23845" Offset="0,0" Radius="150" Opacity="0.95" />
+                </BoxView.Shadow>
+            </BoxView>
             <BoxView Grid.RowSpan="4"
                      BackgroundColor="#20C65A"
-                     Opacity="0.07"
-                     WidthRequest="230"
+                     Opacity="0.14"
+                     WidthRequest="72"
+                     HeightRequest="620"
                      HorizontalOptions="End"
-                     VerticalOptions="Fill" />
+                     VerticalOptions="Center"
+                     Margin="0,0,-42,0">
+                <BoxView.Shadow>
+                    <Shadow Brush="#20C65A" Offset="0,0" Radius="150" Opacity="0.95" />
+                </BoxView.Shadow>
+            </BoxView>
+
+            <Grid Grid.RowSpan="4"
+                  VerticalOptions="End"
+                  HeightRequest="126"
+                  Opacity="0.45"
+                  ColumnDefinitions="*,*">
+                <HorizontalStackLayout VerticalOptions="End" Spacing="5">
+                    <BoxView BackgroundColor="#F23845" WidthRequest="2" HeightRequest="70" />
+                    <BoxView BackgroundColor="#F23845" WidthRequest="30" HeightRequest="2" VerticalOptions="End" />
+                    <BoxView BackgroundColor="#F23845" WidthRequest="2" HeightRequest="40" />
+                    <BoxView BackgroundColor="#F23845" WidthRequest="36" HeightRequest="2" VerticalOptions="End" />
+                    <BoxView BackgroundColor="#F23845" WidthRequest="2" HeightRequest="90" />
+                </HorizontalStackLayout>
+                <HorizontalStackLayout Grid.Column="1" VerticalOptions="End" HorizontalOptions="End" Spacing="5">
+                    <BoxView BackgroundColor="#20C65A" WidthRequest="2" HeightRequest="50" />
+                    <BoxView BackgroundColor="#20C65A" WidthRequest="34" HeightRequest="2" VerticalOptions="End" />
+                    <BoxView BackgroundColor="#20C65A" WidthRequest="2" HeightRequest="96" />
+                    <BoxView BackgroundColor="#20C65A" WidthRequest="30" HeightRequest="2" VerticalOptions="End" />
+                    <BoxView BackgroundColor="#20C65A" WidthRequest="2" HeightRequest="66" />
+                </HorizontalStackLayout>
+            </Grid>
 
             <Button Text="&lt;"
                     BackgroundColor="Transparent"
@@ -633,65 +679,7 @@
             </Grid>
 
             <Grid Grid.Row="1">
-                <ScrollView x:Name="OrdersTabView" BackgroundColor="White">
-                    <VerticalStackLayout Spacing="0">
-                        <Grid HeightRequest="470" BackgroundColor="#EEF2F7">
-                            <Grid RowDefinitions="*,*,*" ColumnDefinitions="*,*,*" Opacity="0.55">
-                                <BoxView Grid.Row="0" Grid.Column="1" BackgroundColor="#CBD5E1" WidthRequest="7" HorizontalOptions="Center" />
-                                <BoxView Grid.Row="1" Grid.Column="1" BackgroundColor="#CBD5E1" WidthRequest="7" HorizontalOptions="Center" />
-                                <BoxView Grid.Row="2" Grid.ColumnSpan="3" BackgroundColor="#CBD5E1" HeightRequest="7" VerticalOptions="Center" />
-                                <BoxView Grid.Row="0" Grid.ColumnSpan="3" BackgroundColor="#65D845" HeightRequest="7" VerticalOptions="Start" />
-                            </Grid>
-                            <Label Text="▲"
-                                   TextColor="#F23845"
-                                   FontSize="58"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center" />
-                            <Frame BackgroundColor="White"
-                                   CornerRadius="28"
-                                   Padding="14"
-                                   HasShadow="True"
-                                   HorizontalOptions="Start"
-                                   VerticalOptions="End"
-                                   Margin="18,0,0,22">
-                                <Label Text="Buscar" TextColor="#111827" FontAttributes="Bold" />
-                            </Frame>
-                            <Frame BackgroundColor="White"
-                                   CornerRadius="28"
-                                   Padding="14"
-                                   HasShadow="True"
-                                   HorizontalOptions="End"
-                                   VerticalOptions="End"
-                                   Margin="0,0,18,22">
-                                <Label Text="Seguridad" TextColor="#111827" FontAttributes="Bold" />
-                            </Frame>
-                        </Grid>
-
-                        <Frame CornerRadius="24" Padding="20" HasShadow="True" Margin="0,-36,0,0" BackgroundColor="White">
-                            <VerticalStackLayout Spacing="16">
-                                <Grid ColumnDefinitions="*,*">
-                                    <VerticalStackLayout>
-                                        <Label Text="Prioridad" TextColor="#374151" FontSize="14" />
-                                        <Label Text="+91" TextColor="#111827" FontSize="28" FontAttributes="Bold" />
-                                    </VerticalStackLayout>
-                                    <VerticalStackLayout Grid.Column="1">
-                                        <Label Text="0 pedidos" TextColor="#374151" FontSize="14" HorizontalTextAlignment="End" />
-                                        <Label Text="0 BOB" TextColor="#111827" FontSize="28" FontAttributes="Bold" HorizontalTextAlignment="End" />
-                                    </VerticalStackLayout>
-                                </Grid>
-                                <Frame CornerRadius="16" BackgroundColor="#F2F2F2" Padding="16,12" HasShadow="False">
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <VerticalStackLayout>
-                                            <Label Text="En este momento no hay objetivos activos" TextColor="#111827" FontSize="17" FontAttributes="Bold" />
-                                            <Label Text="Conoce cómo obtener un objetivo nuevo" TextColor="#80868F" FontSize="13" />
-                                        </VerticalStackLayout>
-                                        <Label Grid.Column="1" Text="&gt;" TextColor="#111827" FontSize="24" VerticalTextAlignment="Center" />
-                                    </Grid>
-                                </Frame>
-                            </VerticalStackLayout>
-                        </Frame>
-                    </VerticalStackLayout>
-                </ScrollView>
+                <orders:OrdersView x:Name="OrdersTabView" />
 
                 <ScrollView x:Name="MoneyTabView" IsVisible="False" BackgroundColor="White">
                     <VerticalStackLayout Padding="24,28" Spacing="18">
@@ -712,7 +700,7 @@
                         </Frame>
                         <Frame BackgroundColor="#F3F3F3" CornerRadius="24" Padding="18" HasShadow="False">
                             <Grid ColumnDefinitions="Auto,*,Auto">
-                                <Label Text="▣" TextColor="#111827" FontSize="34" VerticalTextAlignment="Center" />
+                                <Label Text="?" TextColor="#111827" FontSize="34" VerticalTextAlignment="Center" />
                                 <VerticalStackLayout Grid.Column="1" Margin="14,0,0,0">
                                     <Label Text="Límite del saldo" TextColor="#111827" FontSize="22" FontAttributes="Bold" />
                                     <Label Text="Todo en orden" TextColor="#111827" FontSize="18" />
@@ -815,6 +803,12 @@
         </Grid>
     </Grid>
 </ContentPage>
+
+
+
+
+
+
 
 
 

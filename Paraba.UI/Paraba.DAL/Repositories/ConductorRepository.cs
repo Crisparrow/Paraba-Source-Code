@@ -74,5 +74,21 @@ namespace Paraba.DAL.Repositories
 
             return filasAfectadas > 0;
         }
+
+        public bool ActualizarDisponibleApp(int idConductor, bool disponible)
+        {
+            using SqlConnection cn = conexion.ObtenerConexion();
+
+            using SqlCommand cmd = new SqlCommand("dbo.sp_Conductores_ActualizarDisponibleApp", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@IdConductor", idConductor);
+            cmd.Parameters.AddWithValue("@Disponible", disponible);
+
+            cn.Open();
+
+            int filasAfectadas = Convert.ToInt32(cmd.ExecuteScalar());
+
+            return filasAfectadas > 0;
+        }
     }
 }

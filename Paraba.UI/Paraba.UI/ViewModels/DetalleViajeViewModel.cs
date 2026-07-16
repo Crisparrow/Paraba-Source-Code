@@ -28,6 +28,10 @@ namespace Paraba.UI.ViewModels
 
         public DateTime? FechaFin { get; set; }
 
+        public DateTime? FechaCancelacion { get; set; }
+
+        public string MotivoCancelacion { get; set; } = string.Empty;
+
         public string Pasajero { get; set; } = string.Empty;
 
         public string DocumentoPasajero { get; set; } = string.Empty;

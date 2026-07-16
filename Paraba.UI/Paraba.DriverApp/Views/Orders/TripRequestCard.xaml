@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="Paraba.DriverApp.Views.Orders.TripRequestCard"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Border x:Name="RootBorder"
+            BackgroundColor="#F8FAFC"
+            Stroke="#E5E7EB"
+            StrokeThickness="1"
+            Padding="16">
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="18" />
+        </Border.StrokeShape>
+
+        <VerticalStackLayout Spacing="14">
+            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
+                <VerticalStackLayout Spacing="3">
+                    <Label Text="Pedido entrante"
+                           TextColor="#6B7280"
+                           FontSize="13"
+                           FontAttributes="Bold" />
+                    <Label x:Name="FareLabel"
+                           TextColor="#111827"
+                           FontSize="32"
+                           FontAttributes="Bold" />
+                </VerticalStackLayout>
+
+                <Border Grid.Column="1"
+                        BackgroundColor="#FEF3C7"
+                        Padding="10,7"
+                        VerticalOptions="Start">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="14" />
+                    </Border.StrokeShape>
+                    <Label x:Name="CountdownLabel"
+                           Text="20s"
+                           TextColor="#92400E"
+                           FontSize="12"
+                           FontAttributes="Bold" />
+                </Border>
+
+                <Border Grid.Column="2"
+                        BackgroundColor="#111827"
+                        Padding="12,7"
+                        VerticalOptions="Start">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="14" />
+                    </Border.StrokeShape>
+                    <Label x:Name="ServiceLabel"
+                           TextColor="White"
+                           FontSize="12"
+                           FontAttributes="Bold" />
+                </Border>
+            </Grid>
+
+            <ProgressBar x:Name="CountdownProgress"
+                         Progress="1"
+                         ProgressColor="#F59E0B"
+                         HeightRequest="6" />
+
+            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+                <Border BackgroundColor="#20C65A"
+                        WidthRequest="22"
+                        HeightRequest="22"
+                        VerticalOptions="Start">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="11" />
+                    </Border.StrokeShape>
+                    <Label Text="O"
+                           TextColor="#061008"
+                           FontSize="11"
+                           FontAttributes="Bold"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center" />
+                </Border>
+                <Label x:Name="OriginLabel"
+                       Grid.Column="1"
+                       TextColor="#111827"
+                       FontSize="15"
+                       FontAttributes="Bold" />
+
+                <Border Grid.Row="1"
+                        BackgroundColor="#F23845"
+                        WidthRequest="22"
+                        HeightRequest="22"
+                        VerticalOptions="Start">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="11" />
+                    </Border.StrokeShape>
+                    <Label Text="D"
+                           TextColor="White"
+                           FontSize="11"
+                           FontAttributes="Bold"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center" />
+                </Border>
+                <Label x:Name="DestinationLabel"
+                       Grid.Row="1"
+                       Grid.Column="1"
+                       TextColor="#111827"
+                       FontSize="15"
+                       FontAttributes="Bold" />
+            </Grid>
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <Border BackgroundColor="#EEF2F7" Padding="12,9">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="14" />
+                    </Border.StrokeShape>
+                    <Label x:Name="DistanceLabel"
+                           TextColor="#374151"
+                           FontSize="13"
+                           FontAttributes="Bold"
+                           HorizontalTextAlignment="Center" />
+                </Border>
+                <Border Grid.Column="1" BackgroundColor="#EEF2F7" Padding="12,9">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="14" />
+                    </Border.StrokeShape>
+                    <Label x:Name="TimeLabel"
+                           TextColor="#374151"
+                           FontSize="13"
+                           FontAttributes="Bold"
+                           HorizontalTextAlignment="Center" />
+                </Border>
+            </Grid>
+
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+                <Border BackgroundColor="White" Padding="12,9">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="14" />
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Spacing="2">
+                        <Label Text="Pago"
+                               TextColor="#6B7280"
+                               FontSize="12" />
+                        <Label Text="Efectivo demo"
+                               TextColor="#111827"
+                               FontSize="13"
+                               FontAttributes="Bold" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Grid.Column="1" BackgroundColor="White" Padding="12,9">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="14" />
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Spacing="2">
+                        <Label Text="Viaje"
+                               TextColor="#6B7280"
+                               FontSize="12" />
+                        <Label x:Name="TripDistanceLabel"
+                               TextColor="#111827"
+                               FontSize="13"
+                               FontAttributes="Bold" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Grid.Row="1" BackgroundColor="White" Padding="12,9">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="14" />
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Spacing="2">
+                        <Label Text="Duracion total"
+                               TextColor="#6B7280"
+                               FontSize="12" />
+                        <Label x:Name="TripDurationLabel"
+                               TextColor="#111827"
+                               FontSize="13"
+                               FontAttributes="Bold" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Grid.Row="1" Grid.Column="1" BackgroundColor="White" Padding="12,9">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="14" />
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Spacing="2">
+                        <Label Text="Oferta pasajero"
+                               TextColor="#6B7280"
+                               FontSize="12" />
+                        <Label x:Name="PassengerOfferLabel"
+                               TextColor="#111827"
+                               FontSize="13"
+                               FontAttributes="Bold" />
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+
+            <Button x:Name="AcceptButton"
+                    Text="Aceptar pedido"
+                    BackgroundColor="#20C65A"
+                    TextColor="#061008"
+                    FontAttributes="Bold"
+                    CornerRadius="16"
+                    HeightRequest="54"
+                    Clicked="OnAcceptClicked" />
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <Button x:Name="CounterOfferButton"
+                        Text="Contraoferta"
+                        BackgroundColor="#111827"
+                        TextColor="White"
+                        CornerRadius="14"
+                        HeightRequest="46"
+                        Clicked="OnCounterOfferClicked" />
+
+                <Button x:Name="CancelButton"
+                        Grid.Column="1"
+                        Text="Rechazar"
+                        BackgroundColor="#F3F4F6"
+                        TextColor="#F23845"
+                        CornerRadius="14"
+                        HeightRequest="46"
+                        Clicked="OnCancelClicked" />
+            </Grid>
+        </VerticalStackLayout>
+    </Border>
+</ContentView>

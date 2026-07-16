@@ -71,36 +71,6 @@ public class DriverDocumentResponse
     public string EstadoVerificacion { get; set; } = string.Empty;
 }
 
-public class DriverTripResponse
-{
-    [JsonPropertyName("idViaje")]
-    public int IdViaje { get; set; }
-
-    [JsonPropertyName("origen")]
-    public string Origen { get; set; } = string.Empty;
-
-    [JsonPropertyName("destino")]
-    public string Destino { get; set; } = string.Empty;
-
-    [JsonPropertyName("tarifaSugerida")]
-    public decimal TarifaSugerida { get; set; }
-
-    [JsonPropertyName("tarifaOfertada")]
-    public decimal TarifaOfertada { get; set; }
-
-    [JsonPropertyName("tarifaContraoferta")]
-    public decimal? TarifaContraoferta { get; set; }
-
-    [JsonPropertyName("tarifaAceptada")]
-    public decimal? TarifaAceptada { get; set; }
-
-    [JsonPropertyName("tarifaFinal")]
-    public decimal TarifaFinal { get; set; }
-
-    [JsonPropertyName("estadoViaje")]
-    public string EstadoViaje { get; set; } = string.Empty;
-}
-
 public class DriverRequestCodeRequest
 {
     [JsonPropertyName("telefono")]

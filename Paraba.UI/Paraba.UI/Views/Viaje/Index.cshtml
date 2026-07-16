@@ -1,103 +1,180 @@
-@model List<Paraba.UI.ViewModels.ViajeViewModel>
+@model Paraba.UI.ViewModels.ViajeHistorialViewModel
 
 @{
-    ViewData["Title"] = "Viajes";
+    ViewData["Title"] = "Historial de viajes";
     bool puedeCancelarViajes = User.IsInRole("SuperAdmin") || User.IsInRole("Operaciones");
 }
 
 <div class="d-flex align-items-center justify-content-between mb-3">
     <div>
-        <h1 class="h3 mb-1">Viajes</h1>
-        <p class="text-muted mb-0">Monitoreo administrativo de solicitudes y viajes creados desde las apps.</p>
+        <h1 class="h3 mb-1">Historial de viajes</h1>
+        <p class="text-muted mb-0">Seguimiento administrativo de solicitudes, contraofertas, cancelaciones y viajes finalizados.</p>
     </div>
 </div>
 
-<div class="alert alert-info">
-    Este panel no crea viajes ni actua como pasajero o conductor. Las solicitudes, ofertas, contraofertas, inicio y finalizacion se realizan desde las apps correspondientes.
+<form asp-controller="Viaje" asp-action="Index" method="get" class="row g-3 mb-4">
+    <div class="col-md-2">
+        <label class="form-label">Desde</label>
+        <input asp-for="FechaDesde" class="form-control" type="date" />
+    </div>
+
+    <div class="col-md-2">
+        <label class="form-label">Hasta</label>
+        <input asp-for="FechaHasta" class="form-control" type="date" />
+    </div>
+
+    <div class="col-md-2">
+        <label class="form-label">Estado</label>
+        <select asp-for="IdEstadoViaje" asp-items="Model.EstadosViaje" class="form-select"></select>
+    </div>
+
+    <div class="col-md-2">
+        <label class="form-label">Servicio</label>
+        <select asp-for="IdTipoServicio" asp-items="Model.TiposServicio" class="form-select"></select>
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">Conductor</label>
+        <select asp-for="IdConductor" asp-items="Model.Conductores" class="form-select"></select>
+    </div>
+
+    <div class="col-md-1 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+    </div>
+</form>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-2">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Viajes</div>
+            <div class="h4 mb-0">@Model.TotalViajes</div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Activos</div>
+            <div class="h4 mb-0">@Model.ViajesActivos</div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Contraofertas</div>
+            <div class="h4 mb-0">@Model.ViajesContraofertados</div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Finalizados</div>
+            <div class="h4 mb-0">@Model.ViajesFinalizados</div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Cancelados</div>
+            <div class="h4 mb-0">@Model.ViajesCancelados</div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="border rounded p-3">
+            <div class="text-muted small">Ingresos finalizados</div>
+            <div class="h4 mb-0">@Model.IngresosFinalizados.ToString("0.00")</div>
+        </div>
+    </div>
 </div>
 
-<table class="table table-bordered table-hover align-middle">
-    <thead class="table-dark">
-        <tr>
-            <th>ID</th>
-            <th>Pasajero</th>
-            <th>Conductor</th>
-            <th>Tipo servicio</th>
-            <th>Vehiculo</th>
-            <th>Ruta</th>
-            <th>Sugerida</th>
-            <th>Oferta pasajero</th>
-            <th>Contraoferta</th>
-            <th>Aceptada</th>
-            <th>Estado</th>
-            <th>Solicitud</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var viaje in Model)
-        {
-            var estadoClase = viaje.EstadoViaje switch
-            {
-                "Aceptado" => "status-success",
-                "En curso" => "status-info",
-                "Finalizado" => "status-muted",
-                "Cancelado" => "status-danger",
-                _ => "status-warning"
-            };
-
+@if (!Model.Viajes.Any())
+{
+    <div class="alert alert-secondary">No hay viajes con los filtros seleccionados.</div>
+}
+else
+{
+    <table class="table table-bordered table-hover align-middle">
+        <thead class="table-dark">
             <tr>
-                <td>@viaje.IdViaje</td>
-                <td>@viaje.Pasajero</td>
-                <td>@viaje.Conductor</td>
-                <td>@viaje.TipoServicio</td>
-                <td>@viaje.Vehiculo</td>
-                <td>
-                    <strong>@viaje.Origen</strong>
-                    <div class="text-muted small">@viaje.Destino</div>
-                </td>
-                <td><span class="money-value">@viaje.TarifaSugerida.ToString("0.00")</span></td>
-                <td><span class="money-value">@viaje.TarifaOfertada.ToString("0.00")</span></td>
-                <td>
-                    @if (viaje.TarifaContraoferta.HasValue)
-                    {
-                        <span class="money-value">@viaje.TarifaContraoferta.Value.ToString("0.00")</span>
-                    }
-                    else
-                    {
-                        <span class="text-muted">Sin contraoferta</span>
-                    }
-                </td>
-                <td>
-                    @if (viaje.TarifaAceptada.HasValue)
-                    {
-                        <span class="money-value">@viaje.TarifaAceptada.Value.ToString("0.00")</span>
-                    }
-                    else
-                    {
-                        <span class="status-badge status-warning">Pendiente</span>
-                    }
-                </td>
-                <td><span class="status-badge @estadoClase">@viaje.EstadoViaje</span></td>
-                <td>@viaje.FechaSolicitud.ToString("dd/MM/yyyy HH:mm")</td>
-                <td>
-                    <div class="table-actions">
-                        <a asp-controller="Viaje" asp-action="Detalle" asp-route-id="@viaje.IdViaje" class="btn btn-sm btn-outline-secondary w-100">
-                            Detalle
-                        </a>
-                        @if (puedeCancelarViajes && viaje.EstadoViaje != "Finalizado" && viaje.EstadoViaje != "Cancelado")
+                <th>ID</th>
+                <th>Estado</th>
+                <th>Conductor</th>
+                <th>Pasajero</th>
+                <th>Servicio</th>
+                <th>Ruta</th>
+                <th>Tarifa</th>
+                <th>Contraoferta</th>
+                <th>Solicitud</th>
+                <th>Cierre</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var viaje in Model.Viajes)
+            {
+                var estadoClase = viaje.EstadoViaje switch
+                {
+                    "Aceptado" => "status-success",
+                    "En camino al pasajero" => "status-info",
+                    "En curso" => "status-info",
+                    "Finalizado" => "status-muted",
+                    "Cancelado" => "status-danger",
+                    "Contraofertado" => "status-warning",
+                    _ => "status-warning"
+                };
+
+                DateTime? fechaCierre = viaje.FechaFin ?? viaje.FechaCancelacion;
+                decimal tarifaVisible = viaje.TarifaAceptada ?? viaje.TarifaContraoferta ?? viaje.TarifaOfertada;
+
+                <tr>
+                    <td>@viaje.IdViaje</td>
+                    <td><span class="status-badge @estadoClase">@viaje.EstadoViaje</span></td>
+                    <td>@viaje.Conductor</td>
+                    <td>@viaje.Pasajero</td>
+                    <td>@viaje.TipoServicio</td>
+                    <td>
+                        <strong>@viaje.Origen</strong>
+                        <div class="text-muted small">@viaje.Destino</div>
+                    </td>
+                    <td>
+                        <span class="money-value">@tarifaVisible.ToString("0.00")</span>
+                        <div class="text-muted small">Sugerida @viaje.TarifaSugerida.ToString("0.00")</div>
+                    </td>
+                    <td>
+                        @if (viaje.TarifaContraoferta.HasValue)
                         {
-                            <a asp-controller="Viaje" asp-action="Cancelar" asp-route-id="@viaje.IdViaje" class="btn btn-sm btn-outline-danger w-100">
-                                Cancelar admin
-                            </a>
+                            <span class="money-value">@viaje.TarifaContraoferta.Value.ToString("0.00")</span>
                         }
                         else
                         {
-                            <span class="text-muted">Sin acciones</span>
+                            <span class="text-muted">Sin contraoferta</span>
                         }
-                    </div>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                    </td>
+                    <td>@viaje.FechaSolicitud.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>
+                        @if (fechaCierre.HasValue)
+                        {
+                            @fechaCierre.Value.ToString("dd/MM/yyyy HH:mm")
+                        }
+                        else
+                        {
+                            <span class="text-muted">Abierto</span>
+                        }
+                    </td>
+                    <td>
+                        <div class="table-actions">
+                            <a asp-controller="Viaje" asp-action="Detalle" asp-route-id="@viaje.IdViaje" class="btn btn-sm btn-outline-secondary w-100">
+                                Detalle
+                            </a>
+                            @if (puedeCancelarViajes && viaje.EstadoViaje != "Finalizado" && viaje.EstadoViaje != "Cancelado")
+                            {
+                                <a asp-controller="Viaje" asp-action="Cancelar" asp-route-id="@viaje.IdViaje" class="btn btn-sm btn-outline-danger w-100">
+                                    Cancelar admin
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Sin acciones</span>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -55,6 +55,35 @@ namespace Paraba.API.Models
         public string Observacion { get; set; } = string.Empty;
     }
 
+    public class DriverOperationsSummaryResponse
+    {
+        public int IdConductor { get; set; }
+
+        public bool Conectado { get; set; }
+
+        public int Prioridad { get; set; }
+
+        public int PedidosDisponibles { get; set; }
+
+        public int ViajesActivos { get; set; }
+
+        public int ViajesHoy { get; set; }
+
+        public int ViajesFinalizadosHoy { get; set; }
+
+        public decimal GananciaHoy { get; set; }
+
+        public string ObjetivoTitulo { get; set; } = string.Empty;
+
+        public string ObjetivoDetalle { get; set; } = string.Empty;
+
+        public decimal ObjetivoActual { get; set; }
+
+        public decimal ObjetivoMeta { get; set; }
+
+        public string EstadoOperativo { get; set; } = string.Empty;
+    }
+
     public class DriverTripResponse
     {
         public int IdViaje { get; set; }
@@ -66,6 +95,8 @@ namespace Paraba.API.Models
         public int IdVehiculo { get; set; }
 
         public int IdTipoServicio { get; set; }
+
+        public string TipoServicio { get; set; } = string.Empty;
 
         public string Origen { get; set; } = string.Empty;
 
@@ -87,9 +118,15 @@ namespace Paraba.API.Models
 
         public DateTime FechaSolicitud { get; set; }
 
+        public DateTime? FechaAceptacion { get; set; }
+
         public DateTime? FechaInicio { get; set; }
 
         public DateTime? FechaFin { get; set; }
+
+        public DateTime? FechaCancelacion { get; set; }
+
+        public string MotivoCancelacion { get; set; } = string.Empty;
     }
 
     public class DriverCounterOfferRequest
@@ -100,5 +137,15 @@ namespace Paraba.API.Models
     public class DriverCancelTripRequest
     {
         public string Motivo { get; set; } = string.Empty;
+    }
+
+    public class DriverDemoTripRequest
+    {
+        public int? IdTipoServicio { get; set; }
+    }
+
+    public class DriverAvailabilityRequest
+    {
+        public bool Disponible { get; set; }
     }
 }

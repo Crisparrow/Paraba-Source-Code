@@ -16,6 +16,34 @@ namespace Paraba.BLL.Services
             return viajeRepository.Listar();
         }
 
+        public ResumenOperacionConductor ObtenerResumenOperacion(int idConductor)
+        {
+            ValidarIdConductor(idConductor);
+
+            ResumenOperacionConductor? resumen = viajeRepository.ObtenerResumenOperacion(idConductor);
+
+            if (resumen == null)
+            {
+                throw new ArgumentException("Conductor no encontrado.");
+            }
+
+            return resumen;
+        }
+
+        public List<Viaje> ListarViajesDisponibles(int idConductor)
+        {
+            ValidarIdConductor(idConductor);
+
+            return viajeRepository.ListarDisponiblesPorConductor(idConductor);
+        }
+
+        public List<Viaje> ListarViajesActivos(int idConductor)
+        {
+            ValidarIdConductor(idConductor);
+
+            return viajeRepository.ListarActivosPorConductor(idConductor);
+        }
+
         public decimal CalcularTarifaSugerida(Tarifa tarifa, decimal distanciaKilometros, int tiempoMinutos)
         {
             decimal subtotal = calculadoraTarifaService.CalcularSubtotal(tarifa, distanciaKilometros, tiempoMinutos);
@@ -141,6 +169,58 @@ namespace Paraba.BLL.Services
             RegistrarAuditoria(idViaje, "Contraoferta", ObtenerNombreEstado(viaje.IdEstadoViaje), "Solicitado", viaje.TarifaContraoferta, tarifaContraoferta, "El conductor registro una contraoferta.");
         }
 
+        public void AceptarViaje(int idConductor, int idViaje)
+        {
+            ValidarIdConductor(idConductor);
+            ValidarIdViaje(idViaje);
+            EjecutarOperacionConductor(() => viajeRepository.AceptarViaje(idConductor, idViaje));
+        }
+
+        public int CrearSolicitudDemo(int idConductor, int? idTipoServicio)
+        {
+            ValidarIdConductor(idConductor);
+
+            if (idTipoServicio != null && idTipoServicio <= 0)
+            {
+                throw new ArgumentException("Debe seleccionar un tipo de servicio valido.");
+            }
+
+            return EjecutarOperacionConductorConResultado(() => viajeRepository.CrearSolicitudDemo(idConductor, idTipoServicio));
+        }
+
+        public void RegistrarContraoferta(int idConductor, int idViaje, decimal tarifaContraoferta)
+        {
+            ValidarIdConductor(idConductor);
+            ValidarIdViaje(idViaje);
+
+            if (tarifaContraoferta <= 0)
+            {
+                throw new ArgumentException("La contraoferta debe ser mayor a cero.");
+            }
+
+            EjecutarOperacionConductor(() => viajeRepository.RegistrarContraoferta(idConductor, idViaje, tarifaContraoferta));
+        }
+
+        public void AceptarContraofertaPasajeroDemo(int idConductor, int idViaje)
+        {
+            ValidarIdConductor(idConductor);
+            ValidarIdViaje(idViaje);
+
+            Viaje? viaje = ListarViajes().FirstOrDefault(item => item.IdViaje == idViaje);
+
+            if (viaje == null)
+            {
+                throw new ArgumentException("El viaje no existe.");
+            }
+
+            if (viaje.IdConductor != idConductor)
+            {
+                throw new ArgumentException("El viaje no pertenece al conductor.");
+            }
+
+            EjecutarOperacionConductor(() => viajeRepository.AceptarContraofertaPasajero(idViaje));
+        }
+
         public void AceptarContraoferta(int idViaje)
         {
             if (idViaje <= 0)
@@ -182,6 +262,13 @@ namespace Paraba.BLL.Services
             RegistrarAuditoria(idViaje, "Viaje iniciado", "Aceptado", "En curso", viaje.TarifaAceptada, viaje.TarifaAceptada, "El viaje paso a estado en curso.");
         }
 
+        public void IniciarViaje(int idConductor, int idViaje)
+        {
+            ValidarIdConductor(idConductor);
+            ValidarIdViaje(idViaje);
+            EjecutarOperacionConductor(() => viajeRepository.IniciarViaje(idConductor, idViaje));
+        }
+
         public void FinalizarViaje(int idViaje)
         {
             Viaje viaje = ObtenerViajeValido(idViaje);
@@ -193,6 +280,13 @@ namespace Paraba.BLL.Services
 
             viajeRepository.FinalizarViaje(idViaje);
             RegistrarAuditoria(idViaje, "Viaje finalizado", "En curso", "Finalizado", viaje.TarifaAceptada, viaje.TarifaAceptada, "El viaje fue finalizado.");
+        }
+
+        public void FinalizarViaje(int idConductor, int idViaje)
+        {
+            ValidarIdConductor(idConductor);
+            ValidarIdViaje(idViaje);
+            EjecutarOperacionConductor(() => viajeRepository.FinalizarViaje(idConductor, idViaje));
         }
 
         public void CancelarViaje(int idViaje, string motivo)
@@ -213,6 +307,19 @@ namespace Paraba.BLL.Services
             RegistrarAuditoria(idViaje, "Viaje cancelado", ObtenerNombreEstado(viaje.IdEstadoViaje), "Cancelado", viaje.TarifaAceptada, viaje.TarifaAceptada, motivo.Trim());
         }
 
+        public void CancelarViaje(int idConductor, int idViaje, string motivo)
+        {
+            ValidarIdConductor(idConductor);
+            ValidarIdViaje(idViaje);
+
+            if (string.IsNullOrWhiteSpace(motivo) || motivo.Trim().Length < 10)
+            {
+                throw new ArgumentException("Debe ingresar un motivo de cancelacion de al menos 10 caracteres.");
+            }
+
+            EjecutarOperacionConductor(() => viajeRepository.CancelarViaje(idConductor, idViaje, motivo.Trim()));
+        }
+
         private Viaje ObtenerViajeValido(int idViaje)
         {
             if (idViaje <= 0)
@@ -228,6 +335,46 @@ namespace Paraba.BLL.Services
             }
 
             return viaje;
+        }
+
+        private static void ValidarIdConductor(int idConductor)
+        {
+            if (idConductor <= 0)
+            {
+                throw new ArgumentException("Debe seleccionar un conductor valido.");
+            }
+        }
+
+        private static void ValidarIdViaje(int idViaje)
+        {
+            if (idViaje <= 0)
+            {
+                throw new ArgumentException("Debe seleccionar un viaje valido.");
+            }
+        }
+
+        private static void EjecutarOperacionConductor(Action operacion)
+        {
+            try
+            {
+                operacion();
+            }
+            catch (Exception ex) when (ex.GetType().Name == "SqlException")
+            {
+                throw new ArgumentException(ex.Message, ex);
+            }
+        }
+
+        private static T EjecutarOperacionConductorConResultado<T>(Func<T> operacion)
+        {
+            try
+            {
+                return operacion();
+            }
+            catch (Exception ex) when (ex.GetType().Name == "SqlException")
+            {
+                throw new ArgumentException(ex.Message, ex);
+            }
         }
 
         private void RegistrarAuditoria(
@@ -279,6 +426,8 @@ namespace Paraba.BLL.Services
                 3 => "En curso",
                 4 => "Finalizado",
                 5 => "Cancelado",
+                6 => "Contraofertado",
+                7 => "En camino al pasajero",
                 _ => "Desconocido"
             };
         }

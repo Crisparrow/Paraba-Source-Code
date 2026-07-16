@@ -6,9 +6,11 @@
     var estadoClase = Model.EstadoViaje switch
     {
         "Aceptado" => "status-success",
+        "En camino al pasajero" => "status-info",
         "En curso" => "status-info",
         "Finalizado" => "status-muted",
         "Cancelado" => "status-danger",
+        "Contraofertado" => "status-warning",
         _ => "status-warning"
     };
 }
@@ -133,6 +135,10 @@
                 <span class="detail-label">Fin</span>
                 <span class="detail-value">@(Model.FechaFin?.ToString("dd/MM/yyyy HH:mm") ?? "-")</span>
             </div>
+            <div class="detail-row">
+                <span class="detail-label">Cancelacion</span>
+                <span class="detail-value">@(Model.FechaCancelacion?.ToString("dd/MM/yyyy HH:mm") ?? "-")</span>
+            </div>
         </div>
     </section>
 
@@ -146,6 +152,10 @@
             <div class="detail-row">
                 <span class="detail-label">Eventos auditados</span>
                 <span class="detail-value">@Model.Auditorias.Count</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Motivo cancelacion</span>
+                <span class="detail-value">@(string.IsNullOrWhiteSpace(Model.MotivoCancelacion) ? "-" : Model.MotivoCancelacion)</span>
             </div>
         </div>
     </section>
