@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Paraba.DriverApp.Views.Profile.UploadDocumentsPage"
+             Title="Subir documentos" BackgroundColor="#F4F4F4">
+    <ScrollView>
+        <VerticalStackLayout Padding="22" Spacing="14">
+            <Label Text="Documentos y verificación" FontSize="30" FontAttributes="Bold" TextColor="#111827" />
+            <Picker x:Name="DocumentTypePicker" Title="Tipo de documento" BackgroundColor="White" />
+            <Entry x:Name="DocumentNumberEntry" Placeholder="Número del documento" BackgroundColor="White" />
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                <CheckBox x:Name="HasExpirationCheckBox" CheckedChanged="OnExpirationChanged" />
+                <Label Grid.Column="1" Text="El documento tiene vencimiento" VerticalTextAlignment="Center" />
+            </Grid>
+            <DatePicker x:Name="ExpirationDatePicker" IsVisible="False" />
+            <Button Text="Seleccionar JPG, PNG o PDF" Clicked="OnPickFileClicked" BackgroundColor="#111827" TextColor="White" />
+            <Button Text="Tomar foto ahora" Clicked="OnTakePhotoClicked" BackgroundColor="#0E9F5A" TextColor="White" />
+            <Label x:Name="SelectedFileLabel" Text="Ningún archivo seleccionado" TextColor="#6B7280" />
+            <Label Text="Cada nueva carga reemplaza la versión vigente del mismo tipo y vuelve a Pendiente."
+                   TextColor="#92400E" FontSize="14" />
+            <Button x:Name="UploadButton" Text="Enviar a revisión" Clicked="OnUploadClicked" BackgroundColor="#F23845" TextColor="White" CornerRadius="14" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

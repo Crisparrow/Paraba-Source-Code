@@ -14,7 +14,7 @@ namespace Paraba.UI.Controllers
 
         public IActionResult Index(DocumentoConductorFiltroViewModel filtros)
         {
-            var documentos = documentoConductorService.ListarDocumentos();
+            var documentos = documentoConductorService.ListarDocumentos().Where(item => item.EsVigente).ToList();
             var documentosViewModel = documentos.Select(documento => new DocumentoConductorViewModel
             {
                 IdDocumentoConductor = documento.IdDocumentoConductor,

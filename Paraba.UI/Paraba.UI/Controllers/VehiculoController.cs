@@ -27,10 +27,42 @@ namespace Paraba.UI.Controllers
                 Color = vehiculo.Color,
                 Anio = vehiculo.Anio,
                 Verificado = vehiculo.Verificado,
+                EstadoVerificacion = vehiculo.EstadoVerificacion,
+                Observacion = vehiculo.Observacion,
                 Estado = vehiculo.Estado
             }).ToList();
 
             return View(vehiculosViewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "SuperAdmin,Verificador")]
+        public IActionResult Revisar(int idVehiculo, string estado, string observacion)
+        {
+            try
+            {
+                if (estado == "Aprobado")
+                {
+                    vehiculoService.AprobarVehiculo(idVehiculo, observacion ?? string.Empty);
+                    TempData["Success"] = "Vehiculo aprobado correctamente.";
+                }
+                else if (estado == "Rechazado")
+                {
+                    vehiculoService.RechazarVehiculo(idVehiculo, observacion ?? string.Empty);
+                    TempData["Success"] = "Vehiculo rechazado. La app mostrara la observacion al conductor.";
+                }
+                else
+                {
+                    throw new ArgumentException("Estado de revision invalido.");
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

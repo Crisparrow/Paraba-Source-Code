@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Paraba.DriverApp.Views.Profile.ProfilePage"
+             BackgroundColor="#F4F4F4">
+    <ScrollView>
+        <VerticalStackLayout Padding="20,18,20,30" Spacing="14">
+            <Grid ColumnDefinitions="*,Auto">
+                <VerticalStackLayout Spacing="2">
+                    <Label Text="Perfil" TextColor="#111827" FontSize="34" FontAttributes="Bold" />
+                    <Label x:Name="DriverNameLabel" Text="Conductor PARABA" TextColor="#4B5563" FontSize="17" />
+                </VerticalStackLayout>
+                <Button Grid.Column="1" Text="Actualizar" Clicked="OnRefreshClicked"
+                        BackgroundColor="#111827" TextColor="White" CornerRadius="12" />
+            </Grid>
+
+            <Border BackgroundColor="White" Stroke="#E5E7EB" Padding="18">
+                <Border.StrokeShape><RoundRectangle CornerRadius="20" /></Border.StrokeShape>
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Estado de aprobación" FontSize="16" TextColor="#6B7280" />
+                    <Label x:Name="ApprovalStatusLabel" Text="Pendiente" FontSize="24" FontAttributes="Bold" TextColor="#D97706" />
+                    <Label x:Name="EligibilityLabel" Text="Completa el perfil para recibir viajes." FontSize="15" TextColor="#4B5563" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <Button Text="+ Vehículo" Clicked="OnAddVehicleClicked" BackgroundColor="#111827" TextColor="White" CornerRadius="14" />
+                <Button Grid.Column="1" Text="+ Documento" Clicked="OnUploadDocumentClicked" BackgroundColor="#F23845" TextColor="White" CornerRadius="14" />
+            </Grid>
+            <Button Text="Tomar foto de verificación" Clicked="OnPhotoVerificationClicked"
+                    BackgroundColor="#0E9F5A" TextColor="White" CornerRadius="14" />
+
+            <Label Text="Mis vehículos" TextColor="#111827" FontSize="24" FontAttributes="Bold" Margin="0,8,0,0" />
+            <VerticalStackLayout x:Name="VehiclesContainer" Spacing="10" />
+
+            <Label Text="Documentos vigentes" TextColor="#111827" FontSize="24" FontAttributes="Bold" Margin="0,8,0,0" />
+            <Label Text="Si uno fue rechazado, carga una versión corregida del mismo tipo."
+                   TextColor="#6B7280" FontSize="14" />
+            <VerticalStackLayout x:Name="DocumentsContainer" Spacing="10" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentView>

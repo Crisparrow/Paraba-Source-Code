@@ -6,6 +6,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<Paraba.API.Services.TripRealtimePublisher>();
+builder.Services.AddSingleton<Paraba.API.Services.DriverFileStorage>();
 
 var app = builder.Build();
 
@@ -20,5 +23,6 @@ app.UseAuthorization();
 app.UseStaticFiles();
 
 app.MapControllers();
+app.MapHub<Paraba.API.Hubs.TripHub>("/hubs/trips");
 
 app.Run();

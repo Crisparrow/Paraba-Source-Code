@@ -309,23 +309,17 @@ public partial class MainPage : ContentPage
     private void LoadProfile(DriverProfileResponse profile)
     {
         _isAvailable = profile.Disponible;
-        ProfileNameLabel.Text = string.IsNullOrWhiteSpace(profile.NombreCompleto)
-            ? "Conductor PARABA"
-            : profile.NombreCompleto;
-        ProfileRatingLabel.Text = profile.Verificado ? "5.0" : "Pend.";
         DriverTopStatusLabel.Text = _isAvailable ? "Pedidos disponibles" : "Pedidos no disponibles";
-        UpdateRegistrationStatusUi();
+        _ = ProfileTabView.LoadAsync(profile.IdConductor);
     }
 
     private void LoadRegistrationPreview()
     {
         _isAvailable = false;
-        ProfileNameLabel.Text = string.IsNullOrWhiteSpace(_registration?.NombreCompleto)
-            ? "Conductor PARABA"
-            : _registration.NombreCompleto;
-        ProfileRatingLabel.Text = _registration?.EstadoSolicitud ?? "Borrador";
         DriverTopStatusLabel.Text = "Completa tu registro para operar";
-        UpdateRegistrationStatusUi();
+        ProfileTabView.ShowRegistrationPreview(
+            string.IsNullOrWhiteSpace(_registration?.NombreCompleto) ? "Conductor PARABA" : _registration.NombreCompleto,
+            _registration?.ObservacionRevision ?? "Completa el registro inicial para continuar.");
         _ = OrdersTabView.LoadAsync(null);
     }
 
@@ -342,29 +336,6 @@ public partial class MainPage : ContentPage
 
     private void SetBusyState(bool isBusy)
     {
-    }
-
-    private async void OnCompleteRegistrationClicked(object sender, EventArgs e)
-    {
-        await DisplayAlert(
-            "Completar registro",
-            "Beta actual: ya puedes guardar teléfono y nombre. El siguiente paso conectará las pantallas para datos del conductor, vehículo y carga de documentos.",
-            "Aceptar");
-    }
-
-    private void UpdateRegistrationStatusUi()
-    {
-        SetStatusLabel(DriverDataStatusLabel, "Datos conductor", _registration?.DatosConductorCompletos == true);
-        SetStatusLabel(VehicleDataStatusLabel, "Datos vehículo", _registration?.DatosVehiculoCompletos == true);
-        SetStatusLabel(DocumentsStatusLabel, "Documentos", _registration?.DocumentosCompletos == true);
-    }
-
-    private static void SetStatusLabel(Label label, string title, bool complete)
-    {
-        label.Text = complete ? $"{title}: completo" : $"{title}: falta completar";
-        label.TextColor = complete
-            ? Color.FromArgb("#16A34A")
-            : Color.FromArgb("#DC2626");
     }
 
     private async Task RequestNewCodeAsync(string channel)
@@ -403,9 +374,10 @@ public partial class MainPage : ContentPage
         ShowDashboardTab(ChatsTabView, ChatsTabButton);
     }
 
-    private void OnProfileTabClicked(object sender, EventArgs e)
+    private async void OnProfileTabClicked(object sender, EventArgs e)
     {
         ShowDashboardTab(ProfileTabView, ProfileTabButton);
+        await ProfileTabView.LoadAsync(_registration?.IdConductor);
     }
 
     private void ShowDashboardTab(View activeView, Button activeButton)

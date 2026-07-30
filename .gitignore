@@ -18,6 +18,7 @@ TestResults/
 # Runtime/local files
 *.log
 *.tmp
+Paraba.UI/Paraba.API/wwwroot/uploads/
 
 # OS files
 Thumbs.db

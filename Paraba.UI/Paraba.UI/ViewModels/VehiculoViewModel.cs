@@ -20,6 +20,10 @@ namespace Paraba.UI.ViewModels
 
         public bool Verificado { get; set; }
 
+        public string EstadoVerificacion { get; set; } = string.Empty;
+
+        public string Observacion { get; set; } = string.Empty;
+
         public bool Estado { get; set; }
     }
 }

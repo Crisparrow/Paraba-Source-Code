@@ -11,6 +11,15 @@
     </div>
 </div>
 
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
 <table class="table table-bordered table-hover align-middle">
     <thead class="table-dark">
         <tr>
@@ -22,8 +31,9 @@
             <th>Modelo</th>
             <th>Color</th>
             <th>Anio</th>
-            <th>Verificado</th>
+            <th>Revisión</th>
             <th>Estado</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
@@ -38,8 +48,32 @@
                 <td>@vehiculo.Modelo</td>
                 <td>@vehiculo.Color</td>
                 <td>@vehiculo.Anio</td>
-                <td>@(vehiculo.Verificado ? "Si" : "No")</td>
+                <td>
+                    <strong>@vehiculo.EstadoVerificacion</strong>
+                    @if (!string.IsNullOrWhiteSpace(vehiculo.Observacion))
+                    {
+                        <div class="small text-muted">@vehiculo.Observacion</div>
+                    }
+                </td>
                 <td>@(vehiculo.Estado ? "Activo" : "Inactivo")</td>
+                <td>
+                    @if (vehiculo.EstadoVerificacion == "Pendiente")
+                    {
+                        <form asp-action="Revisar" method="post" class="d-flex flex-column gap-2">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="idVehiculo" value="@vehiculo.IdVehiculo" />
+                            <input class="form-control form-control-sm" name="observacion" placeholder="Observación o motivo de rechazo" />
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-sm btn-success" name="estado" value="Aprobado">Aprobar</button>
+                                <button class="btn btn-sm btn-outline-danger" name="estado" value="Rechazado">Rechazar</button>
+                            </div>
+                        </form>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Revisión cerrada</span>
+                    }
+                </td>
             </tr>
         }
     </tbody>

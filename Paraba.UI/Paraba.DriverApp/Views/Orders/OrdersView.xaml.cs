@@ -12,6 +12,7 @@ public partial class OrdersView : ContentView
     private DriverTripResponse? _lastCompletedTrip;
     private int? _driverId;
     private bool _isProcessing;
+    private bool _isRealtimeRefreshing;
 
     public OrdersView()
     {
@@ -19,6 +20,7 @@ public partial class OrdersView : ContentView
         ActiveTripDetail.StartRequested += async (_, trip) => await StartTripAsync(trip);
         ActiveTripDetail.FinishRequested += async (_, trip) => await FinishTripAsync(trip);
         ActiveTripDetail.PassengerAcceptRequested += async (_, trip) => await AcceptCounterOfferAsPassengerDemoAsync(trip);
+        Unloaded += async (_, _) => await _tripService.StopRealtimeAsync();
         RenderActiveTrip();
         RenderAvailableTrips();
     }
@@ -29,6 +31,7 @@ public partial class OrdersView : ContentView
 
         if (driverId == null)
         {
+            await _tripService.StopRealtimeAsync();
             _activeTrip = null;
             _summary = null;
             _availableTrips.Clear();
@@ -36,6 +39,15 @@ public partial class OrdersView : ContentView
             RenderActiveTrip();
             RenderAvailableTrips();
             return;
+        }
+
+        try
+        {
+            await _tripService.StartRealtimeAsync(driverId.Value, RefreshFromRealtimeAsync);
+        }
+        catch
+        {
+            // La carga REST y la actualizacion manual siguen disponibles si SignalR esta temporalmente fuera de linea.
         }
 
         _summary = await LoadOperationsSummaryAsync(driverId.Value);
@@ -362,6 +374,25 @@ public partial class OrdersView : ContentView
     private async Task RefreshAsync()
     {
         await LoadAsync(_driverId);
+    }
+
+    private async Task RefreshFromRealtimeAsync()
+    {
+        if (_isRealtimeRefreshing || _isProcessing)
+        {
+            return;
+        }
+
+        _isRealtimeRefreshing = true;
+
+        try
+        {
+            await MainThread.InvokeOnMainThreadAsync(RefreshAsync);
+        }
+        finally
+        {
+            _isRealtimeRefreshing = false;
+        }
     }
 
     private void RenderActiveTrip()

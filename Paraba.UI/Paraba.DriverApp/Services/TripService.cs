@@ -1,12 +1,15 @@
 using System.Net.Http.Json;
 using System.Text.Json;
+using Microsoft.AspNetCore.SignalR.Client;
 using Paraba.DriverApp.Models;
 
 namespace Paraba.DriverApp.Services;
 
-public class TripService
+public class TripService : IAsyncDisposable
 {
     private readonly HttpClient _httpClient;
+    private HubConnection? _hubConnection;
+    private int? _realtimeDriverId;
 
     public TripService()
     {
@@ -89,6 +92,53 @@ public class TripService
     public Task FinishTripAsync(int driverId, int tripId)
     {
         return PostAsync($"api/conductores/{driverId}/viajes/{tripId}/finalizar", null);
+    }
+
+    public async Task StartRealtimeAsync(int driverId, Func<Task> onTripChanged)
+    {
+        if (driverId <= 0)
+        {
+            throw new ArgumentException("El conductor no es valido.", nameof(driverId));
+        }
+
+        if (_hubConnection != null && _realtimeDriverId == driverId)
+        {
+            if (_hubConnection.State == HubConnectionState.Disconnected)
+            {
+                await _hubConnection.StartAsync();
+            }
+
+            return;
+        }
+
+        await StopRealtimeAsync();
+
+        _realtimeDriverId = driverId;
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl(new Uri(_httpClient.BaseAddress!, $"hubs/trips?idConductor={driverId}"))
+            .WithAutomaticReconnect([TimeSpan.Zero, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(10)])
+            .Build();
+
+        _hubConnection.On<JsonElement>("TripChanged", async _ => await onTripChanged());
+        await _hubConnection.StartAsync();
+    }
+
+    public async Task StopRealtimeAsync()
+    {
+        if (_hubConnection == null)
+        {
+            return;
+        }
+
+        await _hubConnection.DisposeAsync();
+        _hubConnection = null;
+        _realtimeDriverId = null;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await StopRealtimeAsync();
+        _httpClient.Dispose();
     }
 
     private async Task PostAsync(string url, object? body)

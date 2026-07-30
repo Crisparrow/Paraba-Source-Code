@@ -28,6 +28,7 @@ namespace Paraba.DAL.Repositories
                 {
                     IdTipoServicio = Convert.ToInt32(dr["IdTipoServicio"]),
                     Nombre = dr["Nombre"].ToString() ?? string.Empty,
+                    CategoriaVehiculo = dr["CategoriaVehiculo"].ToString() ?? "Taxi",
                     Estado = Convert.ToBoolean(dr["Estado"])
                 });
             }

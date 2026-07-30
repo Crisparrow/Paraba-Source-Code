@@ -209,6 +209,7 @@
                     HorizontalOptions="End"
                     VerticalOptions="Start"
                     Margin="0,64,16,0"
+                    IsVisible="False"
                     Clicked="OnCreateDemoTripClicked" />
         </Grid>
 

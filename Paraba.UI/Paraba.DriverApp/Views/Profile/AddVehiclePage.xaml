@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Paraba.DriverApp.Views.Profile.AddVehiclePage"
+             Title="Registrar vehículo" BackgroundColor="#F4F4F4">
+    <ScrollView>
+        <VerticalStackLayout Padding="22" Spacing="14">
+            <Label Text="Registrar vehículo" FontSize="30" FontAttributes="Bold" TextColor="#111827" />
+            <Label Text="Selecciona Taxi, Mototaxi o Microbus. El registro quedará Pendiente." TextColor="#6B7280" />
+            <Picker x:Name="ServiceTypePicker" Title="Tipo de servicio" ItemDisplayBinding="{Binding .}" BackgroundColor="White" />
+            <Entry x:Name="PlateEntry" Placeholder="Placa" BackgroundColor="White" />
+            <Entry x:Name="BrandEntry" Placeholder="Marca" BackgroundColor="White" />
+            <Entry x:Name="ModelEntry" Placeholder="Modelo" BackgroundColor="White" />
+            <Entry x:Name="ColorEntry" Placeholder="Color" BackgroundColor="White" />
+            <Entry x:Name="YearEntry" Placeholder="Año" Keyboard="Numeric" BackgroundColor="White" />
+            <Label Text="Para líneas blancas selecciona Microbus; antes de asignar una ruta también se exigirá DocumentoMicrobus aprobado."
+                   TextColor="#92400E" FontSize="14" />
+            <Button x:Name="SaveButton" Text="Guardar vehículo" Clicked="OnSaveClicked" BackgroundColor="#111827" TextColor="White" CornerRadius="14" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

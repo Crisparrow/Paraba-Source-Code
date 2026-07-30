@@ -18,6 +18,8 @@ namespace Paraba.ENTITY.Models
 
         public string Observacion { get; set; } = string.Empty;
 
+        public bool EsVigente { get; set; } = true;
+
         public DateTime FechaRegistro { get; set; }
     }
 }

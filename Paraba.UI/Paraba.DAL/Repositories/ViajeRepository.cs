@@ -60,71 +60,29 @@ namespace Paraba.DAL.Repositories
             return ListarPorConductor("dbo.sp_Viajes_ActivosPorConductor", idConductor);
         }
 
-        public void RegistrarSolicitud(Viaje viaje)
+        public int RegistrarSolicitud(Viaje viaje, string usuarioSistema)
         {
             using SqlConnection cn = conexion.ObtenerConexion();
 
-            string query = @"
-                INSERT INTO Viajes
-                (
-                    IdPasajero,
-                    IdConductor,
-                    IdVehiculo,
-                    IdTipoServicio,
-                    IdEstadoViaje,
-                    Origen,
-                    Destino,
-                    TarifaEstimada,
-                    TarifaFinal,
-                    TarifaSugerida,
-                    TarifaOfertada,
-                    TarifaContraoferta,
-                    TarifaAceptada,
-                    FechaSolicitud,
-                    FechaInicio,
-                    FechaFin
-                )
-                VALUES
-                (
-                    @IdPasajero,
-                    @IdConductor,
-                    @IdVehiculo,
-                    @IdTipoServicio,
-                    @IdEstadoViaje,
-                    @Origen,
-                    @Destino,
-                    @TarifaEstimada,
-                    @TarifaFinal,
-                    @TarifaSugerida,
-                    @TarifaOfertada,
-                    @TarifaContraoferta,
-                    @TarifaAceptada,
-                    @FechaSolicitud,
-                    @FechaInicio,
-                    @FechaFin
-                )";
-
-            using SqlCommand cmd = new SqlCommand(query, cn);
+            using SqlCommand cmd = new SqlCommand("dbo.sp_Viajes_CrearSolicitudPasajero", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
 
             cmd.Parameters.AddWithValue("@IdPasajero", viaje.IdPasajero);
             cmd.Parameters.AddWithValue("@IdConductor", viaje.IdConductor);
             cmd.Parameters.AddWithValue("@IdVehiculo", viaje.IdVehiculo);
             cmd.Parameters.AddWithValue("@IdTipoServicio", viaje.IdTipoServicio);
-            cmd.Parameters.AddWithValue("@IdEstadoViaje", viaje.IdEstadoViaje);
             cmd.Parameters.AddWithValue("@Origen", viaje.Origen);
             cmd.Parameters.AddWithValue("@Destino", viaje.Destino);
-            cmd.Parameters.AddWithValue("@TarifaEstimada", viaje.TarifaEstimada);
-            cmd.Parameters.AddWithValue("@TarifaFinal", viaje.TarifaFinal);
             cmd.Parameters.AddWithValue("@TarifaSugerida", viaje.TarifaSugerida);
             cmd.Parameters.AddWithValue("@TarifaOfertada", viaje.TarifaOfertada);
-            cmd.Parameters.AddWithValue("@TarifaContraoferta", viaje.TarifaContraoferta ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@TarifaAceptada", viaje.TarifaAceptada ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@FechaSolicitud", viaje.FechaSolicitud);
-            cmd.Parameters.AddWithValue("@FechaInicio", viaje.FechaInicio ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@FechaFin", viaje.FechaFin ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@UsuarioSistema", usuarioSistema);
 
             cn.Open();
-            cmd.ExecuteNonQuery();
+            object? result = cmd.ExecuteScalar();
+
+            return result == null || result == DBNull.Value
+                ? throw new InvalidOperationException("No se pudo obtener el identificador del viaje creado.")
+                : Convert.ToInt32(result);
         }
 
         public void RegistrarContraoferta(int idViaje, decimal tarifaContraoferta)

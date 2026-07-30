@@ -16,6 +16,10 @@ namespace Paraba.API.Models
 
         public bool Activo { get; set; }
 
+        public string EstadoAprobacion { get; set; } = string.Empty;
+
+        public bool PuedeTrabajar { get; set; }
+
         public List<DriverVehicleResponse> Vehiculos { get; set; } = new();
 
         public List<DriverDocumentResponse> Documentos { get; set; } = new();
@@ -35,6 +39,16 @@ namespace Paraba.API.Models
 
         public string Color { get; set; } = string.Empty;
 
+        public int Anio { get; set; }
+
+        public string TipoServicio { get; set; } = string.Empty;
+
+        public string CategoriaVehiculo { get; set; } = string.Empty;
+
+        public string EstadoVerificacion { get; set; } = string.Empty;
+
+        public string Observacion { get; set; } = string.Empty;
+
         public bool Verificado { get; set; }
 
         public bool Activo { get; set; }
@@ -49,6 +63,8 @@ namespace Paraba.API.Models
         public string NumeroDocumento { get; set; } = string.Empty;
 
         public string EstadoVerificacion { get; set; } = string.Empty;
+
+        public string UrlArchivo { get; set; } = string.Empty;
 
         public DateTime? FechaVencimiento { get; set; }
 

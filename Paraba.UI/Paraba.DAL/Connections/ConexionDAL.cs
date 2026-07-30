@@ -5,7 +5,8 @@ namespace Paraba.DAL.Connections
     public class ConexionDAL
     {
         private readonly string cadenaConexion =
-            "Server=localhost;Database=ParabaDB;Trusted_Connection=True;TrustServerCertificate=True;";
+            Environment.GetEnvironmentVariable("PARABA_DB_CONNECTION")
+            ?? "Server=localhost\\SQLEXPRESS;Database=ParabaDB;Trusted_Connection=True;TrustServerCertificate=True;";
         
         public SqlConnection ObtenerConexion()
         {

@@ -51,7 +51,7 @@ namespace Paraba.BLL.Services
             return calculadoraTarifaService.AplicarTarifaMinima(subtotal, tarifa.TarifaMinima);
         }
 
-        public void RegistrarSolicitud(Viaje viaje)
+        public int RegistrarSolicitud(Viaje viaje, string usuarioSistema = "API Pasajero")
         {
             if (viaje.IdPasajero <= 0)
             {
@@ -142,8 +142,20 @@ namespace Paraba.BLL.Services
             viaje.FechaInicio = null;
             viaje.FechaFin = null;
 
-            viajeRepository.RegistrarSolicitud(viaje);
-            RegistrarAuditoriaUltimoViaje("Solicitud creada", "Nuevo", "Solicitado", null, viaje.TarifaOfertada, "Solicitud registrada desde el panel administrativo.");
+            return EjecutarOperacionConductorConResultado(
+                () => viajeRepository.RegistrarSolicitud(viaje, usuarioSistema));
+        }
+
+        public Viaje ObtenerViaje(int idViaje)
+        {
+            Viaje viaje = ObtenerViajeValido(idViaje);
+
+            if (string.IsNullOrWhiteSpace(viaje.EstadoViaje))
+            {
+                viaje.EstadoViaje = ObtenerNombreEstado(viaje.IdEstadoViaje);
+            }
+
+            return viaje;
         }
 
         public void RegistrarContraoferta(int idViaje, decimal tarifaContraoferta)
@@ -201,7 +213,7 @@ namespace Paraba.BLL.Services
             EjecutarOperacionConductor(() => viajeRepository.RegistrarContraoferta(idConductor, idViaje, tarifaContraoferta));
         }
 
-        public void AceptarContraofertaPasajeroDemo(int idConductor, int idViaje)
+        public void AceptarContraofertaPasajero(int idConductor, int idViaje)
         {
             ValidarIdConductor(idConductor);
             ValidarIdViaje(idViaje);
@@ -386,6 +398,27 @@ namespace Paraba.BLL.Services
             decimal? tarifaNueva,
             string observacion)
         {
+            RegistrarAuditoria(
+                idViaje,
+                accion,
+                estadoAnterior,
+                estadoNuevo,
+                tarifaAnterior,
+                tarifaNueva,
+                "Admin PARABA",
+                observacion);
+        }
+
+        private void RegistrarAuditoria(
+            int idViaje,
+            string accion,
+            string estadoAnterior,
+            string estadoNuevo,
+            decimal? tarifaAnterior,
+            decimal? tarifaNueva,
+            string usuarioSistema,
+            string observacion)
+        {
             auditoriaViajeService.RegistrarAuditoria(new AuditoriaViaje
             {
                 IdViaje = idViaje,
@@ -394,27 +427,9 @@ namespace Paraba.BLL.Services
                 EstadoNuevo = estadoNuevo,
                 TarifaAnterior = tarifaAnterior,
                 TarifaNueva = tarifaNueva,
-                UsuarioSistema = "Admin PARABA",
+                UsuarioSistema = usuarioSistema,
                 Observacion = observacion
             });
-        }
-
-        private void RegistrarAuditoriaUltimoViaje(
-            string accion,
-            string estadoAnterior,
-            string estadoNuevo,
-            decimal? tarifaAnterior,
-            decimal? tarifaNueva,
-            string observacion)
-        {
-            Viaje? viaje = ListarViajes().OrderByDescending(item => item.IdViaje).FirstOrDefault();
-
-            if (viaje == null)
-            {
-                return;
-            }
-
-            RegistrarAuditoria(viaje.IdViaje, accion, estadoAnterior, estadoNuevo, tarifaAnterior, tarifaNueva, observacion);
         }
 
         private static string ObtenerNombreEstado(int idEstadoViaje)

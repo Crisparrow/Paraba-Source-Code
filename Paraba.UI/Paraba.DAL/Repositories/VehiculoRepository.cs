@@ -35,12 +35,50 @@ namespace Paraba.DAL.Repositories
                     Color = dr["Color"].ToString() ?? string.Empty,
                     Anio = Convert.ToInt32(dr["Anio"]),
                     Verificado = Convert.ToBoolean(dr["Verificado"]),
+                    EstadoVerificacion = dr["EstadoVerificacion"].ToString() ?? "Pendiente",
+                    Observacion = dr["Observacion"].ToString() ?? string.Empty,
                     Estado = Convert.ToBoolean(dr["Estado"]),
                     FechaRegistro = Convert.ToDateTime(dr["FechaRegistro"])
                 });
             }
 
             return lista;
+        }
+
+        public int Crear(Vehiculo vehiculo)
+        {
+            using SqlConnection cn = conexion.ObtenerConexion();
+            using SqlCommand cmd = new SqlCommand("dbo.sp_Vehiculos_Crear", cn)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            cmd.Parameters.AddWithValue("@IdConductor", vehiculo.IdConductor);
+            cmd.Parameters.AddWithValue("@IdTipoServicio", vehiculo.IdTipoServicio);
+            cmd.Parameters.AddWithValue("@Placa", vehiculo.Placa);
+            cmd.Parameters.AddWithValue("@Marca", vehiculo.Marca);
+            cmd.Parameters.AddWithValue("@Modelo", vehiculo.Modelo);
+            cmd.Parameters.AddWithValue("@Color", vehiculo.Color);
+            cmd.Parameters.AddWithValue("@Anio", vehiculo.Anio);
+
+            cn.Open();
+            return Convert.ToInt32(cmd.ExecuteScalar());
+        }
+
+        public bool ActualizarEstadoVerificacion(int idVehiculo, string estadoVerificacion, string observacion)
+        {
+            using SqlConnection cn = conexion.ObtenerConexion();
+            using SqlCommand cmd = new SqlCommand("dbo.sp_Vehiculos_ActualizarEstadoVerificacion", cn)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            cmd.Parameters.AddWithValue("@IdVehiculo", idVehiculo);
+            cmd.Parameters.AddWithValue("@EstadoVerificacion", estadoVerificacion);
+            cmd.Parameters.AddWithValue("@Observacion", observacion);
+
+            cn.Open();
+            return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
         }
     }
 }

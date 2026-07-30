@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Paraba.API.Models;
+using Paraba.API.Services;
 using Paraba.BLL.Services;
 using Paraba.ENTITY.Models;
 
@@ -13,6 +14,12 @@ namespace Paraba.API.Controllers
         private readonly VehiculoService vehiculoService = new VehiculoService();
         private readonly DocumentoConductorService documentoConductorService = new DocumentoConductorService();
         private readonly ViajeAppService viajeAppService = new ViajeAppService();
+        private readonly TripRealtimePublisher realtimePublisher;
+
+        public ConductorAppController(TripRealtimePublisher realtimePublisher)
+        {
+            this.realtimePublisher = realtimePublisher;
+        }
 
         [HttpGet("{idConductor:int}/perfil")]
         public IActionResult ObtenerPerfil(int idConductor)
@@ -34,12 +41,15 @@ namespace Paraba.API.Controllers
                 Disponible = conductor.Disponible,
                 Verificado = conductor.Verificado,
                 Activo = conductor.Estado,
+                EstadoAprobacion = conductor.Verificado ? "Aprobado" : "Pendiente o requiere correccion",
+                PuedeTrabajar = conductor.Verificado && vehiculoService.ListarVehiculos()
+                    .Any(item => item.IdConductor == idConductor && item.Estado && item.EstadoVerificacion == "Aprobado"),
                 Vehiculos = vehiculoService.ListarVehiculos()
                     .Where(item => item.IdConductor == idConductor)
                     .Select(MapVehicle)
                     .ToList(),
                 Documentos = documentoConductorService.ListarDocumentos()
-                    .Where(item => item.IdConductor == idConductor)
+                    .Where(item => item.IdConductor == idConductor && item.EsVigente)
                     .Select(MapDocument)
                     .ToList()
             };
@@ -132,7 +142,7 @@ namespace Paraba.API.Controllers
         }
 
         [HttpPost("{idConductor:int}/viajes/{idViaje:int}/aceptar")]
-        public IActionResult AceptarViaje(int idConductor, int idViaje)
+        public async Task<IActionResult> AceptarViaje(int idConductor, int idViaje)
         {
             if (!ExisteConductor(idConductor))
             {
@@ -142,6 +152,7 @@ namespace Paraba.API.Controllers
             try
             {
                 viajeAppService.AceptarViaje(idConductor, idViaje);
+                await realtimePublisher.PublishAsync(idConductor, idViaje, "ViajeAceptado");
                 return Ok(new { mensaje = "Viaje aceptado correctamente." });
             }
             catch (ArgumentException ex)
@@ -151,7 +162,7 @@ namespace Paraba.API.Controllers
         }
 
         [HttpPost("{idConductor:int}/viajes/{idViaje:int}/contraoferta")]
-        public IActionResult RegistrarContraoferta(int idConductor, int idViaje, DriverCounterOfferRequest request)
+        public async Task<IActionResult> RegistrarContraoferta(int idConductor, int idViaje, DriverCounterOfferRequest request)
         {
             if (!ExisteConductor(idConductor))
             {
@@ -161,6 +172,7 @@ namespace Paraba.API.Controllers
             try
             {
                 viajeAppService.RegistrarContraoferta(idConductor, idViaje, request.TarifaContraoferta);
+                await realtimePublisher.PublishAsync(idConductor, idViaje, "ContraofertaCreada");
                 return Ok(new { mensaje = "Contraoferta registrada correctamente." });
             }
             catch (ArgumentException ex)
@@ -170,7 +182,7 @@ namespace Paraba.API.Controllers
         }
 
         [HttpPost("{idConductor:int}/viajes/{idViaje:int}/iniciar")]
-        public IActionResult IniciarViaje(int idConductor, int idViaje)
+        public async Task<IActionResult> IniciarViaje(int idConductor, int idViaje)
         {
             if (!ExisteConductor(idConductor))
             {
@@ -180,6 +192,7 @@ namespace Paraba.API.Controllers
             try
             {
                 viajeAppService.IniciarViaje(idConductor, idViaje);
+                await realtimePublisher.PublishAsync(idConductor, idViaje, "ViajeIniciado");
                 return Ok(new { mensaje = "Viaje iniciado correctamente." });
             }
             catch (ArgumentException ex)
@@ -189,7 +202,7 @@ namespace Paraba.API.Controllers
         }
 
         [HttpPost("{idConductor:int}/viajes/{idViaje:int}/finalizar")]
-        public IActionResult FinalizarViaje(int idConductor, int idViaje)
+        public async Task<IActionResult> FinalizarViaje(int idConductor, int idViaje)
         {
             if (!ExisteConductor(idConductor))
             {
@@ -199,6 +212,7 @@ namespace Paraba.API.Controllers
             try
             {
                 viajeAppService.FinalizarViaje(idConductor, idViaje);
+                await realtimePublisher.PublishAsync(idConductor, idViaje, "ViajeFinalizado");
                 return Ok(new { mensaje = "Viaje finalizado correctamente." });
             }
             catch (ArgumentException ex)
@@ -208,7 +222,7 @@ namespace Paraba.API.Controllers
         }
 
         [HttpPost("{idConductor:int}/viajes/{idViaje:int}/cancelar")]
-        public IActionResult CancelarViaje(int idConductor, int idViaje, DriverCancelTripRequest request)
+        public async Task<IActionResult> CancelarViaje(int idConductor, int idViaje, DriverCancelTripRequest request)
         {
             if (!ExisteConductor(idConductor))
             {
@@ -218,6 +232,7 @@ namespace Paraba.API.Controllers
             try
             {
                 viajeAppService.CancelarViaje(idConductor, idViaje, request.Motivo);
+                await realtimePublisher.PublishAsync(idConductor, idViaje, "ViajeCancelado");
                 return Ok(new { mensaje = "Viaje cancelado correctamente." });
             }
             catch (ArgumentException ex)
@@ -227,7 +242,7 @@ namespace Paraba.API.Controllers
         }
 
         [HttpPost("{idConductor:int}/viajes/{idViaje:int}/demo/aceptar-contraoferta")]
-        public IActionResult AceptarContraofertaPasajeroDemo(int idConductor, int idViaje)
+        public async Task<IActionResult> AceptarContraofertaPasajeroDemo(int idConductor, int idViaje)
         {
             if (!ExisteConductor(idConductor))
             {
@@ -236,7 +251,8 @@ namespace Paraba.API.Controllers
 
             try
             {
-                viajeAppService.AceptarContraofertaPasajeroDemo(idConductor, idViaje);
+                viajeAppService.AceptarContraofertaPasajero(idConductor, idViaje);
+                await realtimePublisher.PublishAsync(idConductor, idViaje, "ContraofertaAceptada");
                 return Ok(new { mensaje = "El pasajero demo acepto la contraoferta." });
             }
             catch (ArgumentException ex)
@@ -246,7 +262,7 @@ namespace Paraba.API.Controllers
         }
 
         [HttpPost("{idConductor:int}/demo/viajes")]
-        public IActionResult CrearViajeDemo(int idConductor, DriverDemoTripRequest request)
+        public async Task<IActionResult> CrearViajeDemo(int idConductor, DriverDemoTripRequest request)
         {
             if (!ExisteConductor(idConductor))
             {
@@ -256,6 +272,7 @@ namespace Paraba.API.Controllers
             try
             {
                 int idViaje = viajeAppService.CrearSolicitudDemo(idConductor, request.IdTipoServicio);
+                await realtimePublisher.PublishAsync(idConductor, idViaje, "SolicitudCreada");
                 return Ok(new { mensaje = "Pedido demo creado correctamente.", idViaje });
             }
             catch (ArgumentException ex)
@@ -295,6 +312,8 @@ namespace Paraba.API.Controllers
 
         private static DriverVehicleResponse MapVehicle(Vehiculo vehiculo)
         {
+            TipoServicio? tipoServicio = new TipoServicioService().ListarTiposServicio()
+                .FirstOrDefault(item => item.IdTipoServicio == vehiculo.IdTipoServicio);
             return new DriverVehicleResponse
             {
                 IdVehiculo = vehiculo.IdVehiculo,
@@ -303,6 +322,11 @@ namespace Paraba.API.Controllers
                 Marca = vehiculo.Marca,
                 Modelo = vehiculo.Modelo,
                 Color = vehiculo.Color,
+                Anio = vehiculo.Anio,
+                TipoServicio = tipoServicio?.Nombre ?? "Servicio no identificado",
+                CategoriaVehiculo = tipoServicio?.CategoriaVehiculo ?? string.Empty,
+                EstadoVerificacion = vehiculo.EstadoVerificacion,
+                Observacion = vehiculo.Observacion,
                 Verificado = vehiculo.Verificado,
                 Activo = vehiculo.Estado
             };
@@ -315,6 +339,7 @@ namespace Paraba.API.Controllers
                 IdDocumentoConductor = documento.IdDocumentoConductor,
                 TipoDocumento = documento.TipoDocumento,
                 NumeroDocumento = documento.NumeroDocumento,
+                UrlArchivo = documento.UrlArchivo,
                 EstadoVerificacion = documento.EstadoVerificacion,
                 FechaVencimiento = documento.FechaVencimiento,
                 Observacion = documento.Observacion

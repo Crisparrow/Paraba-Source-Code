@@ -8,6 +8,7 @@ namespace Paraba.BLL.Services
         private readonly DocumentoConductorRepository documentoConductorRepository = new DocumentoConductorRepository();
         private readonly ConductorRepository conductorRepository = new ConductorRepository();
         private readonly AuditoriaConductorService auditoriaConductorService = new AuditoriaConductorService();
+        private readonly PerfilConductorRepository perfilConductorRepository = new PerfilConductorRepository();
 
         public List<DocumentoConductor> ListarDocumentos()
         {
@@ -92,15 +93,7 @@ namespace Paraba.BLL.Services
                 return;
             }
 
-            List<DocumentoConductor> documentosConductor = documentoConductorRepository
-                .Listar()
-                .Where(item => item.IdConductor == documento.IdConductor)
-                .ToList();
-
-            bool todosAprobados = documentosConductor.Count > 0 &&
-                documentosConductor.All(item => item.EstadoVerificacion == "Aprobado");
-
-            conductorRepository.ActualizarVerificado(documento.IdConductor, todosAprobados);
+            bool todosAprobados = perfilConductorRepository.RecalcularAprobacion(documento.IdConductor);
 
             if (todosAprobados)
             {

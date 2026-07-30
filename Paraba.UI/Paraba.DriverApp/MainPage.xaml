@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:controls="clr-namespace:Paraba.DriverApp.Controls"
              xmlns:orders="clr-namespace:Paraba.DriverApp.Views.Orders"
+             xmlns:profile="clr-namespace:Paraba.DriverApp.Views.Profile"
              x:Class="Paraba.DriverApp.MainPage"
              BackgroundColor="#07090D"
              Shell.NavBarIsVisible="False">
@@ -679,7 +680,7 @@
             </Grid>
 
             <Grid Grid.Row="1">
-                <orders:OrdersView x:Name="OrdersTabView" />
+                <orders:OrdersPage x:Name="OrdersTabView" />
 
                 <ScrollView x:Name="MoneyTabView" IsVisible="False" BackgroundColor="White">
                     <VerticalStackLayout Padding="24,28" Spacing="18">
@@ -741,54 +742,7 @@
                     </VerticalStackLayout>
                 </ScrollView>
 
-                <ScrollView x:Name="ProfileTabView" IsVisible="False" BackgroundColor="#F4F4F4">
-                    <VerticalStackLayout Padding="20,18" Spacing="14">
-                        <Grid ColumnDefinitions="72,*,Auto">
-                            <Frame BackgroundColor="#E5E5E5" CornerRadius="32" WidthRequest="64" HeightRequest="64" Padding="0" HasShadow="False"><Label Text="C" TextColor="White" FontSize="28" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" /></Frame>
-                            <Label Grid.Column="1" x:Name="ProfileNameLabel" Text="Conductor PARABA" TextColor="#111827" FontSize="27" FontAttributes="Bold" VerticalTextAlignment="Center" />
-                            <Label Grid.Column="2" Text="+" TextColor="#2D5BFF" FontSize="34" FontAttributes="Bold" VerticalTextAlignment="Center" />
-                        </Grid>
-                        <Frame BackgroundColor="White" CornerRadius="22" Padding="18" HasShadow="False">
-                            <VerticalStackLayout Spacing="14">
-                                <Grid ColumnDefinitions="*,Auto"><Label Text="Conductor" TextColor="#111827" FontSize="22" FontAttributes="Bold" /><Label Grid.Column="1" Text="Cambiar socio" TextColor="#111827" FontSize="13" /></Grid>
-                                <Grid ColumnDefinitions="*,*" ColumnSpacing="10"><Frame BackgroundColor="#F1F1F1" CornerRadius="14" Padding="14" HasShadow="False"><VerticalStackLayout><Label Text="+91" FontSize="20" FontAttributes="Bold"/><Label Text="Prioridad" FontSize="13"/></VerticalStackLayout></Frame><Frame Grid.Column="1" BackgroundColor="#F1F1F1" CornerRadius="14" Padding="14" HasShadow="False"><VerticalStackLayout><Label x:Name="ProfileRatingLabel" Text="5.0" FontSize="20" FontAttributes="Bold"/><Label Text="Calificación" FontSize="13"/></VerticalStackLayout></Frame></Grid>
-                                <Button Text="Completar registro"
-                                        BackgroundColor="#111827"
-                                        TextColor="White"
-                                        CornerRadius="12"
-                                        HeightRequest="46"
-                                        Clicked="OnCompleteRegistrationClicked" />
-                                <Grid RowDefinitions="Auto,Auto,Auto"
-                                      RowSpacing="8">
-                                    <Label x:Name="DriverDataStatusLabel"
-                                           Text="Datos conductor: falta completar"
-                                           TextColor="#DC2626"
-                                           FontSize="15"
-                                           FontAttributes="Bold" />
-                                    <Label x:Name="VehicleDataStatusLabel"
-                                           Grid.Row="1"
-                                           Text="Datos vehículo: falta completar"
-                                           TextColor="#DC2626"
-                                           FontSize="15"
-                                           FontAttributes="Bold" />
-                                    <Label x:Name="DocumentsStatusLabel"
-                                           Grid.Row="2"
-                                           Text="Documentos: falta completar"
-                                           TextColor="#DC2626"
-                                           FontSize="15"
-                                           FontAttributes="Bold" />
-                                </Grid>
-                                <Label Text="Socio                                           PARABA &gt;" FontSize="17" />
-                                <Label Text="Modo de ganancias                 Flexible &gt;" FontSize="17" />
-                                <Label Text="Tipos de servicios                  Taxi y moto taxi &gt;" FontSize="17" />
-                                <Label Text="Pago                                             Efectivo &gt;" FontSize="17" />
-                            </VerticalStackLayout>
-                        </Frame>
-                        <Label Text="Mis vehículos" TextColor="#111827" FontSize="24" FontAttributes="Bold" />
-                        <Frame BackgroundColor="White" CornerRadius="20" Padding="18" HeightRequest="128" HasShadow="False"><Label Text="+  Agrega un vehículo" TextColor="#111827" FontSize="18" FontAttributes="Bold" /></Frame>
-                        <Frame BackgroundColor="White" CornerRadius="20" Padding="18" HasShadow="False"><VerticalStackLayout Spacing="18"><Label Text="Solución de problemas        4   &gt;" FontSize="18"/><Label Text="Verificación por foto           &gt;" FontSize="18"/></VerticalStackLayout></Frame>
-                    </VerticalStackLayout>
-                </ScrollView>
+                <profile:ProfilePage x:Name="ProfileTabView" IsVisible="False" />
             </Grid>
 
             <Grid Grid.Row="2"

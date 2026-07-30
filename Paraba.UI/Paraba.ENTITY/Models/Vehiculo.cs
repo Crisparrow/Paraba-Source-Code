@@ -24,6 +24,10 @@ namespace Paraba.ENTITY.Models
 
         public bool Verificado { get; set; }
 
+        public string EstadoVerificacion { get; set; } = "Pendiente";
+
+        public string Observacion { get; set; } = string.Empty;
+
         public bool Estado { get; set; }
 
         public DateTime FechaRegistro { get; set; }
