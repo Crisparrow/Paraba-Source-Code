@@ -41,7 +41,11 @@ public partial class UploadDocumentsPage : ContentPage
             await CapturePhotoAsync();
     }
 
-    private void OnExpirationChanged(object sender, CheckedChangedEventArgs e) => ExpirationDatePicker.IsVisible = e.Value;
+    private void OnExpirationChanged(object sender, CheckedChangedEventArgs e)
+    {
+        ExpirationDateLabel.IsVisible = e.Value;
+        ExpirationDatePicker.IsVisible = e.Value;
+    }
 
     private async void OnPickFileClicked(object sender, EventArgs e)
     {

@@ -4,21 +4,46 @@
              x:Class="Paraba.DriverApp.Views.Profile.UploadDocumentsPage"
              Title="Subir documentos" BackgroundColor="#F4F4F4">
     <ScrollView>
-        <VerticalStackLayout Padding="22" Spacing="14">
-            <Label Text="Documentos y verificación" FontSize="30" FontAttributes="Bold" TextColor="#111827" />
-            <Picker x:Name="DocumentTypePicker" Title="Tipo de documento" BackgroundColor="White" />
-            <Entry x:Name="DocumentNumberEntry" Placeholder="Número del documento" BackgroundColor="White" />
-            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
-                <CheckBox x:Name="HasExpirationCheckBox" CheckedChanged="OnExpirationChanged" />
-                <Label Grid.Column="1" Text="El documento tiene vencimiento" VerticalTextAlignment="Center" />
+        <VerticalStackLayout Padding="22" Spacing="16">
+            <Label Text="Documentos y verificación" FontSize="34" FontAttributes="Bold" TextColor="#111827" />
+            <Label Text="Completa los datos y selecciona una foto o un archivo legible."
+                   FontSize="18" LineHeight="1.2" TextColor="#374151" />
+
+            <Label Text="Tipo de documento" FontSize="18" FontAttributes="Bold" TextColor="#111827" />
+            <Picker x:Name="DocumentTypePicker" Title="Selecciona el tipo de documento"
+                    BackgroundColor="White" FontSize="18" HeightRequest="58"
+                    TextColor="#111827" TitleColor="#4B5563" />
+
+            <Label Text="Número del documento" FontSize="18" FontAttributes="Bold" TextColor="#111827" />
+            <Entry x:Name="DocumentNumberEntry" Placeholder="Ingresa el número del documento"
+                   BackgroundColor="White" FontSize="18" HeightRequest="58"
+                   TextColor="#111827" PlaceholderColor="#4B5563" />
+
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" MinimumHeightRequest="52">
+                <CheckBox x:Name="HasExpirationCheckBox" CheckedChanged="OnExpirationChanged"
+                          WidthRequest="48" HeightRequest="48" />
+                <Label Grid.Column="1" Text="El documento tiene fecha de vencimiento"
+                       FontSize="18" TextColor="#111827" VerticalTextAlignment="Center" />
             </Grid>
-            <DatePicker x:Name="ExpirationDatePicker" IsVisible="False" />
-            <Button Text="Seleccionar JPG, PNG o PDF" Clicked="OnPickFileClicked" BackgroundColor="#111827" TextColor="White" />
-            <Button Text="Tomar foto ahora" Clicked="OnTakePhotoClicked" BackgroundColor="#0E9F5A" TextColor="White" />
-            <Label x:Name="SelectedFileLabel" Text="Ningún archivo seleccionado" TextColor="#6B7280" />
+
+            <Label Text="Fecha de vencimiento" FontSize="18" FontAttributes="Bold"
+                   TextColor="#111827" IsVisible="False" x:Name="ExpirationDateLabel" />
+            <DatePicker x:Name="ExpirationDatePicker" IsVisible="False"
+                        BackgroundColor="White" FontSize="18" HeightRequest="58" TextColor="#111827" />
+
+            <Button Text="Seleccionar JPG, PNG o PDF" Clicked="OnPickFileClicked"
+                    BackgroundColor="#111827" TextColor="White" FontSize="18" FontAttributes="Bold"
+                    HeightRequest="58" CornerRadius="14" />
+            <Button Text="Tomar foto ahora" Clicked="OnTakePhotoClicked"
+                    BackgroundColor="#08783F" TextColor="White" FontSize="18" FontAttributes="Bold"
+                    HeightRequest="58" CornerRadius="14" />
+            <Label x:Name="SelectedFileLabel" Text="Ningún archivo seleccionado"
+                   TextColor="#374151" FontSize="17" FontAttributes="Bold" />
             <Label Text="Cada nueva carga reemplaza la versión vigente del mismo tipo y vuelve a Pendiente."
-                   TextColor="#92400E" FontSize="14" />
-            <Button x:Name="UploadButton" Text="Enviar a revisión" Clicked="OnUploadClicked" BackgroundColor="#F23845" TextColor="White" CornerRadius="14" />
+                   TextColor="#78350F" FontSize="17" LineHeight="1.2" />
+            <Button x:Name="UploadButton" Text="Enviar a revisión" Clicked="OnUploadClicked"
+                    BackgroundColor="#D7192D" TextColor="White" FontSize="18" FontAttributes="Bold"
+                    HeightRequest="58" CornerRadius="14" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

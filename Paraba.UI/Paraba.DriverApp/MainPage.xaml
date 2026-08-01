@@ -55,6 +55,11 @@
                       Padding="24,0,24,24">
                     <VerticalStackLayout Grid.Row="1"
                                          Spacing="12">
+                        <Label Text="Número de celular"
+                               TextColor="White"
+                               FontSize="19"
+                               FontAttributes="Bold"
+                               Margin="4,0,0,0" />
                         <Border BackgroundColor="#FFFFFF"
                                 Stroke="#FFFFFF"
                                 StrokeThickness="1"
@@ -94,7 +99,7 @@
                                                           MaxLength="8"
                                                           Placeholder="0 0000000"
                                                           TextColor="#111827"
-                                                          PlaceholderColor="#9CA3AF"
+                                                          PlaceholderColor="#4B5563"
                                                           FontSize="20"
                                                           FontAttributes="Bold"
                                                           BackgroundColor="Transparent"
@@ -391,11 +396,16 @@
                            FontAttributes="Bold"
                            HorizontalTextAlignment="Center" />
                     <Label Text="Completa tus datos para continuar."
-                           TextColor="#D4D7DE"
-                           FontSize="18"
+                           TextColor="#F3F4F6"
+                           FontSize="19"
                            HorizontalTextAlignment="Center"
                            Margin="0,-8,0,34" />
 
+                    <Label Text="Nombre"
+                           TextColor="White"
+                           FontSize="19"
+                           FontAttributes="Bold"
+                           Margin="4,0,0,-12" />
                     <Border BackgroundColor="#05080B"
                             Stroke="#F23845"
                             StrokeThickness="2"
@@ -415,7 +425,7 @@
                             </Grid>
                             <controls:BorderlessEntry Grid.Column="1"
                                                       x:Name="FirstNameEntry"
-                                                      Placeholder="Nombre"
+                                                      Placeholder="Ingresa tu nombre"
                                                       TextColor="White"
                                                       PlaceholderColor="#C8CBD3"
                                                       FontSize="21"
@@ -425,6 +435,11 @@
                         </Grid>
                     </Border>
 
+                    <Label Text="Apellido"
+                           TextColor="White"
+                           FontSize="19"
+                           FontAttributes="Bold"
+                           Margin="4,0,0,-12" />
                     <Border BackgroundColor="#05080B"
                             Stroke="#20C65A"
                             StrokeThickness="2"
@@ -444,7 +459,7 @@
                             </Grid>
                             <controls:BorderlessEntry Grid.Column="1"
                                                       x:Name="LastNameEntry"
-                                                      Placeholder="Apellido"
+                                                      Placeholder="Ingresa tu apellido"
                                                       TextColor="White"
                                                       PlaceholderColor="#C8CBD3"
                                                       FontSize="21"
