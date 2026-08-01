@@ -4,18 +4,41 @@
              x:Class="Paraba.DriverApp.Views.Profile.AddVehiclePage"
              Title="Registrar vehículo" BackgroundColor="#F4F4F4">
     <ScrollView>
-        <VerticalStackLayout Padding="22" Spacing="14">
-            <Label Text="Registrar vehículo" FontSize="30" FontAttributes="Bold" TextColor="#111827" />
-            <Label Text="Selecciona Taxi, Mototaxi o Microbus. El registro quedará Pendiente." TextColor="#6B7280" />
-            <Picker x:Name="ServiceTypePicker" Title="Tipo de servicio" ItemDisplayBinding="{Binding .}" BackgroundColor="White" />
-            <Entry x:Name="PlateEntry" Placeholder="Placa" BackgroundColor="White" />
-            <Entry x:Name="BrandEntry" Placeholder="Marca" BackgroundColor="White" />
-            <Entry x:Name="ModelEntry" Placeholder="Modelo" BackgroundColor="White" />
-            <Entry x:Name="ColorEntry" Placeholder="Color" BackgroundColor="White" />
-            <Entry x:Name="YearEntry" Placeholder="Año" Keyboard="Numeric" BackgroundColor="White" />
+        <VerticalStackLayout Padding="22" Spacing="16">
+            <Label Text="Registrar vehículo" FontSize="34" FontAttributes="Bold" TextColor="#111827" />
+            <Label Text="Selecciona Taxi, Mototaxi o Microbus. El registro quedará Pendiente."
+                   FontSize="18" LineHeight="1.2" TextColor="#374151" />
+
+            <Label Text="Tipo de servicio" FontSize="18" FontAttributes="Bold" TextColor="#111827" />
+            <Picker x:Name="ServiceTypePicker" Title="Selecciona un tipo de servicio"
+                    ItemDisplayBinding="{Binding .}" BackgroundColor="White"
+                    FontSize="18" HeightRequest="58" TextColor="#111827" TitleColor="#4B5563" />
+
+            <Label Text="Placa" FontSize="18" FontAttributes="Bold" TextColor="#111827" />
+            <Entry x:Name="PlateEntry" Placeholder="Ingresa la placa" BackgroundColor="White"
+                   FontSize="18" HeightRequest="58" TextColor="#111827" PlaceholderColor="#4B5563" />
+
+            <Label Text="Marca" FontSize="18" FontAttributes="Bold" TextColor="#111827" />
+            <Entry x:Name="BrandEntry" Placeholder="Ingresa la marca" BackgroundColor="White"
+                   FontSize="18" HeightRequest="58" TextColor="#111827" PlaceholderColor="#4B5563" />
+
+            <Label Text="Modelo" FontSize="18" FontAttributes="Bold" TextColor="#111827" />
+            <Entry x:Name="ModelEntry" Placeholder="Ingresa el modelo" BackgroundColor="White"
+                   FontSize="18" HeightRequest="58" TextColor="#111827" PlaceholderColor="#4B5563" />
+
+            <Label Text="Color" FontSize="18" FontAttributes="Bold" TextColor="#111827" />
+            <Entry x:Name="ColorEntry" Placeholder="Ingresa el color" BackgroundColor="White"
+                   FontSize="18" HeightRequest="58" TextColor="#111827" PlaceholderColor="#4B5563" />
+
+            <Label Text="Año" FontSize="18" FontAttributes="Bold" TextColor="#111827" />
+            <Entry x:Name="YearEntry" Placeholder="Ingresa el año" Keyboard="Numeric" BackgroundColor="White"
+                   FontSize="18" HeightRequest="58" TextColor="#111827" PlaceholderColor="#4B5563" />
+
             <Label Text="Para líneas blancas selecciona Microbus; antes de asignar una ruta también se exigirá DocumentoMicrobus aprobado."
-                   TextColor="#92400E" FontSize="14" />
-            <Button x:Name="SaveButton" Text="Guardar vehículo" Clicked="OnSaveClicked" BackgroundColor="#111827" TextColor="White" CornerRadius="14" />
+                   TextColor="#78350F" FontSize="17" LineHeight="1.2" />
+            <Button x:Name="SaveButton" Text="Guardar vehículo" Clicked="OnSaveClicked"
+                    BackgroundColor="#111827" TextColor="White" FontSize="18" FontAttributes="Bold"
+                    HeightRequest="58" CornerRadius="14" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
